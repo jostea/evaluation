@@ -26,10 +26,11 @@ public class CandidateService {
     private final CandidateRepository candidateRepository;
     private final StreamRepository streamRepository;
     private final InternshipRepository internshipRepository;
+    private final NotificationService notificationService;
 
-    public boolean addCandidate(CandidateRegistrationDTO candidateDto) {
+    public Long addCandidate(CandidateRegistrationDTO candidateDto) {
         //result of operation (is saved or not)
-        boolean result;
+        Long regCandId;
 
         //get Stream by id
         Optional<Stream> streamOpt = streamRepository.findById(candidateDto.getStreamId());
@@ -47,17 +48,16 @@ public class CandidateService {
 
         //check if in DB already exists this Candidate (email, stream_id, internship_id)
         if (candidateExists(candidateDto.getEmail(), internshipDb, streamDb)) {
-            result = false;
+            regCandId = 0L;     //assign "0" if such candidate already exists
         } else {
             Candidate newCandidate = new Candidate(candidateDto);
             newCandidate.setStream(streamDb);
             newCandidate.setInternship(internshipDb);
             newCandidate.setTestStatus(TestStatusEnum.WAITING_ACTIVATION);
             newCandidate.setDateRegistered(Timestamp.valueOf(LocalDateTime.now()));
-            candidateRepository.save(newCandidate);
-            result = true;
+            regCandId = candidateRepository.saveAndFlush(newCandidate).getId();
         }
-        return result;
+        return regCandId;
     }
 
     /**
@@ -75,7 +75,7 @@ public class CandidateService {
                 .filter(c -> c.getEmail().equals(email))
                 .collect(Collectors.toList());
 
-        if (inDb.size() == 0){
+        if (inDb.isEmpty()){
             return false;
         }
 

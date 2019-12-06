@@ -28,9 +28,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="modal-title"></h3>
             </div>
             <div class="modal-body" style="text-align:center">
-                <h3><strong>Text</strong></h3>
+                <h4><strong>Text</strong></h4>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -101,7 +102,7 @@
 
                 <!-- DROPDOWN DISCIPLINES -->
                 <div class="form-group">
-                    <label class="cols-sm-2 control-label" for="disciplines">Discipline: </label>
+                    <label class="cols-sm-2 control-label" for="disciplines">Discipline</label>
                     <div class="cols-sm-10">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-university" aria-hidden="true"></i></span>
@@ -117,7 +118,7 @@
 
                 <!-- DROPDOWN STREAMS -->
                 <div class="form-group">
-                    <label class="cols-sm-2 control-label" for="streams">Stream:</label>
+                    <label class="cols-sm-2 control-label" for="streams">Stream</label>
                     <div class="cols-sm-10">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-mortar-board"
@@ -147,8 +148,8 @@
 <script type="text/javascript" src="assets/js/bootstrap.js"></script>
 <script>
     function showPopUp(title, message) {
-        $("#myModal").find('h4').text(title);
-        $("#myModal").find('h3').text(message);
+        $("#myModal").find('h3').text(title);
+        $("#myModal").find('h4').text(message);
         $("#myModal").modal('show');
     }
 
@@ -199,7 +200,7 @@
         let streamId = elStreamSelect.options[elStreamSelect.selectedIndex].value;
 
         if (streamId == 0) {
-            alert('Select a stream');
+            showPopUp("No stream", "Please specify the stream");
         } else {
             if ($("#formReg")[0].checkValidity()) {
                 $.ajax({
