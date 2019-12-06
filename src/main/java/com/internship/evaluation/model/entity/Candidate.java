@@ -1,5 +1,6 @@
 package com.internship.evaluation.model.entity;
 
+import com.internship.evaluation.model.dto.candidate.CandidateRegistrationDTO;
 import com.internship.evaluation.model.enums.TestStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -82,4 +83,23 @@ public class Candidate {
     @OneToOne(mappedBy = "candidate")
     private TestToken testToken;
 
+    //copy constructor from CandidateRegistrationDTO
+    public Candidate(CandidateRegistrationDTO dto){
+        this.setEmail(dto.getEmail());
+        this.setFirstName(dto.getFirstName());
+        this.setLastName(dto.getLastName());
+        this.setPhone(dto.getPhone());
+    }
+
+    @Override
+    public String toString() {
+        return "Candidate{" +
+                "email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", dateRegistered=" + dateRegistered +
+                ", testStatus=" + testStatus +
+                '}';
+    }
 }

@@ -328,3 +328,5 @@ insert into user_table (username, email, password, role)
 values ('endavamainadmin', 'mainadmin@mail.com', '$2a$10$0WJ4XuVBhhXk6QvUujVsP.6JGwdZf4/jbBssgmLGRjW08w.4jxetK',
         'SUPER_ADMIN')
 
+/* Populate Internship Table */
+INSERT INTO internship_table(name, is_current) VALUES('Spring 2020', true);

@@ -12,7 +12,7 @@
     <artifactId>evaluation</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>evaluation</name>
+    <name>evaluation-panel</name>
     <description>Internship project autumn 2019 for evaluating tests</description>
 
     <properties>

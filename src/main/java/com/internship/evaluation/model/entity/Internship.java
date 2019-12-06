@@ -35,4 +35,11 @@ public class Internship {
             inverseJoinColumns = @JoinColumn(name = "stream_id"))
     private List<Stream> streams;
 
+    @Override
+    public String toString() {
+        return "Internship{" +
+                "name='" + name + '\'' +
+                ", isCurrent=" + isCurrent +
+                '}';
+    }
 }
