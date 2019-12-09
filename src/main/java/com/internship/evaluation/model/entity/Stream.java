@@ -53,6 +53,9 @@ public class Stream {
     @OneToMany(mappedBy = "stream")
     private List<TestStructure> testStructures;
 
+    @OneToOne(mappedBy = "stream")
+    private StreamTime streamTime;
+
     @Override
     public String toString() {
         return "Stream{" +

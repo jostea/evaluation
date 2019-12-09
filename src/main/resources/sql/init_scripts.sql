@@ -24,6 +24,7 @@ drop table if exists correct_code_table;
 drop table if exists code_task_table;
 drop table if exists stream_table;
 drop table if exists discipline_table;
+drop table if exists stream_time_table;
 
 
 /* create table t_user */
@@ -280,6 +281,13 @@ CREATE TABLE test_token_table
     date_created 	timestamp NOT NULL,
     is_active	boolean	NULL,
     UNIQUE (token)
+);
+
+CREATE TABLE stream_time_table
+(
+    id           SERIAL PRIMARY KEY,
+    stream_id    int  NOT NULL REFERENCES stream_table (id),
+    time_min	int NOT NULL
 );
 
 /*-----------------------------------*/
