@@ -10,4 +10,6 @@ public interface TestTokenRepository extends JpaRepository<TestToken, Long> {
     @Query
     Optional<TestToken> findFirstByCandidateId(Long id);
 
+    @Query
+    Optional<TestToken> findFirstByToken(String token);
 }

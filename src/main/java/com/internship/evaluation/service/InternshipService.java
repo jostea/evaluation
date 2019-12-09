@@ -32,4 +32,9 @@ public class InternshipService {
         }
         return id;
     }
+
+    public Optional<Internship> getCurrentInternship(){
+        Optional<Internship> optionalInternship = internshipRepository.findFirstByIsCurrentTrue();
+        return optionalInternship;
+    }
 }
