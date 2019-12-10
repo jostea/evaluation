@@ -57,7 +57,6 @@ CREATE TABLE stream_table
     UNIQUE (name, discipline_id)
 );
 
-
 /* create table task */
 CREATE TABLE task_table
 (
@@ -204,7 +203,7 @@ CREATE TABLE candidate_skill_table
     id           SERIAL PRIMARY KEY,
     candidate_id int  NOT NULL REFERENCES candidate_table (id),
     skill_id     int  NOT NULL REFERENCES skills_table (id),
-    level        text NOT NULL,
+    level        text,
     UNIQUE (candidate_id, skill_id)
 );
 
@@ -334,7 +333,7 @@ VALUES ('Schema #3', 'Path 3');
 /* Insert the super admin */
 insert into user_table (username, email, password, role)
 values ('endavamainadmin', 'mainadmin@mail.com', '$2a$10$0WJ4XuVBhhXk6QvUujVsP.6JGwdZf4/jbBssgmLGRjW08w.4jxetK',
-        'SUPER_ADMIN')
+        'SUPER_ADMIN');
 
 /* Populate Internship Table */
 INSERT INTO internship_table(name, is_current) VALUES('Spring 2020', true);

@@ -36,6 +36,11 @@ public class Stream {
     private List<Task> tasks;
 
     @ManyToMany
+    @JoinTable(name = "skills_stream_table", joinColumns = @JoinColumn(name = "stream_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private List<Skill> skill;
+
+    @ManyToMany
     @JoinTable(name = "sql_stream_table", joinColumns = @JoinColumn(name = "stream_id"),
             inverseJoinColumns = @JoinColumn(name = "sql_task_id"))
     private List<SqlTask> sqlTasks;
