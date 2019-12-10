@@ -1,5 +1,6 @@
 package com.internship.evaluation.service;
 
+import com.internship.evaluation.model.dto.test_token.TestTokenDTO;
 import com.internship.evaluation.model.entity.Candidate;
 import com.internship.evaluation.model.entity.TestToken;
 import com.internship.evaluation.repository.CandidateRepository;
@@ -29,7 +30,7 @@ public class TestTokenService {
     public void generateNewTestToken(Long candId) {
         Optional<Candidate> candOptional = candidateRepository.findById(candId);
         Candidate candidate = null;
-        if (candOptional.isPresent()){
+        if (candOptional.isPresent()) {
             candidate = candOptional.get();
         }
 
@@ -43,5 +44,34 @@ public class TestTokenService {
 
         //save new test_token
         testTokenRepository.save(newToken);
+    }
+
+    public Timestamp getTokenDateCreated(String token) {
+        Optional<TestToken> entityOpt = testTokenRepository.findFirstByToken(token);
+        TestToken entity = null;
+        if (entityOpt.isPresent()) {
+            entity = entityOpt.get();
+            return entity.getDateCreated();
+        } else {
+            return null;
+        }
+    }
+
+    public TestTokenDTO getTestTokenByToken(String token) {
+        TestTokenDTO tokenDTO = null;
+        Optional<TestToken> entityOpt = testTokenRepository.findFirstByToken(token);
+        if (entityOpt.isPresent()) {
+            tokenDTO = new TestTokenDTO(entityOpt.get());
+        }
+        return tokenDTO;
+    }
+
+    public Candidate getCandidateByToken(String token) {
+        Candidate candidate = null;
+        Optional<TestToken> entityOpt = testTokenRepository.findFirstByToken(token);
+        if (entityOpt.isPresent()) {
+            candidate = entityOpt.get().getCandidate();
+        }
+        return candidate;
     }
 }

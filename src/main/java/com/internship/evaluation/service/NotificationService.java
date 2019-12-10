@@ -75,10 +75,10 @@ public class NotificationService {
         //Construct URI
         String evalPortalHost = env.getProperty("eval_portal.host");
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .scheme("https")
+                .scheme("http")
                 .host(evalPortalHost)
-                .path("/test")
-                .query("thd_i8{keyword}")
+                .path("/testStart")
+                .query("thd_i8={keyword}")
                 .buildAndExpand(testToken.getToken());
 
         StringBuilder text = new StringBuilder();

@@ -11,4 +11,7 @@ public interface StreamTimeRepository extends JpaRepository<StreamTime, Long> {
 
     @Query
     Optional<StreamTime> findFirstByStream(Stream stream);
+
+    @Query
+    Optional<StreamTime> findFirstByStream_Id(Long id);
 }

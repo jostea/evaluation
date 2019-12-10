@@ -1,13 +1,18 @@
 package com.internship.evaluation.service;
 
+import com.internship.evaluation.model.dto.candidate.CandidateNotificationDTO;
 import com.internship.evaluation.model.dto.candidate.CandidateRegistrationDTO;
+import com.internship.evaluation.model.dto.candidate.CandidateStartTestDTO;
+import com.internship.evaluation.model.dto.test_token.TestTokenDTO;
 import com.internship.evaluation.model.entity.Candidate;
 import com.internship.evaluation.model.entity.Internship;
 import com.internship.evaluation.model.entity.Stream;
+import com.internship.evaluation.model.entity.StreamTime;
 import com.internship.evaluation.model.enums.TestStatusEnum;
 import com.internship.evaluation.repository.CandidateRepository;
 import com.internship.evaluation.repository.InternshipRepository;
 import com.internship.evaluation.repository.StreamRepository;
+import com.internship.evaluation.repository.StreamTimeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,7 +31,37 @@ public class CandidateService {
     private final CandidateRepository candidateRepository;
     private final StreamRepository streamRepository;
     private final InternshipRepository internshipRepository;
-    private final NotificationService notificationService;
+    private final TestTokenService testTokenService;
+    private final StreamTimeRepository streamTimeRepository;
+
+    public CandidateNotificationDTO getCandidateByToken(String token){
+        CandidateNotificationDTO candidateNotificationDTO = null;
+        TestTokenDTO testTokenDTO = testTokenService.getTestTokenByToken(token);
+        if (testTokenDTO != null){
+            Candidate entity = candidateRepository.getOne(testTokenDTO.getCandidateId());
+            if ( entity != null ){
+                candidateNotificationDTO = new CandidateNotificationDTO(entity);
+            }
+        }
+        return  candidateNotificationDTO;
+    }
+
+    public CandidateStartTestDTO getCandidateStartTestByToken(String token){
+        CandidateStartTestDTO candidateStartTestDTO = null;
+        TestTokenDTO testTokenDTO = testTokenService.getTestTokenByToken(token);
+        if (testTokenDTO != null){
+            Candidate entity = candidateRepository.getOne(testTokenDTO.getCandidateId());
+            if ( entity != null ){
+                candidateStartTestDTO = new CandidateStartTestDTO(entity);
+                Optional<StreamTime> streamOpt = streamTimeRepository.findFirstByStream_Id(entity.getStream().getId());
+                if ( streamOpt.isPresent() ){
+                    candidateStartTestDTO.setTestTime(streamOpt.get().getTimeTest());
+                }
+            }
+        }
+        return  candidateStartTestDTO;
+    }
+
 
     public Long addCandidate(CandidateRegistrationDTO candidateDto) {
         //result of operation (is saved or not)
@@ -58,6 +93,10 @@ public class CandidateService {
             regCandId = candidateRepository.saveAndFlush(newCandidate).getId();
         }
         return regCandId;
+    }
+
+    public void updateCandidate(Candidate candidate){
+        candidateRepository.save(candidate);
     }
 
     /**
