@@ -338,3 +338,17 @@ values ('endavamainadmin', 'mainadmin@mail.com', '$2a$10$0WJ4XuVBhhXk6QvUujVsP.6
 
 /* Populate Internship Table */
 INSERT INTO internship_table(name, is_current) VALUES('Spring 2020', true);
+
+INSERT INTO stream_time_table (stream_id, time_min) values(1,30);
+INSERT INTO stream_time_table (stream_id, time_min) values(2,40);
+INSERT INTO stream_time_table (stream_id, time_min) values(3,50);
+
+INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 1);
+INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 2);
+INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 3);
+INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 4);
+INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 5);
+INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 6);
+INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 7);
+INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 8);
+INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 9);

@@ -73,15 +73,17 @@
         event.preventDefault();
         let url = new URL(window.location.href);
         let c = url.searchParams.get("thd_i8");
-
         if (c != null){
             $.ajax({
                 method: "POST",
                 data: {thd_i8: c},
                 url: "/testsrest/testStart",
                 success: function () {
-                    location.href = "/test?thd_i8=" + c;
-                }
+                    window.location.href = "/test/test?thd_i8=" + c;
+                },
+                error: function () {
+                    window.location.href = "/templates/error";
+                },
             })
         }
     });
