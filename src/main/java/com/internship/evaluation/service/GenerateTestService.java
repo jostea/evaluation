@@ -1,9 +1,6 @@
 package com.internship.evaluation.service;
 
-import com.internship.evaluation.model.dto.generate_test.GenerateCodeTaskDTO;
-import com.internship.evaluation.model.dto.generate_test.GenerateSqlTaskDTO;
-import com.internship.evaluation.model.dto.generate_test.GenerateTaskDTO;
-import com.internship.evaluation.model.dto.generate_test.GenerateTestDTO;
+import com.internship.evaluation.model.dto.generate_test.*;
 import com.internship.evaluation.model.entity.*;
 import com.internship.evaluation.model.enums.TaskTypeEnum;
 import com.internship.evaluation.model.enums.TechnologyEnum;
@@ -116,6 +113,38 @@ public class GenerateTestService {
         } catch (Exception e) {
             throw new Exception("could not get tasks using current token");
         }
+    }
+
+    public GenerateTestDTO getExistingTest(Candidate candidate) {
+        GenerateTestDTO existingTest = new GenerateTestDTO();
+        List<CandidateMultiTask> existingMulti = candidateMultiTaskRepository.findAllByCandidateId(candidate.getId());
+        List<GenerateTaskDTO> simpleTasks = new ArrayList<>();
+        List<GenerateSqlTaskDTO> sqlTasks = new ArrayList<>();
+        List<GenerateCodeTaskDTO> codeTasks = new ArrayList<>();
+        for (CandidateMultiTask candidateMultiTask : existingMulti) {
+            GenerateTaskDTO generateTaskDTO = new GenerateTaskDTO(candidateMultiTask);
+            simpleTasks.add(generateTaskDTO);
+        }
+        for (CandidateSingleTask candidateSingleTask : candidate.getCandidateSingleTasks()) {
+            GenerateTaskDTO generateTaskDTO = new GenerateTaskDTO(candidateSingleTask);
+            simpleTasks.add(generateTaskDTO);
+        }
+        for (CandidateCustomTask candidateCustomTask : candidate.getCandidateCustomTasks()) {
+            GenerateTaskDTO generateTaskDTO = new GenerateTaskDTO(candidateCustomTask);
+            simpleTasks.add(generateTaskDTO);
+        }
+        for (CandidateSqlTask candidateSqlTask : candidate.getCandidateSqlTasks()) {
+            GenerateSqlTaskDTO generateSqlTaskDTO = new GenerateSqlTaskDTO(candidateSqlTask.getSqlTask());
+            sqlTasks.add(generateSqlTaskDTO);
+        }
+        for (CandidateCodeTask candidateCodeTask : candidate.getCandidateCodeTasks()) {
+            GenerateCodeTaskDTO generateCodeTaskDTO = new GenerateCodeTaskDTO(candidateCodeTask.getCodeTask());
+            codeTasks.add(generateCodeTaskDTO);
+        }
+        existingTest.setTasks(simpleTasks);
+        existingTest.setSqlTasks(sqlTasks);
+        existingTest.setCodeTasks(codeTasks);
+        return existingTest;
     }
 
     private static int getRandom(int max) {

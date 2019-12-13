@@ -12,4 +12,8 @@ public class GenerateAnswerOptionDTO {
         this.id = answersOption.getId();
         this.answerOptionValue = answersOption.getAnswerOptionValue();
     }
+
+    GenerateAnswerOptionDTO(String customAnswer) {
+        this.answerOptionValue = customAnswer;
+    }
 }
