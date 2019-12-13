@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,10 +28,8 @@ public class TestController {
     @Autowired
     private Environment env;
 
-    private final InternshipService internshipService;
     private final TestTokenService tokenService;
     private final CandidateService candidateService;
-    private final StreamTimeService streamTimeService;
 
     @GetMapping(value = "/testStart")
     public ModelAndView startTest(@RequestParam String thd_i8) {
@@ -41,24 +40,21 @@ public class TestController {
 
         if (dateTokenCreated != null) {
 
-            Integer tokenValidity = Integer.valueOf(env.getProperty("test_token.validity"));
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(dateTokenCreated.getTime());
-            calendar.add(Calendar.MINUTE, tokenValidity);
-            Timestamp dateTokenValidTo = new Timestamp(calendar.getTime().getTime());
+            Timestamp dateTokenValidTo = getTimestampTokenValidTo(dateTokenCreated);
 
             if (dateTokenValidTo.after(Timestamp.valueOf(LocalDateTime.now()))) {
-                model = new ModelAndView("test/testStart");
                 CandidateStartTestDTO candidateStartTestDTO = candidateService.getCandidateStartTestByToken(thd_i8);
 
-                if (candidateStartTestDTO.getTestStatusEnum().equals(TestStatusEnum.TEST_STARTED)){
-                    return new ModelAndView("redirect:test?thd_i8=" + thd_i8);
-                } else if (candidateStartTestDTO.getTestStatusEnum().equals(TestStatusEnum.TEST_FINISHED)){
+                if (candidateStartTestDTO.getTestStatusEnum().equals(TestStatusEnum.TEST_STARTED)) {
+                    ModelMap map2 = new ModelMap();
+                    map2.put("thd_i8", thd_i8);
+                    model = new ModelAndView("redirect:/test/test", map2);
+                    return model;
+                } else if (candidateStartTestDTO.getTestStatusEnum().equals(TestStatusEnum.TEST_FINISHED)) {
                     model = new ModelAndView("templates/error");
-                }
-
-                else {
+                } else if (candidateStartTestDTO.getTestStatusEnum().equals(TestStatusEnum.WAITING_ACTIVATION)) {
                     if (candidateStartTestDTO != null) {
+                        model = new ModelAndView("/test/testStart");
                         model.addObject("internship_name", candidateStartTestDTO.getInternshipName());
                         model.addObject("discipline", candidateStartTestDTO.getDisciplineName());
                         model.addObject("stream", candidateStartTestDTO.getStreamName());
@@ -74,5 +70,46 @@ public class TestController {
             }
         }
         return model;
+    }
+
+    @GetMapping(value = "/test/test")
+    public ModelAndView test(String thd_i8) {
+
+        //check status of candidate
+        ModelAndView model = null;
+
+        //check if token is valid. If not valid -> return error page
+        Timestamp dateTokenCreated = tokenService.getTokenDateCreated(thd_i8);
+
+        if (dateTokenCreated != null) {
+
+            Timestamp dateTokenValidTo = getTimestampTokenValidTo(dateTokenCreated);
+
+            if (dateTokenValidTo.after(Timestamp.valueOf(LocalDateTime.now()))) {
+                CandidateStartTestDTO candidateStartTestDTO = candidateService.getCandidateStartTestByToken(thd_i8);
+
+                if (candidateStartTestDTO.getTestStatusEnum().equals(TestStatusEnum.TEST_STARTED)
+                        || candidateStartTestDTO.getTestStatusEnum().equals(TestStatusEnum.WAITING_ACTIVATION)) {
+                    ModelMap map2 = new ModelMap();
+                    map2.put("thd_i8", thd_i8);
+                    model = new ModelAndView("/test/test", map2);
+                    return model;
+                } else {
+                    model = new ModelAndView("templates/error");
+                }
+            } else {
+                model = new ModelAndView("templates/error");
+            }
+        }
+        return model;
+    }
+
+    private Timestamp getTimestampTokenValidTo(Timestamp dateTokenCreated){
+        Integer tokenValidity = Integer.valueOf(env.getProperty("test_token.validity"));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(dateTokenCreated.getTime());
+        calendar.add(Calendar.MINUTE, tokenValidity);
+        Timestamp dateTokenValidTo = new Timestamp(calendar.getTime().getTime());
+        return dateTokenValidTo;
     }
 }
