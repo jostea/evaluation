@@ -60,4 +60,11 @@ public class Task {
     @OneToMany(mappedBy = "task")
     private List<CandidateMultiTask> candidateMultiTasks;
 
+    @Override
+    public String toString() {
+        return "Task{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

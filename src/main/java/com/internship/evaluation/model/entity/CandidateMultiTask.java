@@ -32,4 +32,9 @@ public class CandidateMultiTask {
     @JoinTable(name = "candidate_multi_answers", joinColumns = @JoinColumn(name = "candidate_multi_task_id"),
             inverseJoinColumns = @JoinColumn(name = "ao_selected_id"))
     private List<AnswersOption> answersOptions;
+
+    public CandidateMultiTask(Task task, Candidate candidate) {
+        this.task = task;
+        this.candidate = candidate;
+    }
 }

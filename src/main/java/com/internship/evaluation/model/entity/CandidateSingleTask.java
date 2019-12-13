@@ -31,4 +31,10 @@ public class CandidateSingleTask {
     @JoinColumn(name = "ao_selected_id")
     private AnswersOption answersOption;
 
+    public CandidateSingleTask(Task task, Candidate candidate) {
+        this.task = task;
+        this.candidate = candidate;
+
+    }
+
 }

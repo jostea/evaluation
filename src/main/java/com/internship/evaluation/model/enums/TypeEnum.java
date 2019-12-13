@@ -18,7 +18,7 @@ public enum TypeEnum {
 
     public static TypeEnum fromString(String par) {
         for (TypeEnum val : TypeEnum.values()) {
-            if (val.type.equalsIgnoreCase(par))
+            if (val.type.equalsIgnoreCase(par) || val.name().equalsIgnoreCase(par))
                 return val;
         }
         return null;

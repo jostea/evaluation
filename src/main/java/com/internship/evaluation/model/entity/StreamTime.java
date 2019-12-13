@@ -29,4 +29,11 @@ public class StreamTime {
     @Column(name = "time_min")
     private Integer timeTest;
 
+    @Override
+    public String toString() {
+        return "StreamTime{" +
+                "id=" + id +
+                ", timeTest=" + timeTest +
+                '}';
+    }
 }

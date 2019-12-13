@@ -60,7 +60,7 @@ public class Stream {
     public String toString() {
         return "Stream{" +
                 "name='" + name + '\'' +
-                ", tasks=" + tasks +
+                ", streamTime=" + streamTime +
                 '}';
     }
 }

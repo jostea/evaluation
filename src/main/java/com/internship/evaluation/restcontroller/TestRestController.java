@@ -3,6 +3,7 @@ package com.internship.evaluation.restcontroller;
 import com.internship.evaluation.model.entity.Candidate;
 import com.internship.evaluation.model.enums.TestStatusEnum;
 import com.internship.evaluation.service.CandidateService;
+import com.internship.evaluation.service.GenerateTestService;
 import com.internship.evaluation.service.TestTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -30,10 +28,10 @@ public class TestRestController {
     private Environment env;
 
     private final TestTokenService tokenService;
-    private final CandidateService candidateService;
+    private final GenerateTestService generateTestService;
 
     @PostMapping(value = "/testStart")
-    public ResponseEntity<String> startTest(@RequestParam String thd_i8) {
+    public ResponseEntity<?> startTest(@RequestParam String thd_i8) {
         Candidate candidate = tokenService.getCandidateByToken(thd_i8);
         if (candidate != null) {
 
@@ -54,10 +52,7 @@ public class TestRestController {
                         HttpStatus.BAD_REQUEST);
             } else {
                 try {
-                    candidate.setDateTestStarted(Timestamp.valueOf(LocalDateTime.now()));
-                    candidate.setTestStatus(TestStatusEnum.TEST_STARTED);
-                    candidateService.updateCandidate(candidate);
-                    return new ResponseEntity<>("Test is started", HttpStatus.OK);
+                    return new ResponseEntity<>(generateTestService.generateTest(thd_i8), HttpStatus.OK);
                 } catch (Exception e) {
                     log.error("Error while starting the test for candidate " + candidate.toString()
                             + "\nStack trace: " + e.getStackTrace());

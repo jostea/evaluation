@@ -1,6 +1,5 @@
 package com.internship.evaluation.repository;
 
-import com.internship.evaluation.model.entity.Candidate;
 import com.internship.evaluation.model.entity.Stream;
 import org.springframework.data.jpa.repository.JpaRepository;
 

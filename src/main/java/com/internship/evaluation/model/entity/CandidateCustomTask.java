@@ -28,10 +28,14 @@ public class CandidateCustomTask {
     @JoinColumn(name = "custom_task_id")
     private Task task;
 
-    @NotNull(message = "Custom answer is required")
     @JoinColumn(name = "custom_answer")
     private String customAnswer;
 
     @Column(name = "is_correct")
     private boolean isCorrect;
+
+    public CandidateCustomTask(Task task, Candidate candidate) {
+        this.task = task;
+        this.candidate = candidate;
+    }
 }

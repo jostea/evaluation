@@ -20,7 +20,7 @@ public enum TaskTypeEnum {
 
     public static TaskTypeEnum fromString(String par) {
         for (TaskTypeEnum val : TaskTypeEnum.values()) {
-            if (val.type.equalsIgnoreCase(par))
+            if (val.type.equalsIgnoreCase(par) || val.name().equalsIgnoreCase(par))
                 return val;
         }
         return null;
