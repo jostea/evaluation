@@ -42,7 +42,7 @@ public class GenerateTestService {
             List<Task> candidateTasks = new ArrayList<>();
             List<SqlTask> candidateSqlTasks = new ArrayList<>();
             List<CodeTask> candidateCodeTasks = new ArrayList<>();
-            Candidate candidate = candidateRepository.findById(testTokenRepository.findFirstByToken(token).get().getId()).get();
+            Candidate candidate = candidateRepository.findById(testTokenRepository.findFirstByToken(token).get().getCandidate().getId()).get();
             for (TestStructure ts: candidate.getStream().getTestStructures()) {
                 tasks = taskRepository.findAllByTaskTypeAndComplexityAndIsEnabledAndStreams(TypeEnum.fromString(ts.getTaskType().name()), ts.getComplexity(), true, candidate.getStream());
                 sqlTasks = sqlTaskRepository.findAllByComplexityAndIsEnabledIsTrue(ts.getComplexity());
