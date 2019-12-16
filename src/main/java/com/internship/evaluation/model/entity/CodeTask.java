@@ -55,4 +55,12 @@ public class CodeTask {
 
     @OneToMany(mappedBy = "codeTask")
     private List<CandidateCodeTask> candidateCodeTasks;
+
+    @Override
+    public String toString() {
+        return "CodeTask{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

@@ -32,4 +32,9 @@ public class CandidateCodeTask {
 
     @Column(name = "rate_correctness")
     private Long rateCorrectness;
+
+    public CandidateCodeTask(CodeTask codeTask, Candidate candidate) {
+        this.candidate = candidate;
+        this.codeTask = codeTask;
+    }
 }

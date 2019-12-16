@@ -38,4 +38,12 @@ public class AnswersOption {
     @JoinTable(name = "candidate_multi_answers", joinColumns = @JoinColumn(name = "ao_selected_id"),
             inverseJoinColumns = @JoinColumn(name = "candidate_multi_task_id"))
     private List<CandidateMultiTask> candidateMultiTasks;
+
+    @Override
+    public String toString() {
+        return "AnswersOption{" +
+                "answerOptionValue='" + answerOptionValue + '\'' +
+                ", isCorrect=" + isCorrect +
+                '}';
+    }
 }

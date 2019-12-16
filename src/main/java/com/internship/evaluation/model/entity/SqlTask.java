@@ -52,4 +52,11 @@ public class SqlTask {
     @OneToMany(mappedBy = "sqlTask")
     private List<CandidateSqlTask> candidateSqlTasks;
 
+    @Override
+    public String toString() {
+        return "SqlTask{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

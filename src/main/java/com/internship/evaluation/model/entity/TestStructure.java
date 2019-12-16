@@ -41,4 +41,11 @@ public class TestStructure {
     @Column(name = "nr_questions")
     private Long nrQuestions;
 
+    @Override
+    public String toString() {
+        return "TestStructure{" +
+                "id=" + id +
+                ", nrQuestions=" + nrQuestions +
+                '}';
+    }
 }
