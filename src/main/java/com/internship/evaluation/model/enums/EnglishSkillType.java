@@ -1,14 +1,16 @@
 package com.internship.evaluation.model.enums;
 
-public enum SkillsTypeEnum {
-
-    TECHNICAL("Technical"),
-    SOFT("Soft"),
-    TOOL("Tool");
+public enum EnglishSkillType {
+    A1("A1"),
+    A2("A2"),
+    B1("B1"),
+    B2("B2"),
+    C1("C1"),
+    C2("C2");
 
     private String type;
 
-    SkillsTypeEnum(String type) {
+    EnglishSkillType(String type) {
         this.type = type;
     }
 
@@ -16,8 +18,8 @@ public enum SkillsTypeEnum {
         return type;
     }
 
-    public static SkillsTypeEnum fromString(String par) {
-        for (SkillsTypeEnum val : SkillsTypeEnum.values()) {
+    public static EnglishSkillType fromString(String par) {
+        for (EnglishSkillType val : EnglishSkillType.values()) {
             if (val.type.equalsIgnoreCase(par))
                 return val;
         }

@@ -30,7 +30,6 @@ public class CandidateSkill {
     @JoinColumn(name = "skill_id")
     private Skill skill;
 
-    @NotNull(message = "Level is required")
     private String level;
 
 }

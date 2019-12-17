@@ -14,7 +14,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="/css/teststart.css">
+    <link type="text/css" rel="stylesheet" href="/static/css/teststart.css">
 
     <title>Test Start Page</title>
 
@@ -89,6 +89,16 @@
         }
     });
 
+    $("#startTest").on("click", function () {
+        let url = new URL(window.location.href);
+        let c = url.searchParams.get("thd_i8");
+        $.ajax({
+            method: "POST",
+            url: "/candidateskill/populateCandidatesSkills/" + c,
+            success() {
+            }
+        });
+    });
 </script>
 
 </body>
