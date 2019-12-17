@@ -5,6 +5,7 @@ import com.internship.evaluation.model.entity.Candidate;
 import com.internship.evaluation.model.enums.TestStatusEnum;
 import com.internship.evaluation.service.CandidateService;
 import com.internship.evaluation.service.GenerateTestService;
+import com.internship.evaluation.service.RestAdminService;
 import com.internship.evaluation.service.TestTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class TestRestController {
     private final TestTokenService tokenService;
     private final GenerateTestService generateTestService;
     private final CandidateService candidateService;
+    private final RestAdminService restAdminService;
 
     @PostMapping(value = "/testStart")
     public ResponseEntity<?> startTest(@RequestParam String thd_i8) {
@@ -57,5 +59,11 @@ public class TestRestController {
             response = new ResponseEntity<>("Test is already finished", HttpStatus.BAD_REQUEST);
         }
         return response;
+    }
+
+    @GetMapping(value = "/getSqlImage/{idSqlGroup}")
+    public ResponseEntity getSqlImage(@PathVariable Long idSqlGroup){
+        ResponseEntity responseAdmin = restAdminService.getSqlImage(idSqlGroup);
+        return responseAdmin;
     }
 }

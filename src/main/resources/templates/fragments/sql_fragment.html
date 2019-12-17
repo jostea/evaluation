@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SQL fragment for SQL test questions</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+    <script th:src="@{/js/test.js}"></script>
+    <script th:src="@{/js/config.js}"></script>
+
+<body>
+        <div id="sqltasks" th:fragment="sql_fragment" class="container">
+
+            <h2>SQL questions</h2>
+            <p>Please write the required SQL statement</p>
+            <hr>
+
+        </div>
+    </body>
+</html>
