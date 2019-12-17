@@ -4,7 +4,7 @@ $(document).ready(function () {
     $.ajax({
         method: "POST",
         data: {thd_i8: param},
-        url: "/testsrest/testStart",
+        url: gOptions.aws_path + "/testsrest/testStart",
         success: function (response) {
             console.log(response)
         },

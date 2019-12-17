@@ -94,7 +94,7 @@
         let c = url.searchParams.get("thd_i8");
         $.ajax({
             method: "POST",
-            url: "/candidateskill/populateCandidatesSkills/" + c,
+            url: gOptions.aws_path + "/candidateskill/populateCandidatesSkills/" + c,
             success() {
             }
         });
