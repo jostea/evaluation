@@ -146,6 +146,7 @@
 </div>
 
 <script type="text/javascript" src="assets/js/bootstrap.js"></script>
+<script th:src="@{/js/config.js}"></script>
 <script>
     function showPopUp(title, message) {
         $("#myModal").find('h3').text(title);
@@ -205,19 +206,19 @@
             if ($("#formReg")[0].checkValidity()) {
                 $.ajax({
                     method: "POST",
-                    url: "/registrationrest/addCandidate",
+                    url: gOptions.aws_path + "/registrationrest/addCandidate",
                     data: JSON.stringify(prepareData()),
                     contentType: "application/json",
                     success: function () {
                         showPopUp("Confirmation", "You was successfully registered. \nPlease verify your email to start the test.");
                         async function sl() {
-                            location.href = "/registration";
+                            location.href = gOptions.aws_path + "/registration";
                         }
                     },
                     error: function (response) {
                         showPopUp("Warning", response.responseText);
                         async function sl() {
-                            location.href = "/registration";
+                            location.href = gOptions.aws_path + "/registration";
                         }
                     }
                 })

@@ -67,6 +67,7 @@
 
 </div>
 
+<script th:src="@{/js/config.js}"></script>
 <script>
 
     $("#startTest").on("click", function(event){
@@ -77,12 +78,12 @@
             $.ajax({
                 method: "POST",
                 data: {thd_i8: c},
-                url: "/testsrest/testStart",
+                url: gOptions.aws_path + "/testsrest/testStart",
                 success: function () {
-                    window.location.href = "/test/test?thd_i8=" + c;
+                    window.location.href = gOptions.aws_path + "/test/test?thd_i8=" + c;
                 },
                 error: function () {
-                    window.location.href = "/templates/error";
+                    window.location.href = gOptions.aws_path + "/templates/error";
                 },
             })
         }
