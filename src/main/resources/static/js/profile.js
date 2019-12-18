@@ -6,7 +6,7 @@ function getAllSkillsByToken() {
     var token = url.searchParams.get("thd_i8");
     $.ajax({
         method: "GET",
-        url: "/candidateskill/getsortedskills/" + token,
+        url: gOptions.aws_path+"/candidateskill/getsortedskills/" + token,
         success: function (response) {
             for (let i = 0; i < response.length; i++) {
                 if (response[i][0] != null && response[i][0].typeStr === "Tool") {
@@ -29,7 +29,7 @@ function getAllSkillsByToken() {
 function updateSkills() {
     $.ajax({
         method: "PUT",
-        url: "/candidateskill/saveCandidateSkills",
+        url: gOptions.aws_path + "/candidateskill/saveCandidateSkills",
         data: JSON.stringify(prepareData()),
         contentType: "application/json",
         success: function () {
