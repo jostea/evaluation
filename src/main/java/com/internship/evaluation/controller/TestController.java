@@ -3,8 +3,6 @@ package com.internship.evaluation.controller;
 import com.internship.evaluation.model.dto.candidate.CandidateStartTestDTO;
 import com.internship.evaluation.model.enums.TestStatusEnum;
 import com.internship.evaluation.service.CandidateService;
-import com.internship.evaluation.service.InternshipService;
-import com.internship.evaluation.service.StreamTimeService;
 import com.internship.evaluation.service.TestTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,32 +72,36 @@ public class TestController {
 
     @GetMapping(value = "/test/test")
     public ModelAndView test(String thd_i8) {
-
         //check status of candidate
         ModelAndView model = null;
 
-        //check if token is valid. If not valid -> return error page
-        Timestamp dateTokenCreated = tokenService.getTokenDateCreated(thd_i8);
+        if (tokenService.getCandidateByToken(thd_i8).getTestStatus().equals(TestStatusEnum.TEST_STARTED)) {
+            //check if token is valid. If not valid -> return error page
+            Timestamp dateTokenCreated = tokenService.getTokenDateCreated(thd_i8);
 
-        if (dateTokenCreated != null) {
+            if (dateTokenCreated != null) {
 
-            Timestamp dateTokenValidTo = getTimestampTokenValidTo(dateTokenCreated);
+                Timestamp dateTokenValidTo = getTimestampTokenValidTo(dateTokenCreated);
 
-            if (dateTokenValidTo.after(Timestamp.valueOf(LocalDateTime.now()))) {
-                CandidateStartTestDTO candidateStartTestDTO = candidateService.getCandidateStartTestByToken(thd_i8);
+                if (dateTokenValidTo.after(Timestamp.valueOf(LocalDateTime.now()))) {
+                    CandidateStartTestDTO candidateStartTestDTO = candidateService.getCandidateStartTestByToken(thd_i8);
 
-                if (candidateStartTestDTO.getTestStatusEnum().equals(TestStatusEnum.TEST_STARTED)
-                        || candidateStartTestDTO.getTestStatusEnum().equals(TestStatusEnum.WAITING_ACTIVATION)) {
-                    ModelMap map2 = new ModelMap();
-                    map2.put("thd_i8", thd_i8);
-                    model = new ModelAndView("/test/test", map2);
-                    return model;
+                    if (candidateStartTestDTO.getTestStatusEnum().equals(TestStatusEnum.TEST_STARTED)
+                            || candidateStartTestDTO.getTestStatusEnum().equals(TestStatusEnum.WAITING_ACTIVATION)) {
+                        ModelMap map2 = new ModelMap();
+                        map2.put("thd_i8", thd_i8);
+                        model = new ModelAndView("/test/test", map2);
+                        return model;
+                    } else {
+                        model = new ModelAndView("templates/error");
+                    }
                 } else {
                     model = new ModelAndView("templates/error");
                 }
-            } else {
-                model = new ModelAndView("templates/error");
             }
+        } else {
+            model = new ModelAndView("redirect:/testStart");
+            model.addObject("thd_i8", thd_i8);
         }
         return model;
     }
