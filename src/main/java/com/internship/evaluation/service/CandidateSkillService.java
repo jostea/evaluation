@@ -1,18 +1,14 @@
 package com.internship.evaluation.service;
 
-import com.internship.evaluation.exception.CandidateNotFound;
 import com.internship.evaluation.exception.StreamNotFound;
+import com.internship.evaluation.model.dto.candidate.candidateskill.CandidateSkillDTO;
 import com.internship.evaluation.model.dto.candidate.candidateskill.CandidateSkillsDTOFromUI;
 import com.internship.evaluation.model.dto.skill.SkillDTO;
 import com.internship.evaluation.model.dto.skill.SkillsSpecifiedByStreamDTO;
 import com.internship.evaluation.model.dto.stream.StreamDTO;
 import com.internship.evaluation.model.entity.*;
-import com.internship.evaluation.model.enums.SoftSkillType;
-import com.internship.evaluation.model.enums.TechnicalSkillType;
-import com.internship.evaluation.model.enums.TestStatusEnum;
-import com.internship.evaluation.model.enums.ToolSkillType;
+import com.internship.evaluation.model.enums.*;
 import com.internship.evaluation.repository.*;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -68,6 +64,7 @@ public class CandidateSkillService {
         List<SkillDTO> skillsWithTypeTool = new ArrayList<>();
         List<SkillDTO> skillsWithTypeSoft = new ArrayList<>();
         List<SkillDTO> skillsWithTechnical = new ArrayList<>();
+        List<SkillDTO> skillsWithLanguage = new ArrayList<>();
         for (SkillsSpecifiedByStreamDTO s : skills) {
             if (s.getTypeStr().equalsIgnoreCase("Tool")) {
                 Optional<Skill> skill = skillsRepository.findById(s.getId());
@@ -81,11 +78,16 @@ public class CandidateSkillService {
                 Optional<Skill> skill = skillsRepository.findById(s.getId());
                 skill.ifPresent(value -> skillsWithTypeSoft.add(new SkillDTO(value)));
             }
+            if (s.getTypeStr().equalsIgnoreCase("Language")) {
+                Optional<Skill> skill = skillsRepository.findById(s.getId());
+                skill.ifPresent(value -> skillsWithLanguage.add(new SkillDTO(value)));
+            }
         }
         List<List<SkillDTO>> sortedListByType = new ArrayList<>();
         sortedListByType.add(skillsWithTypeTool);
         sortedListByType.add(skillsWithTypeSoft);
         sortedListByType.add(skillsWithTechnical);
+        sortedListByType.add(skillsWithLanguage);
         return sortedListByType;
     }
 
@@ -106,9 +108,9 @@ public class CandidateSkillService {
         }
     }
 
-    public void updateCandidateSkills(List<CandidateSkillsDTOFromUI> candidateFromUI) {
+    public void updateCandidateSkills(List<CandidateSkillsDTOFromUI> candidateFromUI, String token) {
         for (CandidateSkillsDTOFromUI candidateUI : candidateFromUI) {
-            Optional<CandidateSkill> candidateSkillOptional = candidateSkillRepository.findCandidateSkillBySkillId(candidateUI.getSkillId());
+            Optional<CandidateSkill> candidateSkillOptional = candidateSkillRepository.findCandidateSkillBySkillIdAndCandidateId(candidateUI.getSkillId(), getCandidateByToken(token).getId());
             if (candidateSkillOptional.isPresent()) {
                 CandidateSkill candidateSkill = candidateSkillOptional.get();
 
@@ -120,8 +122,24 @@ public class CandidateSkillService {
                         break;
                     }
                 }
+
+                for (LanguageSkillType eng : LanguageSkillType.values()) {
+                    if (eng.getType().equalsIgnoreCase(candidateUI.getLevel())) {
+                        candidateSkill.setLevel(candidateUI.getLevel());
+                        break;
+                    }
+                }
+
                 candidateSkillRepository.save(candidateSkill);
             }
         }
+    }
+
+    public List<CandidateSkillDTO> findAllCandidatesSkills(String token) {
+        List<CandidateSkillDTO> candidateSkillDTOS = new ArrayList<>();
+        for (CandidateSkill candidateSkill : candidateSkillRepository.findAllByCandidateId(getCandidateByToken(token).getId())) {
+            candidateSkillDTOS.add(new CandidateSkillDTO(candidateSkill));
+        }
+        return candidateSkillDTOS;
     }
 }

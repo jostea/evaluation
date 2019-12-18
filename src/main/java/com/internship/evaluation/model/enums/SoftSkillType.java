@@ -6,7 +6,7 @@ public enum SoftSkillType {
     RARELY("Rarely"),
     SOMETIMES("Sometimes"),
     OFTEN("Often"),
-    VERY_OFTEN("Vey Often");
+    VERY_OFTEN("Very Often");
 
     private String type;
 
