@@ -8,12 +8,57 @@ $(document).ready(function () {
         success: function (response) {
             console.log(response);
             loadSimpleTasks(response.tasks);
+            displaySqlTasks(response);
         },
         error: function (response) {
             console.log(response);
         }
     })
 });
+
+
+function displaySqlTasks(response) {
+    response.sqlTasks.forEach(function (sqlTask) {
+
+        let idSqlGroup = sqlTask.sqlGroup.id;
+        let callToRestController = gOptions.aws_path + "/testsrest/getSqlImage/" + idSqlGroup;
+        // $("#sqlGroupImage").attr("src", callToRestController);
+
+        let content = `<input id="sqlTask` + response.sqlTasks.indexOf(sqlTask) + `"type='hidden' value='` + sqlTask.id + `'>
+                        <form>
+                                <div class="form-row row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <h4 class="col-form-label">` + sqlTask.title + `</h4>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <label class="col-form-label" style="text-align: justify">` + sqlTask.description + `</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                                <img id="sqlGroupImage" src=` + callToRestController + ` style="max-width: 400px; max-width: 100%; max-height: 100%">
+                                        </div>
+                                </div>
+                                <div class="form-row row">
+                                    <div class="col-md-2">
+                                        <label class="col-form-label">Please specify your SQL statement</label>
+                                    </div>
+                                    <div class="col-md-10">
+                                         <textarea id="sqlResponse` + response.sqlTasks.indexOf(sqlTask) + `"class="form-control" type="text" placeholder="Specify here your answer..."></textarea>                                    
+                                    </div>
+                                </div>
+                        </form>
+                        <br>
+                        <hr>`;
+
+        document.getElementById("sqltasks").innerHTML += content;
+
+
+    });
+}
+
 
 function loadSimpleTasks(data) {
     let multiTasks = "";

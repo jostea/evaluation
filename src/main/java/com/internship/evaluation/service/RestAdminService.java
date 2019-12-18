@@ -4,6 +4,7 @@ import com.internship.evaluation.model.dto.stream.StreamDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -26,4 +27,10 @@ public class RestAdminService {
         StreamDTO[] array = response.getBody();
         return array;
     }
+
+    public ResponseEntity getSqlImage(Long idSqlGroup){
+        String url = env.getProperty("adminconnect.property")+"/tasksrest/imageDownload/" + idSqlGroup;
+        return restTemplate.getForEntity(url, Resource.class);
+    }
+
  }

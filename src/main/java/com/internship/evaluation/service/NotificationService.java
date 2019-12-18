@@ -83,7 +83,7 @@ public class NotificationService {
 
         StringBuilder text = new StringBuilder();
 
-        text.append("Dear ")
+        text.append("Hello ")
                 .append(candidate.getFirstName())
                 .append(" ")
                 .append(candidate.getLastName())
