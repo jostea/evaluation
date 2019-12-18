@@ -6,7 +6,7 @@ function getAllSkillsByToken() {
     var token = url.searchParams.get("thd_i8");
     $.ajax({
         method: "GET",
-        url: gOptions.aws_path+"/candidateskill/getsortedskills/" + token,
+        url: gOptions.aws_path + "/candidateskill/getsortedskills/" + token,
         success: function (response) {
             for (let i = 0; i < response.length; i++) {
                 if (response[i][0] != null && response[i][0].typeStr === "Tool") {
