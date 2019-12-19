@@ -18,3 +18,9 @@
     margin: 3px;
     border-radius: 5px;
 }
+
+div[value="sqlTask"] {
+    padding: 10px 5%;
+    margin: 3px;
+    border-radius: 5px;
+}
