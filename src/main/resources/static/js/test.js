@@ -19,12 +19,9 @@ $(document).ready(function () {
 
 function displaySqlTasks(response) {
     response.sqlTasks.forEach(function (sqlTask) {
-
         let idSqlGroup = sqlTask.sqlGroup.id;
         let callToRestController = gOptions.aws_path + "/testsrest/getSqlImage/" + idSqlGroup;
-        // $("#sqlGroupImage").attr("src", callToRestController);
-
-        let content = `<input id="sqlTask` + response.sqlTasks.indexOf(sqlTask) + `"type='hidden' value='` + sqlTask.id + `'>
+        let content = `
                         <form>
                                 <div class="form-row row">
                                         <div class="col-md-6">
@@ -45,20 +42,21 @@ function displaySqlTasks(response) {
                                     <div class="col-md-2">
                                         <label class="col-form-label">Please specify your SQL statement</label>
                                     </div>
-                                    <div class="col-md-10">
-                                         <textarea id="sqlResponse` + response.sqlTasks.indexOf(sqlTask) + `"class="form-control" type="text" placeholder="Specify here your answer..."></textarea>                                    
+                                    <div id="` + sqlTask.id + `" class="col-md-10 result">
+<!--                                         <input id="sqlTask` + response.sqlTasks.indexOf(sqlTask) + `"type='hidden' value='\` + sqlTask.id + \`'>-->
+<!--                                         <textarea id="sqlResponse` + response.sqlTasks.indexOf(sqlTask) + `"class="form-control" type="text" placeholder="Specify here your answer..."></textarea>                                    -->
+                                         <textarea id="` + sqlTask.id + `" class="form-control" type="text" placeholder="Specify here your answer..."></textarea>                                    
                                     </div>
                                 </div>
                         </form>
                         <br>
                         <hr>`;
-
         document.getElementById("sqltasks").innerHTML += content;
-
-
     });
+    document.getElementById("sqltasks").innerHTML += `<div class="form-row row" style="margin-bottom: 100px">
+        <button id="saveSqlAnswers" type="submit" class="btn btn-primary" onclick="saveSqlAnswers()">Save Sql Answers</button>
+    </div>`;
 }
-
 
 function loadSimpleTasks(data) {
     let multiTasks = "";
@@ -140,3 +138,41 @@ $("#singleTasks").on('click', ".singleChecks", function() {
         $box.prop("checked", false);
     }
 });
+
+// AUTOSAVE FUNCTIONS
+function saveSqlAnswers(){
+
+    //get sql answer statements and sql task ids
+    let answersList = [];
+    $("#sqltasks").find('*').find('textarea').each(function () {
+        let answer = {
+            sqlTaskId: $(this).attr('id'),
+            sqlAnswer: $(this).val()
+        }
+        answersList.push(answer);
+    });
+
+    //get token
+    let url = new URL(window.location.href);
+    let thd_i8 = url.searchParams.get("thd_i8");
+
+    //create object to post
+    let result = {
+        token: thd_i8,
+        answers: answersList
+    }
+
+    //call rest post endpoint
+    $.ajax({
+        method: "POST",
+        data: JSON.stringify(result),
+        url: gOptions.aws_path + "/testsrest/saveSqlAnswers",
+        contentType: "application/json",
+        success: function (response) {
+            console.log(response);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    })
+}

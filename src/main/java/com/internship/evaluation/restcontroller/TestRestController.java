@@ -1,6 +1,8 @@
 package com.internship.evaluation.restcontroller;
 
 import com.internship.evaluation.model.dto.generate_test.GenerateTestDTO;
+import com.internship.evaluation.model.dto.generate_test.SqlAnswersDTO;
+import com.internship.evaluation.model.dto.generate_test.SqlCandidateAnswerDTO;
 import com.internship.evaluation.model.entity.Candidate;
 import com.internship.evaluation.model.enums.TestStatusEnum;
 import com.internship.evaluation.service.CandidateService;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Slf4j
 @RestController
@@ -65,5 +68,19 @@ public class TestRestController {
     public ResponseEntity getSqlImage(@PathVariable Long idSqlGroup){
         ResponseEntity responseAdmin = restAdminService.getSqlImage(idSqlGroup);
         return responseAdmin;
+    }
+
+    @PostMapping(value = "/saveSqlAnswers")
+    public ResponseEntity saveSqlAnswers(@RequestBody SqlCandidateAnswerDTO dto){
+        ArrayList<SqlAnswersDTO> sqlAnswers = dto.getAnswers();
+        Candidate candidate = tokenService.getCandidateByToken(dto.getToken());
+        try {
+            candidateService.saveCandidateSqlAnswers(candidate, dto);
+            log.info("Sql answers of Candidate with the token [" + dto.getToken() + "] were saved.");
+            return new ResponseEntity("SQL answers were successfully processed.", HttpStatus.OK);
+        } catch (Exception e){
+            log.error("Error while saving SQL answers of candidate with the token [" + dto.getToken() + "].");
+            return new ResponseEntity("Error while processing SQL answers.", HttpStatus.BAD_REQUEST);
+        }
     }
 }
