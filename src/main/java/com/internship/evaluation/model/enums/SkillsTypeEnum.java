@@ -4,7 +4,8 @@ public enum SkillsTypeEnum {
 
     TECHNICAL("Technical"),
     SOFT("Soft"),
-    TOOL("Tool");
+    TOOL("Tool"),
+    LANGUAGE("Language");
 
     private String type;
 

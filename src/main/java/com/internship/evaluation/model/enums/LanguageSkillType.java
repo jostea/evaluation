@@ -1,6 +1,6 @@
 package com.internship.evaluation.model.enums;
 
-public enum EnglishSkillType {
+public enum LanguageSkillType {
     A1("A1"),
     A2("A2"),
     B1("B1"),
@@ -10,7 +10,7 @@ public enum EnglishSkillType {
 
     private String type;
 
-    EnglishSkillType(String type) {
+    LanguageSkillType(String type) {
         this.type = type;
     }
 
@@ -18,8 +18,8 @@ public enum EnglishSkillType {
         return type;
     }
 
-    public static EnglishSkillType fromString(String par) {
-        for (EnglishSkillType val : EnglishSkillType.values()) {
+    public static LanguageSkillType fromString(String par) {
+        for (LanguageSkillType val : LanguageSkillType.values()) {
             if (val.type.equalsIgnoreCase(par))
                 return val;
         }

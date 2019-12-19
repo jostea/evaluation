@@ -17,15 +17,13 @@ import javax.validation.constraints.NotNull;
 public class CandidateSkillDTO {
     private Long id;
 
-    private Long candidate_id;
-
-    private SkillDTO skill;
-
     private String level;
+
+    private Long skillId;
 
     public CandidateSkillDTO(CandidateSkill candidateSkill) {
         this.id = candidateSkill.getId();
-        this.skill = new SkillDTO(candidateSkill.getSkill());
+        this.skillId = candidateSkill.getSkill().getId();
         this.level = candidateSkill.getLevel();
     }
 }

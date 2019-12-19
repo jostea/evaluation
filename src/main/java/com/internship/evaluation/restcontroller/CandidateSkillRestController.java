@@ -2,6 +2,7 @@ package com.internship.evaluation.restcontroller;
 
 import com.internship.evaluation.exception.CandidateNotFound;
 import com.internship.evaluation.exception.StreamNotFound;
+import com.internship.evaluation.model.dto.candidate.candidateskill.CandidateSkillDTO;
 import com.internship.evaluation.model.dto.candidate.candidateskill.CandidateSkillsDTOFromUI;
 import com.internship.evaluation.model.dto.skill.SkillDTO;
 import com.internship.evaluation.model.dto.skill.SkillsSpecifiedByStreamDTO;
@@ -55,9 +56,9 @@ public class CandidateSkillRestController {
     }
 
     @ResponseBody
-    @PutMapping("/saveCandidateSkills")
-    public ResponseEntity<String> saveCandidatesSkills(@RequestBody List<CandidateSkillsDTOFromUI> list, Authentication authentication) {
-        candidateSkillService.updateCandidateSkills(list);
+    @PutMapping("/saveCandidateSkills/{token}")
+    public ResponseEntity<String> saveCandidatesSkills(@PathVariable("token") String token, @RequestBody List<CandidateSkillsDTOFromUI> list, Authentication authentication) {
+        candidateSkillService.updateCandidateSkills(list, token);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -70,6 +71,17 @@ public class CandidateSkillRestController {
             log.error("Error when user '" + authentication.getName() + "' get candidate's skills; \nerror message: " + e.getMessage()
                     + "\nstack trace: " + e.getStackTrace());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/findallcandidateskills/{token}")
+    public ResponseEntity<List<CandidateSkillDTO>> getAllCandidatesSkills(@PathVariable("token") String token, Authentication authentication) {
+        try {
+            return new ResponseEntity<>(candidateSkillService.findAllCandidatesSkills(token), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error when user '" + authentication.getName() + "' get all candidate's skills; \nerror message: " + e.getMessage()
+                    + "\nstack trace: " + e.getStackTrace());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }
