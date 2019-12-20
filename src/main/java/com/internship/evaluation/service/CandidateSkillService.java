@@ -30,7 +30,7 @@ public class CandidateSkillService {
 
     private final CandidateSkillRepository candidateSkillRepository;
 
-    public List<SkillsSpecifiedByStreamDTO> getSkillForSpecifiedStream(String token) throws StreamNotFound {
+    public List<SkillsSpecifiedByStreamDTO> getSkillForSpecifiedStream(String token) throws StreamNotFound, Exception {
         StreamDTO streamDTO = getCandidatesStream(getCandidateByToken(token));
         Optional<Stream> optionalStream = streamRepository.findById(streamDTO.getId());
         List<SkillsSpecifiedByStreamDTO> skillDTOS = new ArrayList<>();
@@ -59,7 +59,7 @@ public class CandidateSkillService {
         return candidate;
     }
 
-    public List<List<SkillDTO>> getSkillSpecifiedBySkillType(String token) throws StreamNotFound {
+    public List<List<SkillDTO>> getSkillSpecifiedBySkillType(String token) throws StreamNotFound, Exception {
         List<SkillsSpecifiedByStreamDTO> skills = getSkillForSpecifiedStream(token);
         List<SkillDTO> skillsWithTypeTool = new ArrayList<>();
         List<SkillDTO> skillsWithTypeSoft = new ArrayList<>();
@@ -135,7 +135,7 @@ public class CandidateSkillService {
         }
     }
 
-    public List<CandidateSkillDTO> findAllCandidatesSkills(String token) {
+    public List<CandidateSkillDTO> findAllCandidatesSkills(String token) throws Exception {
         List<CandidateSkillDTO> candidateSkillDTOS = new ArrayList<>();
         for (CandidateSkill candidateSkill : candidateSkillRepository.findAllByCandidateId(getCandidateByToken(token).getId())) {
             candidateSkillDTOS.add(new CandidateSkillDTO(candidateSkill));

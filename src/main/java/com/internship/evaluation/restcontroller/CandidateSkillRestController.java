@@ -70,7 +70,7 @@ public class CandidateSkillRestController {
         } catch (StreamNotFound e) {
             log.error("Error when user '" + authentication.getName() + "' get candidate's skills; \nerror message: " + e.getMessage()
                     + "\nstack trace: " + e.getStackTrace());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("This candidate didn't have stream",HttpStatus.NOT_FOUND);
         }
     }
 
