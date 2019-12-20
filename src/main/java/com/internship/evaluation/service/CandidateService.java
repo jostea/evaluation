@@ -5,6 +5,9 @@ import com.internship.evaluation.model.dto.candidate.CandidateRegistrationDTO;
 import com.internship.evaluation.model.dto.candidate.CandidateStartTestDTO;
 import com.internship.evaluation.model.dto.generate_test.SqlAnswersDTO;
 import com.internship.evaluation.model.dto.generate_test.SqlCandidateAnswerDTO;
+import com.internship.evaluation.model.dto.save_simple_tasks.SaveCustomAnswerDTO;
+import com.internship.evaluation.model.dto.save_simple_tasks.SaveMultiTaskDTO;
+import com.internship.evaluation.model.dto.save_simple_tasks.SaveSingleTaskDTO;
 import com.internship.evaluation.model.dto.test_token.TestTokenDTO;
 import com.internship.evaluation.model.entity.*;
 import com.internship.evaluation.model.enums.TestStatusEnum;
@@ -31,6 +34,10 @@ public class CandidateService {
     private final TestTokenService testTokenService;
     private final StreamTimeRepository streamTimeRepository;
     private final CandidateSqlTaskRepository candidateSqlTaskRepository;
+    private final CandidateMultiTaskRepository candidateMultiTaskRepository;
+    private final AnswersOptionRepository answersOptionRepository;
+    private final CandidateSingleTaskRepository candidateSingleTaskRepository;
+    private final CandidateCustomTaskRepository candidateCustomTaskRepository;
 
     public CandidateNotificationDTO getCandidateByToken(String token) {
         CandidateNotificationDTO candidateNotificationDTO = null;
@@ -140,6 +147,19 @@ public class CandidateService {
         candidateRepository.save(candidate);
     }
 
+    public void saveCandidateMultiAnswers(SaveMultiTaskDTO saveMultiTaskDTO) throws Exception {
+        try {
+            CandidateMultiTask candidateMultiTaskLocal = candidateMultiTaskRepository.findById(saveMultiTaskDTO.getCandidateTaskId()).get();
+            List<AnswersOption> newAnswers = new ArrayList<>();
+            for (Long id : saveMultiTaskDTO.getMultiTaskAnswers()) {
+                newAnswers.add(answersOptionRepository.findById(id).get());
+            }
+            candidateMultiTaskLocal.setAnswersOptions(newAnswers);
+            candidateMultiTaskRepository.save(candidateMultiTaskLocal);
+        } catch (Exception e) {
+            throw new Exception("Task answers could not be updated");
+        }
+    }
     public void saveCandidateOneSqlAnswer(Candidate candidate, SqlCandidateAnswerDTO dto) {
         if (dto.getAnswers().size() == 1){
             SqlAnswersDTO sqlAnswersDTO = dto.getAnswers().get(0);
@@ -157,6 +177,25 @@ public class CandidateService {
                 sqlTasksAssignedToCandidate.add(sqlTaskToUpdate);
                 candidateRepository.save(candidate);
             }
+        }
+    }
+    public void saveCandidateSingleAnswer(SaveSingleTaskDTO saveSingleTaskDTO) throws Exception {
+        try {
+            CandidateSingleTask candidateSingleTaskLocal = candidateSingleTaskRepository.findById(saveSingleTaskDTO.getCandidateTaskId()).get();
+            candidateSingleTaskLocal.setAnswersOption(answersOptionRepository.findById(saveSingleTaskDTO.getSingleAnswer()).get());
+            candidateSingleTaskRepository.save(candidateSingleTaskLocal);
+        } catch (Exception e) {
+            throw new Exception("Single answer could not be saved");
+        }
+    }
+
+    public void saveCandidateCustomAnswer(SaveCustomAnswerDTO saveCustomAnswerDTO) throws Exception {
+        try {
+            CandidateCustomTask candidateCustomTaskLocal = candidateCustomTaskRepository.findById(saveCustomAnswerDTO.getTaskId()).get();
+            candidateCustomTaskLocal.setCustomAnswer(saveCustomAnswerDTO.getAnswerContent());
+            candidateCustomTaskRepository.save(candidateCustomTaskLocal);
+        } catch (Exception e) {
+            throw new Exception("Single answer could not be saved");
         }
     }
 

@@ -3,6 +3,9 @@ package com.internship.evaluation.restcontroller;
 import com.internship.evaluation.model.dto.generate_test.GenerateTestDTO;
 import com.internship.evaluation.model.dto.generate_test.SqlAnswersDTO;
 import com.internship.evaluation.model.dto.generate_test.SqlCandidateAnswerDTO;
+import com.internship.evaluation.model.dto.save_simple_tasks.SaveCustomAnswerDTO;
+import com.internship.evaluation.model.dto.save_simple_tasks.SaveMultiTaskDTO;
+import com.internship.evaluation.model.dto.save_simple_tasks.SaveSingleTaskDTO;
 import com.internship.evaluation.model.entity.Candidate;
 import com.internship.evaluation.model.enums.TestStatusEnum;
 import com.internship.evaluation.service.CandidateService;
@@ -81,6 +84,36 @@ public class TestRestController {
         } catch (Exception e){
             log.error("Error while saving SQL answers of candidate with the token [" + dto.getToken() + "].");
             return new ResponseEntity("Error while processing SQL answers.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/saveMultiAnswers")
+    public ResponseEntity<?> saveMultiTask(@RequestBody SaveMultiTaskDTO saveMultiTaskDTO) {
+        try {
+            candidateService.saveCandidateMultiAnswers(saveMultiTaskDTO);
+            return new ResponseEntity<>("Answers saved successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/saveSingleAnswer")
+    public ResponseEntity<?> saveSingleTask(@RequestBody SaveSingleTaskDTO saveSingleTaskDTO) {
+        try {
+            candidateService.saveCandidateSingleAnswer(saveSingleTaskDTO);
+            return new ResponseEntity<>("Answer saved successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/saveCustomAnswer")
+    public ResponseEntity<?> saveCustomTask(@RequestBody SaveCustomAnswerDTO saveCustomAnswerDTO) {
+        try {
+            candidateService.saveCandidateCustomAnswer(saveCustomAnswerDTO);
+            return new ResponseEntity<>("Answer saved successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

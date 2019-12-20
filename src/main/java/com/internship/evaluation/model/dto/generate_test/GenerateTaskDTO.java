@@ -35,12 +35,12 @@ public class GenerateTaskDTO {
         this.title = candidateMultiTask.getTask().getTitle();
         this.taskType = TaskTypeEnum.fromString(candidateMultiTask.getTask().getTaskType().name()).getType();
         this.description = candidateMultiTask.getTask().getDescription();
-        List<GenerateAnswerOptionDTO> generateAnswerOptionDTOS = new ArrayList<>();
         List<GenerateAnswerOptionDTO> allAnswerOptions = new ArrayList<>();
+        List<GenerateAnswerOptionDTO> candidateAnswersList = new ArrayList<>();
         for (AnswersOption answersOption:candidateMultiTask.getAnswersOptions()) {
-            this.candidateAnswers.add(new GenerateAnswerOptionDTO(answersOption));
+            candidateAnswersList.add(new GenerateAnswerOptionDTO(answersOption));
         }
-        this.candidateAnswers = generateAnswerOptionDTOS;
+        this.candidateAnswers = candidateAnswersList;
         for (AnswersOption answersOption:candidateMultiTask.getTask().getAnswersOptions()) {
             allAnswerOptions.add(new GenerateAnswerOptionDTO(answersOption));
         }
