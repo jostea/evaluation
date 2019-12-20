@@ -81,13 +81,60 @@ $(".theTest").on('click', ".singleChecks", function () {
     }
 });
 
+function saveMultiAnswers() {
+    $.ajax({
+        method: "POST",
+        data: JSON.stringify(prepareDataForSavingMultiTask()),
+        url: gOptions.aws_path + "/testsrest/saveMultiAnswers",
+        contentType: "application/json",
+        success: function () {
+            console.log("multitask saved");
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    })
+}
+
+function saveSingleAnswers() {
+    $.ajax({
+        method: "POST",
+        data: JSON.stringify(prepareDataForSavingSingleTask()),
+        url: gOptions.aws_path + "/testsrest/saveSingleAnswer",
+        contentType: "application/json",
+        success: function () {
+            console.log("single answer saved");
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    })
+}
+function saveCustomAnswer() {
+    $.ajax({
+        method: "POST",
+        data: JSON.stringify(prepareDataForSavingCustomTask()),
+        url: gOptions.aws_path + "/testsrest/saveCustomAnswer",
+        contentType: "application/json",
+        success: function () {
+            console.log("custom answer saved");
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    })
+}
+
+
 function prepareDataForSavingMultiTask() {
     let multiSingleAnswers = $('.current input:checked');
     let multiAnswers = [];
+    let candidateTaskId = multiSingleAnswers[0].parentNode.parentNode.parentNode.children[0].innerText;
     multiSingleAnswers.each(function () {
         multiAnswers.push(this.parentNode.children[0].innerHTML);
     });
     return {
+        candidateTaskId: candidateTaskId,
         multiTaskAnswers: multiAnswers
     }
 }
@@ -95,7 +142,9 @@ function prepareDataForSavingMultiTask() {
 function prepareDataForSavingSingleTask() {
     let singleAnswerList = $('.current input:checked');
     let singleAnswer = singleAnswerList[0].parentNode.children[0].innerHTML;
+    let candidateTaskId = singleAnswerList[0].parentNode.parentNode.parentNode.children[0].innerText;
     return {
+        candidateTaskId: candidateTaskId,
         singleAnswer: singleAnswer
     }
 }
@@ -157,7 +206,7 @@ function saveOneSqlAnswer() {
     //get sql answer statements and sql task ids
     let answersList = [];
 
-    let select = $(".active[value='sqlTask']").find('*').find('textarea').eq(0);
+    let select = $(".current[value='sqlTask']").find('*').find('textarea').eq(0);
     let answer = {
         sqlTaskId: select.attr('id'),
         sqlAnswer: select.val()
@@ -192,7 +241,7 @@ function saveOneSqlAnswer() {
 function saveSqlAnswers() {
     //get sql answer statements and sql task ids
     let answersList = [];
-    $(".active[value='sqlTask']").find('*').find('textarea').each(function () {
+    $(".current[value='sqlTask']").find('*').find('textarea').each(function () {
         let answer = {
             sqlTaskId: $(this).attr('id'),
             sqlAnswer: $(this).val()
