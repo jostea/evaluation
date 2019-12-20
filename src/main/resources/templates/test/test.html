@@ -12,6 +12,9 @@
 <body>
     <div class="container">
         <div th:replace="fragments/profile :: profile"></div>
+        <div class="form-row row" style="margin-bottom: 100px">
+            <button id="saveActiveTasks" type="submit" class="btn btn-primary" onclick="saveAll()">Submit Test</button>
+        </div>
     </div>
     <script th:src="@{/js/test.js}"></script>
     <script th:src="@{/js/config.js}"></script>

@@ -83,4 +83,18 @@ public class TestRestController {
             return new ResponseEntity("Error while processing SQL answers.", HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping(value = "/saveOneSqlAnswer")
+    public ResponseEntity saveOneSqlAnswers(@RequestBody SqlCandidateAnswerDTO dto){
+        ArrayList<SqlAnswersDTO> sqlAnswers = dto.getAnswers();
+        Candidate candidate = tokenService.getCandidateByToken(dto.getToken());
+        try {
+            candidateService.saveCandidateOneSqlAnswer(candidate, dto);
+            log.info("One Sql answer of Candidate with the token [" + dto.getToken() + "] was saved.");
+            return new ResponseEntity("One SQL answer was successfully processed.", HttpStatus.OK);
+        } catch (Exception e){
+            log.error("Error while saving one SQL answer of candidate with the token [" + dto.getToken() + "].");
+            return new ResponseEntity("Error while processing one SQL answer.", HttpStatus.BAD_REQUEST);
+        }
+    }
 }
