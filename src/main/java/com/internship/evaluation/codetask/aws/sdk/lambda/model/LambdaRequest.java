@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LambdaRequest {
     private String bucketName;
-    private String filePath;
+    private String mainFilePath;
+    private String testCaseFilePath;
 }

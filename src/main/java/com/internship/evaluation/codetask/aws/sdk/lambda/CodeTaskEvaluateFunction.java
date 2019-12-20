@@ -6,5 +6,5 @@ import com.internship.evaluation.codetask.aws.sdk.lambda.model.LambdaResponse;
 
 public interface CodeTaskEvaluateFunction {
     @LambdaFunction(functionName = "internship-final-project-execute-code-task")
-    LambdaResponse count(LambdaRequest i);
+    LambdaResponse evaluate(LambdaRequest i);
 }

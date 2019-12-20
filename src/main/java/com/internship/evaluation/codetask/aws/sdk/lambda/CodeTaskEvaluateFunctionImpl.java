@@ -18,8 +18,6 @@ public class CodeTaskEvaluateFunctionImpl {
 
     public LambdaResponse execute(LambdaRequest req) {
         CodeTaskEvaluateFunction e = lambdaInvokerEntityFactory(awsLambdaClient, CodeTaskEvaluateFunction.class);
-        LambdaResponse response = e.count(req);
-        System.out.println(response);
-        return response;
+        return e.evaluate(req);
     }
 }

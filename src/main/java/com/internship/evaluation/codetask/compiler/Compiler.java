@@ -10,17 +10,20 @@ import javax.tools.ToolProvider;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class Compiler {
 
-    private static final String JAVA_FILE_EXT = ".java";
-    private static final String COMPILED_JAVA_FILE_EXT = ".class";
+    public static final String JAVA_FILE_EXT = ".java";
+
+    public static final String COMPILED_JAVA_FILE_EXT = ".class";
 
     public File compile(File file) throws CompilationException {
         log.info("Compiling file - {}", file.getAbsolutePath());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
+
 
         JavaCompiler comp = ToolProvider.getSystemJavaCompiler();
         int i = comp.run(null,null, out, file.getAbsolutePath());
@@ -29,7 +32,7 @@ public class Compiler {
             return new File(file.getAbsolutePath().replace(JAVA_FILE_EXT, COMPILED_JAVA_FILE_EXT));
         } else {
             log.warn("Compilation failed. File - {}", file.getName());
-            throw new CompilationException("Compilation failed! \n" + out.toString().substring(0, 300));
+            throw new CompilationException("Compilation failed! \n" + out.toString());
         }
     }
 }

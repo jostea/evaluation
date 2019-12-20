@@ -6,13 +6,26 @@ public class {class_name} {
 
     public static void main(String[] args) throws IOException {
 
-        {method_call_u}
+        {object_creation}
 
-        System.out.println("{\"questionId\":" + 2 + ", \"caseId\":" + 2 + ", \"result\":"  + "\"" + 899999 + "\"}");
-        System.out.println("{\"questionId\":" + 4 + ", \"caseId\":" +0 + ", \"result\":"  + "\"" +7 + "\"}");
-        System.out.println("sdsd.:sdsdspd.[p.s[p.d.s[pd.");
-        System.out.println("{\"questionId\":" + 5 + ", \"caseId\":" + 4 + ", \"result\":"  + "\"" +6 + "\"}");
+        {method_call_u}
     }
 
     {method_template_u}
+}
+
+class {class_name_for_test_case} {
+    int questionId;
+    int caseId;
+
+    {parameters}
+
+    {return_type} result;
+
+    {constructor}
+
+    @Override
+    public String toString() {
+        return "{\"questionId\": " + questionId + ", \"caseId\": " + caseId + ", \"result\": " + result + "}";
+    }
 }
