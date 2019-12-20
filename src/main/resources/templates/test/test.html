@@ -11,24 +11,13 @@
 </head>
 <body>
     <div class="container">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div th:replace="fragments/profile :: technical"></div>
-                    <div th:replace="fragments/profile :: soft"></div>
-                    <div th:replace="fragments/profile :: tool"></div>
-                    <div th:replace="fragments/profile :: english"></div>
-                    <button onclick="updateSkills()" class="btn">NEXT</button>
-                </div>
-            </div>
+        <div th:replace="fragments/profile :: profile"></div>
+        <div class="form-row row" style="margin-bottom: 100px">
+            <button id="saveActiveTasks" type="submit" class="btn btn-primary" onclick="saveAll()">Submit Test</button>
         </div>
     </div>
-    <div th:replace="fragments/simpleTasks :: simpleTasks"></div>
-    <div th:replace="fragments/sql_fragment :: sql_fragment"></div>
-
     <script th:src="@{/js/test.js}"></script>
     <script th:src="@{/js/config.js}"></script>
     <script th:src="@{/js/profile.js}"></script>
-
 </body>
 </html>
