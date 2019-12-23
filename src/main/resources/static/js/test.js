@@ -24,6 +24,18 @@ function saveAll() {
 
 function loadSimpleTasks(data) {
     let body = "";
+
+    function candidateChecked(answerOption, idx) {
+        if (data[idx].taskType === "Multi Choice Question" || data[idx].taskType === "Single Choice Question") {
+            for (let j = 0; j < data[idx].candidateAnswers.length; j++) {
+                if (answerOption.id === data[idx].candidateAnswers[j].id) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
     for (let i = 0; i < data.length; i++) {
         switch (data[i].taskType) {
             case "Multi Choice Question":
@@ -36,7 +48,11 @@ function loadSimpleTasks(data) {
                     body += "<div class='checkbox'>";
                     body += "<label>";
                     body += "<div hidden>" + data[i].allAnswerOptions[j].id + "</div>";
-                    body += "<input type='checkbox' name='multiCheck'>" + data[i].allAnswerOptions[j].answerOptionValue + "";
+                    if (candidateChecked(data[i].allAnswerOptions[j], i)) {
+                        body += "<input type='checkbox' name='multiCheck' checked='true'>" + data[i].allAnswerOptions[j].answerOptionValue + "";
+                    } else {
+                        body += "<input type='checkbox' name='multiCheck'>" + data[i].allAnswerOptions[j].answerOptionValue + "";
+                    }
                     body += "</label>";
                     body += "</div>";
                 }
@@ -52,7 +68,11 @@ function loadSimpleTasks(data) {
                     body += "<div id='singleAO" + j + "' class='checkbox'>";
                     body += "<label>";
                     body += "<div hidden>" + data[i].allAnswerOptions[j].id + "</div>";
-                    body += "<input type='checkbox' name='singleCheck" + data[i].id + "' class='singleChecks'>" + data[i].allAnswerOptions[j].answerOptionValue + "";
+                    if (candidateChecked(data[i].allAnswerOptions[j], i)) {
+                        body += "<input type='checkbox' name='singleCheck" + data[i].id + "' class='singleChecks' checked='true'>" + data[i].allAnswerOptions[j].answerOptionValue + "";
+                    } else {
+                        body += "<input type='checkbox' name='singleCheck" + data[i].id + "' class='singleChecks'>" + data[i].allAnswerOptions[j].answerOptionValue + "";
+                    }
                     body += "</label>";
                     body += "</div>";
                 }
@@ -64,7 +84,11 @@ function loadSimpleTasks(data) {
                 body += "<h4>" + data[i].title + "</h4>";
                 body += "<h6>" + data[i].taskType + "</h6>";
                 body += "<p>" + data[i].description + "</p>";
-                body += "<textarea id='customAnswer" + data[i].id + "' class='form-control customAnswers' type='text' placeholder='Your answer'></textarea>";
+                if (data[i].candidateAnswers.length>0) {
+                    body += "<textarea id='customAnswer" + data[i].id + "' class='form-control customAnswers' type='text' placeholder='Your answer'>" + data[i].candidateAnswers[0].answerOptionValue + "</textarea>";
+                } else {
+                    body += "<textarea id='customAnswer" + data[i].id + "' class='form-control customAnswers' type='text' placeholder='Your answer'></textarea>";
+                }
                 body += "</div>";
                 break;
         }
