@@ -9,6 +9,7 @@ $(document).ready(function () {
             console.log(response);
             loadSimpleTasks(response.tasks);
             displaySqlTasks(response);
+            getSqlAnswers();
         },
         error: function (response) {
             console.log(response);
@@ -18,6 +19,7 @@ $(document).ready(function () {
 
 function saveAll() {
     saveOneSqlAnswer();
+    updateSkills();
 }
 
 function loadSimpleTasks(data) {
@@ -163,7 +165,7 @@ function displaySqlTasks(response) {
     response.sqlTasks.forEach(function (sqlTask) {
         let idSqlGroup = sqlTask.sqlGroup.id;
         let callToRestController = gOptions.aws_path + "/testsrest/getSqlImage/" + idSqlGroup;
-        let content = `<div class="active" value="sqlTask">
+        let content = `<div class="" value="sqlTask">
                         <form>
                                 <div class="form-row row">
                                         <div class="col-md-6">
@@ -199,6 +201,34 @@ function displaySqlTasks(response) {
     // </div>`;
 }
 
+function displaySqlAnswers(data){
+    $("[value='sqlTask']").find('*').find('textarea').each(function(){
+        for (let i = 0; i < data.length; i++){
+            let id = parseInt($(this).attr("id"), 10);
+            if (id== data[i].sqlTaskId && data[i].sqlAnswer){
+                $(this).val(data[i].sqlAnswer);
+            }
+        }
+    })
+}
+
+function getSqlAnswers(){
+    let url_current = new URL(window.location.href);
+    let token = url_current.searchParams.get("thd_i8").valueOf();
+    $.ajax({
+        method: "GET",
+        url: gOptions.aws_path + "/testsrest/getSqlAnswers/" + token,
+        success: function (response) {
+            console.log(response);
+            displaySqlAnswers(response);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+
+}
+
 // AUTOSAVE FUNCTIONS
 
 //save one active sql task
@@ -213,8 +243,8 @@ function saveOneSqlAnswer() {
     }
     answersList.push(answer);
     //get token
-    let url = new URL(window.location.href);
-    let thd_i8 = url.searchParams.get("thd_i8");
+    let url_current = new URL(window.location.href);
+    let thd_i8 = url_current.searchParams.get("thd_i8");
 
     //create object to post
     let result = {

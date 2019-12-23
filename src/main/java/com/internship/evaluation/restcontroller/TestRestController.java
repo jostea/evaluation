@@ -7,6 +7,7 @@ import com.internship.evaluation.model.dto.save_simple_tasks.SaveCustomAnswerDTO
 import com.internship.evaluation.model.dto.save_simple_tasks.SaveMultiTaskDTO;
 import com.internship.evaluation.model.dto.save_simple_tasks.SaveSingleTaskDTO;
 import com.internship.evaluation.model.entity.Candidate;
+import com.internship.evaluation.model.entity.CandidateSqlTask;
 import com.internship.evaluation.model.enums.TestStatusEnum;
 import com.internship.evaluation.service.CandidateService;
 import com.internship.evaluation.service.GenerateTestService;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -119,7 +121,6 @@ public class TestRestController {
 
     @PostMapping(value = "/saveOneSqlAnswer")
     public ResponseEntity saveOneSqlAnswers(@RequestBody SqlCandidateAnswerDTO dto){
-        ArrayList<SqlAnswersDTO> sqlAnswers = dto.getAnswers();
         Candidate candidate = tokenService.getCandidateByToken(dto.getToken());
         try {
             candidateService.saveCandidateOneSqlAnswer(candidate, dto);
@@ -128,6 +129,25 @@ public class TestRestController {
         } catch (Exception e){
             log.error("Error while saving one SQL answer of candidate with the token [" + dto.getToken() + "].");
             return new ResponseEntity("Error while processing one SQL answer.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/getSqlAnswers/{token}")
+    public ResponseEntity<List<SqlAnswersDTO>> getSqlAnswers(@PathVariable("token") String tok){
+        try{
+            Candidate candidate = tokenService.getCandidateByToken(tok);
+            ArrayList<SqlAnswersDTO> sqlAnswersFromDB = new ArrayList<>();
+            if (candidate != null) {
+                for (CandidateSqlTask candidateSqlTask : candidate.getCandidateSqlTasks()) {
+                    SqlAnswersDTO sqlAnswersDTO = new SqlAnswersDTO(candidateSqlTask);
+                    sqlAnswersFromDB.add(sqlAnswersDTO);
+                }
+            }
+            log.info("Sql answers have been extracted from DB for the candidate with token " + tok);
+            return new ResponseEntity<>(sqlAnswersFromDB,HttpStatus.OK);
+        } catch (Exception e){
+            log.error("Error while getting sql answers for the candidate with token " + tok);
+            return new ResponseEntity("Error while getting sql answers", HttpStatus.BAD_REQUEST);
         }
     }
 }
