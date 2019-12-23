@@ -16,12 +16,154 @@ $(document).ready(function () {
     })
 });
 
+function saveAll() {
+    saveOneSqlAnswer();
+}
+
+function loadSimpleTasks(data) {
+    let body = "";
+    for (let i = 0; i < data.length; i++) {
+        switch (data[i].taskType) {
+            case "Multi Choice Question":
+                body += "<div class='multiTask' value='multiTask'>";
+                body += "<div hidden>" + data[i].id + "</div>";
+                body += "<h4>" + data[i].title + "</h4>";
+                body += "<h6>" + data[i].taskType + "</h6>";
+                body += "<p>" + data[i].description + "</p>";
+                for (let j = 0; j < data[i].allAnswerOptions.length; j++) {
+                    body += "<div class='checkbox'>";
+                    body += "<label>";
+                    body += "<div hidden>" + data[i].allAnswerOptions[j].id + "</div>";
+                    body += "<input type='checkbox' name='multiCheck'>" + data[i].allAnswerOptions[j].answerOptionValue + "";
+                    body += "</label>";
+                    body += "</div>";
+                }
+                body += "</div>";
+                break;
+            case "Single Choice Question":
+                body += "<div class='singleTask' value='singleTask'>";
+                body += "<div hidden>" + data[i].id + "</div>";
+                body += "<h4>" + data[i].title + "</h4>";
+                body += "<h6>" + data[i].taskType + "</h6>";
+                body += "<p>" + data[i].description + "</p>";
+                for (let j = 0; j < data[i].allAnswerOptions.length; j++) {
+                    body += "<div id='singleAO" + j + "' class='checkbox'>";
+                    body += "<label>";
+                    body += "<div hidden>" + data[i].allAnswerOptions[j].id + "</div>";
+                    body += "<input type='checkbox' name='singleCheck" + data[i].id + "' class='singleChecks'>" + data[i].allAnswerOptions[j].answerOptionValue + "";
+                    body += "</label>";
+                    body += "</div>";
+                }
+                body += "</div>";
+                break;
+            case "Custom Question":
+                body += "<div class='customTask' value='customQuestion'>";
+                body += "<div hidden>" + data[i].id + "</div>";
+                body += "<h4>" + data[i].title + "</h4>";
+                body += "<h6>" + data[i].taskType + "</h6>";
+                body += "<p>" + data[i].description + "</p>";
+                body += "<textarea id='customAnswer" + data[i].id + "' class='form-control customAnswers' type='text' placeholder='Your answer'></textarea>";
+                body += "</div>";
+                break;
+        }
+    }
+    $(".theTest").append(body);
+}
+
+$(".theTest").on('click', ".singleChecks", function () {
+    let $box = $(this);
+    if ($box.is(":checked")) {
+        let group = "input:checkbox[name='" + $box.attr("name") + "']";
+        $(group).prop("checked", false);
+        $box.prop("checked", true);
+    } else {
+        $box.prop("checked", false);
+    }
+});
+
+function saveMultiAnswers() {
+    $.ajax({
+        method: "POST",
+        data: JSON.stringify(prepareDataForSavingMultiTask()),
+        url: gOptions.aws_path + "/testsrest/saveMultiAnswers",
+        contentType: "application/json",
+        success: function () {
+            console.log("multitask saved");
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    })
+}
+
+function saveSingleAnswers() {
+    $.ajax({
+        method: "POST",
+        data: JSON.stringify(prepareDataForSavingSingleTask()),
+        url: gOptions.aws_path + "/testsrest/saveSingleAnswer",
+        contentType: "application/json",
+        success: function () {
+            console.log("single answer saved");
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    })
+}
+function saveCustomAnswer() {
+    $.ajax({
+        method: "POST",
+        data: JSON.stringify(prepareDataForSavingCustomTask()),
+        url: gOptions.aws_path + "/testsrest/saveCustomAnswer",
+        contentType: "application/json",
+        success: function () {
+            console.log("custom answer saved");
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    })
+}
+
+
+function prepareDataForSavingMultiTask() {
+    let multiSingleAnswers = $('.current input:checked');
+    let multiAnswers = [];
+    let candidateTaskId = multiSingleAnswers[0].parentNode.parentNode.parentNode.children[0].innerText;
+    multiSingleAnswers.each(function () {
+        multiAnswers.push(this.parentNode.children[0].innerHTML);
+    });
+    return {
+        candidateTaskId: candidateTaskId,
+        multiTaskAnswers: multiAnswers
+    }
+}
+
+function prepareDataForSavingSingleTask() {
+    let singleAnswerList = $('.current input:checked');
+    let singleAnswer = singleAnswerList[0].parentNode.children[0].innerHTML;
+    let candidateTaskId = singleAnswerList[0].parentNode.parentNode.parentNode.children[0].innerText;
+    return {
+        candidateTaskId: candidateTaskId,
+        singleAnswer: singleAnswer
+    }
+}
+
+function prepareDataForSavingCustomTask() {
+    let singleAnswerList = $('.current');
+    let taskId = singleAnswerList[0].children[0].innerText;
+    let answerContent = singleAnswerList[0].children[4].value;
+    return {
+        taskId: taskId,
+        answerContent: answerContent
+    }
+}
 
 function displaySqlTasks(response) {
     response.sqlTasks.forEach(function (sqlTask) {
         let idSqlGroup = sqlTask.sqlGroup.id;
         let callToRestController = gOptions.aws_path + "/testsrest/getSqlImage/" + idSqlGroup;
-        let content = `
+        let content = `<div class="active" value="sqlTask">
                         <form>
                                 <div class="form-row row">
                                         <div class="col-md-6">
@@ -49,102 +191,57 @@ function displaySqlTasks(response) {
                                     </div>
                                 </div>
                         </form>
-                        <br>
-                        <hr>`;
-        document.getElementById("sqltasks").innerHTML += content;
+                        </div>`;
+        $(".theTest").append(content);
     });
-    document.getElementById("sqltasks").innerHTML += `<div class="form-row row" style="margin-bottom: 100px">
-        <button id="saveSqlAnswers" type="submit" class="btn btn-primary" onclick="saveSqlAnswers()">Save Sql Answers</button>
-    </div>`;
+    // document.getElementById("sqltasks").innerHTML += `<div class="form-row row" style="margin-bottom: 100px">
+    //     <button id="saveSqlAnswers" type="submit" class="btn btn-primary" onclick="saveSqlAnswers()">Save Sql Answers</button>
+    // </div>`;
 }
-
-function loadSimpleTasks(data) {
-    let multiTasks = "";
-    let singleTasks = "";
-    let customTasks = "";
-    for (let i = 0; i < data.length; i++) {
-        switch (data[i].taskType) {
-            case "Multi Choice Question":
-                multiTasks+=drawMultiTask(data[i]);
-                break;
-            case "Single Choice Question":
-                singleTasks+=drawSingleTask(data[i]);
-                break;
-            case "Custom Question":
-                customTasks+=drawCustomTask(data[i]);
-                break;
-        }
-    }
-    $("#multiTasks").html(multiTasks);
-    $("#singleTasks").html(singleTasks);
-    $("#customTasks").html(customTasks);
-}
-
-function drawMultiTask(task) {
-    let body = "";
-    body+="<div class='multiTask'>";
-    body+="<div hidden>"+ task.id +"</div>";
-    body+="<h2>"+ task.title +"</h2>";
-    body+="<h6>"+ task.taskType +"</h6>";
-    body+="<p>"+ task.description +"</p>";
-    for (let i=0; i<task.allAnswerOptions.length; i++) {
-        body+="<div class='checkbox'>";
-        body+="<label>";
-        body+="<input type='checkbox'>" + task.allAnswerOptions[i].answerOptionValue + "";
-        body+="</label>";
-        body+="</div>";
-    }
-    body+="</div>";
-    return body;
-}
-
-function drawSingleTask(task) {
-    let body = "";
-    body+="<div class='singleTask'>";
-    body+="<div hidden>"+ task.id +"</div>";
-    body+="<h2>"+ task.title +"</h2>";
-    body+="<h6>"+ task.taskType +"</h6>";
-    body+="<p>"+ task.description +"</p>";
-    for (let i=0; i<task.allAnswerOptions.length; i++) {
-        body+="<div id='singleAO"+ i +"' class='checkbox'>";
-        body+="<label>";
-        body+="<input type='checkbox' name='singleChecks"+ task.id +"' class='singleChecks'>" + task.allAnswerOptions[i].answerOptionValue + "";
-        body+="</label>";
-        body+="</div>";
-    }
-    body+="</div>";
-    return body;
-}
-
-function drawCustomTask(task) {
-    let body = "";
-    body+="<div class='customTask'>";
-    body+="<div hidden>"+ task.id +"</div>";
-    body+="<h2>"+ task.title +"</h2>";
-    body+="<h6>"+ task.taskType +"</h6>";
-    body+="<p>"+ task.description +"</p>";
-    body+="<textarea id='customAnswer"+ task.id +"' class='form-control' type='text' placeholder='Your answer'></textarea>";
-    body+="</div>";
-    return body;
-}
-
-$("#singleTasks").on('click', ".singleChecks", function() {
-    let $box = $(this);
-    if ($box.is(":checked")) {
-        let group = "input:checkbox[name='" + $box.attr("name") + "']";
-        $(group).prop("checked", false);
-        $box.prop("checked", true);
-    } else {
-        $box.prop("checked", false);
-    }
-});
 
 // AUTOSAVE FUNCTIONS
-function saveSqlAnswers(){
 
+//save one active sql task
+function saveOneSqlAnswer() {
     //get sql answer statements and sql task ids
     let answersList = [];
-    $("#sqltasks").find('*').find('textarea').each(function () {
+
+    let select = $(".current[value='sqlTask']").find('*').find('textarea').eq(0);
+    let answer = {
+        sqlTaskId: select.attr('id'),
+        sqlAnswer: select.val()
+    }
+    answersList.push(answer);
+    //get token
+    let url = new URL(window.location.href);
+    let thd_i8 = url.searchParams.get("thd_i8");
+
+    //create object to post
+    let result = {
+        token: thd_i8,
+        answers: answersList
+    }
+
+    //call rest post endpoint
+    $.ajax({
+        method: "POST",
+        data: JSON.stringify(result),
+        url: gOptions.aws_path + "/testsrest/saveOneSqlAnswer",
+        contentType: "application/json",
+        success: function (response) {
+            console.log(response);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    })
+}
+
+//save all sql tasks
+function saveSqlAnswers() {
+    //get sql answer statements and sql task ids
+    let answersList = [];
+    $(".current[value='sqlTask']").find('*').find('textarea').each(function () {
         let answer = {
             sqlTaskId: $(this).attr('id'),
             sqlAnswer: $(this).val()
@@ -152,6 +249,7 @@ function saveSqlAnswers(){
         answersList.push(answer);
     });
 
+    answersList.push(answer);
     //get token
     let url = new URL(window.location.href);
     let thd_i8 = url.searchParams.get("thd_i8");

@@ -5,6 +5,9 @@ import com.internship.evaluation.model.dto.candidate.CandidateRegistrationDTO;
 import com.internship.evaluation.model.dto.candidate.CandidateStartTestDTO;
 import com.internship.evaluation.model.dto.generate_test.SqlAnswersDTO;
 import com.internship.evaluation.model.dto.generate_test.SqlCandidateAnswerDTO;
+import com.internship.evaluation.model.dto.save_simple_tasks.SaveCustomAnswerDTO;
+import com.internship.evaluation.model.dto.save_simple_tasks.SaveMultiTaskDTO;
+import com.internship.evaluation.model.dto.save_simple_tasks.SaveSingleTaskDTO;
 import com.internship.evaluation.model.dto.test_token.TestTokenDTO;
 import com.internship.evaluation.model.entity.*;
 import com.internship.evaluation.model.enums.TestStatusEnum;
@@ -31,33 +34,37 @@ public class CandidateService {
     private final TestTokenService testTokenService;
     private final StreamTimeRepository streamTimeRepository;
     private final CandidateSqlTaskRepository candidateSqlTaskRepository;
+    private final CandidateMultiTaskRepository candidateMultiTaskRepository;
+    private final AnswersOptionRepository answersOptionRepository;
+    private final CandidateSingleTaskRepository candidateSingleTaskRepository;
+    private final CandidateCustomTaskRepository candidateCustomTaskRepository;
 
-    public CandidateNotificationDTO getCandidateByToken(String token){
+    public CandidateNotificationDTO getCandidateByToken(String token) {
         CandidateNotificationDTO candidateNotificationDTO = null;
         TestTokenDTO testTokenDTO = testTokenService.getTestTokenByToken(token);
-        if (testTokenDTO != null){
+        if (testTokenDTO != null) {
             Candidate entity = candidateRepository.getOne(testTokenDTO.getCandidateId());
-            if ( entity != null ){
+            if (entity != null) {
                 candidateNotificationDTO = new CandidateNotificationDTO(entity);
             }
         }
-        return  candidateNotificationDTO;
+        return candidateNotificationDTO;
     }
 
-    public CandidateStartTestDTO getCandidateStartTestByToken(String token){
+    public CandidateStartTestDTO getCandidateStartTestByToken(String token) {
         CandidateStartTestDTO candidateStartTestDTO = null;
         TestTokenDTO testTokenDTO = testTokenService.getTestTokenByToken(token);
-        if (testTokenDTO != null){
+        if (testTokenDTO != null) {
             Candidate entity = candidateRepository.getOne(testTokenDTO.getCandidateId());
-            if ( entity != null ){
+            if (entity != null) {
                 candidateStartTestDTO = new CandidateStartTestDTO(entity);
                 Optional<StreamTime> streamOpt = streamTimeRepository.findFirstByStream_Id(entity.getStream().getId());
-                if ( streamOpt.isPresent() ){
+                if (streamOpt.isPresent()) {
                     candidateStartTestDTO.setTestTime(streamOpt.get().getTimeTest());
                 }
             }
         }
-        return  candidateStartTestDTO;
+        return candidateStartTestDTO;
     }
 
 
@@ -93,11 +100,11 @@ public class CandidateService {
         return regCandId;
     }
 
-    public void updateCandidate(Candidate candidate){
+    public void updateCandidate(Candidate candidate) {
         candidateRepository.save(candidate);
     }
 
-    public void saveCandidateSqlAnswers(Candidate candidate, SqlCandidateAnswerDTO dto){
+    public void saveCandidateSqlAnswers(Candidate candidate, SqlCandidateAnswerDTO dto) {
         ArrayList<CandidateSqlTask> sqlTasksAssignedToCandidate = new ArrayList<>(candidate.getCandidateSqlTasks());
 
         //Reconcile SqlTasks from UI to the SqlTasks from DB
@@ -112,14 +119,14 @@ public class CandidateService {
 
         ArrayList<Long> idFromDBcopy = new ArrayList<>(idFromDB);
         idFromDBcopy.removeAll(idFromUI);
-        if (idFromDBcopy.size() > 0){
+        if (idFromDBcopy.size() > 0) {
             log.warn("There are [" + idFromDBcopy.size() + "] SQL tasks assigned to the candidate ("
-            + candidate.getTestToken() + "), which were not reconciled to the SQL answers arrived from UI");
+                    + candidate.getTestToken() + "), which were not reconciled to the SQL answers arrived from UI");
         }
 
         ArrayList<Long> idFromUIcopy = new ArrayList<>(idFromUI);
         idFromUIcopy.removeAll(idFromDB);
-        if (idFromUIcopy.size() > 0){
+        if (idFromUIcopy.size() > 0) {
             log.warn("There are [" + idFromDBcopy.size() + "] SQL tasks arrived from UI for candidate ("
                     + candidate.getTestToken() + "), which were not reconciled to the SQL answers from DB");
         }
@@ -140,9 +147,60 @@ public class CandidateService {
         candidateRepository.save(candidate);
     }
 
+    public void saveCandidateMultiAnswers(SaveMultiTaskDTO saveMultiTaskDTO) throws Exception {
+        try {
+            CandidateMultiTask candidateMultiTaskLocal = candidateMultiTaskRepository.findById(saveMultiTaskDTO.getCandidateTaskId()).get();
+            List<AnswersOption> newAnswers = new ArrayList<>();
+            for (Long id : saveMultiTaskDTO.getMultiTaskAnswers()) {
+                newAnswers.add(answersOptionRepository.findById(id).get());
+            }
+            candidateMultiTaskLocal.setAnswersOptions(newAnswers);
+            candidateMultiTaskRepository.save(candidateMultiTaskLocal);
+        } catch (Exception e) {
+            throw new Exception("Task answers could not be updated");
+        }
+    }
+    public void saveCandidateOneSqlAnswer(Candidate candidate, SqlCandidateAnswerDTO dto) {
+        if (dto.getAnswers().size() == 1){
+            SqlAnswersDTO sqlAnswersDTO = dto.getAnswers().get(0);
+            ArrayList<CandidateSqlTask> sqlTasksAssignedToCandidate = new ArrayList<>(candidate.getCandidateSqlTasks());
 
+            Optional<CandidateSqlTask> sqlTaskToUpdateOpt = sqlTasksAssignedToCandidate
+                    .stream()
+                    .filter(t -> t.getSqlTask().getId().equals(sqlAnswersDTO.getSqlTaskId()))
+                    .findFirst();
+
+            if (sqlTaskToUpdateOpt.isPresent()){
+                CandidateSqlTask sqlTaskToUpdate = sqlTaskToUpdateOpt.get();
+                sqlTasksAssignedToCandidate.remove(sqlTaskToUpdate);
+                sqlTaskToUpdate.setStatementProvided(sqlAnswersDTO.getSqlAnswer());
+                sqlTasksAssignedToCandidate.add(sqlTaskToUpdate);
+                candidateRepository.save(candidate);
+            }
+        }
+    }
+    public void saveCandidateSingleAnswer(SaveSingleTaskDTO saveSingleTaskDTO) throws Exception {
+        try {
+            CandidateSingleTask candidateSingleTaskLocal = candidateSingleTaskRepository.findById(saveSingleTaskDTO.getCandidateTaskId()).get();
+            candidateSingleTaskLocal.setAnswersOption(answersOptionRepository.findById(saveSingleTaskDTO.getSingleAnswer()).get());
+            candidateSingleTaskRepository.save(candidateSingleTaskLocal);
+        } catch (Exception e) {
+            throw new Exception("Single answer could not be saved");
+        }
+    }
+
+    public void saveCandidateCustomAnswer(SaveCustomAnswerDTO saveCustomAnswerDTO) throws Exception {
+        try {
+            CandidateCustomTask candidateCustomTaskLocal = candidateCustomTaskRepository.findById(saveCustomAnswerDTO.getTaskId()).get();
+            candidateCustomTaskLocal.setCustomAnswer(saveCustomAnswerDTO.getAnswerContent());
+            candidateCustomTaskRepository.save(candidateCustomTaskLocal);
+        } catch (Exception e) {
+            throw new Exception("Single answer could not be saved");
+        }
+    }
 
     //region PRIVATE METHODS
+
     /**
      * Method to check if there alreay exist a Candidat with the same email, stream and internship
      *
@@ -158,7 +216,7 @@ public class CandidateService {
                 .filter(c -> c.getEmail().equals(email))
                 .collect(Collectors.toList());
 
-        if (inDb.isEmpty()){
+        if (inDb.isEmpty()) {
             return false;
         }
 

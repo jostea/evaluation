@@ -1,6 +1,7 @@
 package com.internship.evaluation.repository;
 
 import com.internship.evaluation.model.entity.CodeTask;
+import com.internship.evaluation.model.entity.Stream;
 import com.internship.evaluation.model.enums.ComplexityEnum;
 import com.internship.evaluation.model.enums.TechnologyEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,5 +11,5 @@ import java.util.List;
 
 @Repository
 public interface CodeTaskRepository extends JpaRepository<CodeTask, Long> {
-    List<CodeTask> findAllByComplexityAndIsEnabledIsTrueAndTechnology(ComplexityEnum complexity, TechnologyEnum technologyEnum);
+    List<CodeTask> findAllByComplexityAndIsEnabledIsTrueAndTechnologyAndStreams(ComplexityEnum complexity, TechnologyEnum technologyEnum, Stream stream);
 }
