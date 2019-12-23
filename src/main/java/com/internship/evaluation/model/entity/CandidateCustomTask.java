@@ -28,7 +28,8 @@ public class CandidateCustomTask {
     @JoinColumn(name = "custom_task_id")
     private Task task;
 
-    @JoinColumn(name = "custom_answer")
+//    @JoinColumn(name = "custom_answer")
+    @Column(name = "custom_answer")
     private String customAnswer;
 
     @Column(name = "is_correct")

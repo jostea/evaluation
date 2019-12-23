@@ -6,13 +6,11 @@ import com.internship.evaluation.model.dto.generate_test.SqlCandidateAnswerDTO;
 import com.internship.evaluation.model.dto.save_simple_tasks.SaveCustomAnswerDTO;
 import com.internship.evaluation.model.dto.save_simple_tasks.SaveMultiTaskDTO;
 import com.internship.evaluation.model.dto.save_simple_tasks.SaveSingleTaskDTO;
+import com.internship.evaluation.model.dto.test.CandidateTestResultsDTO;
 import com.internship.evaluation.model.entity.Candidate;
 import com.internship.evaluation.model.entity.CandidateSqlTask;
 import com.internship.evaluation.model.enums.TestStatusEnum;
-import com.internship.evaluation.service.CandidateService;
-import com.internship.evaluation.service.GenerateTestService;
-import com.internship.evaluation.service.RestAdminService;
-import com.internship.evaluation.service.TestTokenService;
+import com.internship.evaluation.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +37,7 @@ public class TestRestController {
     private final GenerateTestService generateTestService;
     private final CandidateService candidateService;
     private final RestAdminService restAdminService;
+    private final TestReviewService testReviewService;
 
     @PostMapping(value = "/testStart")
     public ResponseEntity<?> startTest(@RequestParam String thd_i8) {
@@ -147,6 +146,18 @@ public class TestRestController {
             return new ResponseEntity<>(sqlAnswersFromDB,HttpStatus.OK);
         } catch (Exception e){
             log.error("Error while getting sql answers for the candidate with token " + tok);
+            return new ResponseEntity("Error while getting sql answers", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/getCandidateResults/{token}")
+    public ResponseEntity<CandidateTestResultsDTO> getCandidateResults(@PathVariable("token") String token){
+        try{
+            CandidateTestResultsDTO results =  testReviewService.reviewCandidateTest(token);
+            log.info("Test resuls of candidate with token {} where provided");
+            return new ResponseEntity<>(results, HttpStatus.OK);
+        } catch (Exception e){
+            log.error("Error while trying to get test results for the candidate with token {}", token);
             return new ResponseEntity("Error while getting sql answers", HttpStatus.BAD_REQUEST);
         }
     }

@@ -47,6 +47,7 @@ public class SqlTask {
     private List<Stream> streams;
 
     @ManyToOne
+    @JoinColumn(name="sql_group_id")
     private SqlGroup sqlGroup;
 
     @OneToMany(mappedBy = "sqlTask")
