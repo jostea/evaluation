@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -47,8 +45,8 @@ public class GenerateTestService {
             Candidate candidate = candidateRepository.findById(testTokenRepository.findFirstByToken(token).get().getCandidate().getId()).get();
             for (TestStructure ts: candidate.getStream().getTestStructures()) {
                 tasks = taskRepository.findAllByTaskTypeAndComplexityAndIsEnabledAndStreams(TypeEnum.fromString(ts.getTaskType().name()), ts.getComplexity(), true, candidate.getStream());
-                sqlTasks = sqlTaskRepository.findAllByComplexityAndIsEnabledIsTrueAndStreams(ts.getComplexity(), ts.getStream());
-                codeTasks = codeTaskRepository.findAllByComplexityAndIsEnabledIsTrueAndTechnologyAndStreams(ts.getComplexity(), TechnologyEnum.JAVA, ts.getStream());
+                sqlTasks = sqlTaskRepository.findAllByComplexityAndIsEnabledIsTrueAndStreams(ts.getComplexity(), candidate.getStream());
+                codeTasks = codeTaskRepository.findAllByComplexityAndIsEnabledIsTrueAndTechnologyAndStreams(ts.getComplexity(), TechnologyEnum.JAVA, candidate.getStream());
                 if (ts.getTaskType().equals(TaskTypeEnum.MULTI_CHOICE) || ts.getTaskType().equals(TaskTypeEnum.SINGLE_CHOICE) || ts.getTaskType().equals(TaskTypeEnum.CUSTOM_QUESTION)) {
                     List<Integer> randomsForTask = getListOfRandoms(tasks.size(), ts.getNrQuestions().intValue());
                     for (Integer random : randomsForTask) {
