@@ -8,16 +8,20 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 </head>
 <body>
     <div class="container">
         <div th:replace="fragments/profile :: profile"></div>
+        <button class="btn" id="previousTaskPage" onclick="previousTask()">Previous</button>
+        <button class="btn" id="nextTaskPage" onclick="nextTask()">Next</button>
         <div class="form-row row" style="margin-bottom: 100px">
-            <button id="saveActiveTasks" type="submit" class="btn btn-primary" onclick="saveAll()">Submit Test</button>
+            <button id="saveActiveTasks" type="submit" class="btn btn-primary" onclick="saveCurrentTask()">Submit Test</button>
         </div>
     </div>
     <script th:src="@{/js/test.js}"></script>
     <script th:src="@{/js/config.js}"></script>
     <script th:src="@{/js/profile.js}"></script>
+    <script th:src="@{/js/pagination.js}"></script>
 </body>
 </html>
