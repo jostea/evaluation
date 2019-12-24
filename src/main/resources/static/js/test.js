@@ -38,6 +38,17 @@ function saveCurrentTask(currentDiv) {
             break;
     }
 }
+    // UNCOMMIT WHEN FINISHED AUTOSAVE ON JAVA SIDE
+setInterval(function () {
+    var test = $(".theTest").children();
+    test.each(function () {
+        if ($(this).hasClass("current")) {
+            saveCurrentTask($(this));
+            return false;
+        }
+    });
+}, 26500);
+
 
 function loadSimpleTasks(data) {
     let body = "";
@@ -329,7 +340,7 @@ function saveSqlAnswers() {
     let result = {
         token: thd_i8,
         answers: answersList
-    }
+    };
 
     //call rest post endpoint
     $.ajax({
