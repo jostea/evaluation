@@ -1,6 +1,7 @@
 $(document).ready(function () {
     let url = new URL(window.location.href);
     let param = url.searchParams.get("thd_i8");
+
     $.ajax({
         method: "POST",
         data: {thd_i8: param},
@@ -9,17 +10,33 @@ $(document).ready(function () {
             console.log(response);
             loadSimpleTasks(response.tasks);
             displaySqlTasks(response);
+            viewCurrentTask();
             getSqlAnswers();
         },
         error: function (response) {
             console.log(response);
         }
-    })
+    });
 });
 
-function saveAll() {
-    saveOneSqlAnswer();
-    updateSkills();
+function saveCurrentTask(currentDiv) {
+    switch (currentDiv.attr("value")) {
+        case "skills":
+            updateSkills();
+            break;
+        case "multiTask":
+            saveMultiAnswers();
+            break;
+        case "singleTask":
+            saveSingleAnswers();
+            break;
+        case "customQuestion":
+            saveCustomAnswer();
+            break;
+        case "sqlTask":
+            saveOneSqlAnswer();
+            break;
+    }
 }
 
 function loadSimpleTasks(data) {
