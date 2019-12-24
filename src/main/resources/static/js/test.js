@@ -10,8 +10,9 @@ $(document).ready(function () {
             console.log(response);
             loadSimpleTasks(response.tasks);
             displaySqlTasks(response);
-            viewCurrentTask();
             getSqlAnswers();
+            getTestTime();
+            viewCurrentTask();
         },
         error: function (response) {
             console.log(response);
@@ -38,10 +39,39 @@ function saveCurrentTask(currentDiv) {
             break;
     }
 }
-    // UNCOMMIT WHEN FINISHED AUTOSAVE ON JAVA SIDE
-setInterval(function () {
-    var test = $(".theTest").children();
-    test.each(function () {
+
+function getTestTime() {
+    let url = new URL(window.location.href);
+    let param = url.searchParams.get("thd_i8");
+    $.ajax({
+        method: "GET",
+        url: gOptions.aws_path + "/getLeftTime/" + param,
+        success: function (response) {
+            $("#timerTimeId").html(`
+                    <h3 class="title-with-time" id="head">Time Left</h3>
+                    <ul>
+                        <li class="line-with-time"><span id="hours"></span>Hours</li>
+                        <li class="line-with-time"><span id="minutes"></span>Minutes</li>
+                        <li class="line-with-time"><span id="seconds"></span>Seconds</li>
+                     </ul>`);
+            let interval = setInterval(function () {
+                if (response >= 0) {
+                    document.getElementById('hours').innerText = Math.floor(response / 3600) + "";
+                    document.getElementById('minutes').innerText = Math.floor(response % 3600 / 60) + "";
+                    document.getElementById('seconds').innerText = Math.floor(response % 60) + "";
+                    response--;
+                } else {
+                    clearInterval(interval);
+                    clearInterval(saveInterval);
+                    window.location.reload();
+                }
+            }, 1000);
+        }
+    });
+}
+
+let saveInterval = setInterval(function () {
+    $(".theTest").children().each(function () {
         if ($(this).hasClass("current")) {
             saveCurrentTask($(this));
             return false;
@@ -49,10 +79,8 @@ setInterval(function () {
     });
 }, 26500);
 
-
 function loadSimpleTasks(data) {
     let body = "";
-
     function candidateChecked(answerOption, idx) {
         if (data[idx].taskType === "Multi Choice Question" || data[idx].taskType === "Single Choice Question") {
             for (let j = 0; j < data[idx].candidateAnswers.length; j++) {
@@ -97,9 +125,9 @@ function loadSimpleTasks(data) {
                     body += "<label>";
                     body += "<div hidden>" + data[i].allAnswerOptions[j].id + "</div>";
                     if (candidateChecked(data[i].allAnswerOptions[j], i)) {
-                        body += "<input type='checkbox' name='singleCheck" + data[i].id + "' class='singleChecks' checked='true'>" + data[i].allAnswerOptions[j].answerOptionValue + "";
+                        body += "<input type='radio' name='singleCheck" + data[i].id + "' class='singleChecks' checked='true'>" + data[i].allAnswerOptions[j].answerOptionValue + "";
                     } else {
-                        body += "<input type='checkbox' name='singleCheck" + data[i].id + "' class='singleChecks'>" + data[i].allAnswerOptions[j].answerOptionValue + "";
+                        body += "<input type='radio' name='singleCheck" + data[i].id + "' class='singleChecks'>" + data[i].allAnswerOptions[j].answerOptionValue + "";
                     }
                     body += "</label>";
                     body += "</div>";

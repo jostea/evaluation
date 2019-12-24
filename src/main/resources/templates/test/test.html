@@ -5,18 +5,40 @@
     <meta charset="UTF-8">
     <title>Test</title>
     <link type="text/css" rel="stylesheet" th:href="@{/css/task.css}">
+    <link type="text/css" rel="stylesheet" th:href="@{/css/test.css}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div th:replace="fragments/profile :: profile"></div>
-        <button class="btn" id="previousTaskPage" onclick="previousTask()">Previous</button>
-        <button class="btn" id="nextTaskPage" onclick="nextTask()">Next</button>
-        <div class="form-row row" style="margin-bottom: 100px">
-            <button id="saveActiveTasks" type="submit" class="btn btn-primary" onclick="saveCurrentTask()">Submit Test</button>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="class-div-buttons">
+                <br>
+                <ul id="numbersOfPage">
+                </ul>
+            </div>
         </div>
+        <div class="col-sm-7">
+            <div th:replace="fragments/profile :: profile"></div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-1">
+                        <div id="divForPreviousButton"></div>
+                    </div>
+                    <div class="col-sm-10"></div>
+                    <div class="col-sm-1">
+                        <div id="divForNextButton"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div id="timerTimeId"></div>
+        </div>
+    </div>
+
     </div>
     <script th:src="@{/js/test.js}"></script>
     <script th:src="@{/js/config.js}"></script>

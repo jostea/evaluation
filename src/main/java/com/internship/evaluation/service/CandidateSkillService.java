@@ -109,30 +109,42 @@ public class CandidateSkillService {
     }
 
     public void updateCandidateSkills(List<CandidateSkillsDTOFromUI> candidateFromUI, String token) {
-        for (CandidateSkillsDTOFromUI candidateUI : candidateFromUI) {
-            Optional<CandidateSkill> candidateSkillOptional = candidateSkillRepository.findCandidateSkillBySkillIdAndCandidateId(candidateUI.getSkillId(), getCandidateByToken(token).getId());
-            if (candidateSkillOptional.isPresent()) {
-                CandidateSkill candidateSkill = candidateSkillOptional.get();
+        if (testTokenRepository.findAll().size() > 0)
+            for (CandidateSkillsDTOFromUI candidateUI : candidateFromUI) {
+                Optional<CandidateSkill> candidateSkillOptional = candidateSkillRepository.findCandidateSkillBySkillIdAndCandidateId(candidateUI.getSkillId(), getCandidateByToken(token).getId());
+                if (candidateSkillOptional.isPresent()) {
+                    CandidateSkill candidateSkill = candidateSkillOptional.get();
 
-                for (int i = 0; i < 5; i++) {
-                    if (TechnicalSkillType.values()[i].getType().equalsIgnoreCase(candidateUI.getLevel()) ||
-                            ToolSkillType.values()[i].getType().equalsIgnoreCase(candidateUI.getLevel()) ||
-                            SoftSkillType.values()[i].getType().equalsIgnoreCase(candidateUI.getLevel())) {
-                        candidateSkill.setLevel(candidateUI.getLevel());
-                        break;
+                    for (TechnicalSkillType technicalSkillType : TechnicalSkillType.values()) {
+                        if (technicalSkillType.getType().equalsIgnoreCase(candidateUI.getLevel())) {
+                            candidateSkill.setLevel(candidateUI.getLevel());
+                            break;
+                        }
                     }
-                }
 
-                for (LanguageSkillType eng : LanguageSkillType.values()) {
-                    if (eng.getType().equalsIgnoreCase(candidateUI.getLevel())) {
-                        candidateSkill.setLevel(candidateUI.getLevel());
-                        break;
+                    for (ToolSkillType toolSkillType : ToolSkillType.values()) {
+                        if (toolSkillType.getType().equalsIgnoreCase(candidateUI.getLevel())) {
+                            candidateSkill.setLevel(candidateUI.getLevel());
+                            break;
+                        }
                     }
-                }
 
-                candidateSkillRepository.save(candidateSkill);
+                    for (SoftSkillType softSkillType : SoftSkillType.values()) {
+                        if (softSkillType.getType().equalsIgnoreCase(candidateUI.getLevel())) {
+                            candidateSkill.setLevel(candidateUI.getLevel());
+                            break;
+                        }
+                    }
+
+                    for (LanguageSkillType eng : LanguageSkillType.values()) {
+                        if (eng.getType().equalsIgnoreCase(candidateUI.getLevel())) {
+                            candidateSkill.setLevel(candidateUI.getLevel());
+                            break;
+                        }
+                    }
+                    candidateSkillRepository.save(candidateSkill);
+                }
             }
-        }
     }
 
     public List<CandidateSkillDTO> findAllCandidatesSkills(String token) throws Exception {
