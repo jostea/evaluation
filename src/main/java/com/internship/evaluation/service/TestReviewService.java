@@ -1,14 +1,10 @@
 package com.internship.evaluation.service;
 
 import com.internship.evaluation.config.TestDbConfiguration;
-import com.internship.evaluation.model.dto.generate_test.SingleChoiceCandidateAnswerDTO;
-import com.internship.evaluation.model.dto.generate_test.SingleChoiceTaskAnswerDTO;
-import com.internship.evaluation.model.dto.generate_test.SqlAnswersDTO;
+import com.internship.evaluation.model.dto.generate_test.*;
 import com.internship.evaluation.model.dto.test.CandidateTestResultsDTO;
 import com.internship.evaluation.model.dto.test.SqlCandidateResultDTO;
-import com.internship.evaluation.model.entity.Candidate;
-import com.internship.evaluation.model.entity.CandidateSingleTask;
-import com.internship.evaluation.model.entity.CandidateSqlTask;
+import com.internship.evaluation.model.entity.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,14 +37,70 @@ public class TestReviewService {
         CandidateTestResultsDTO candidateResults = new CandidateTestResultsDTO();
         candidateResults.setToken(token);
         candidateResults.setCandidateId(testTokenService.getCandidateByToken(token).getId());
+
         SingleChoiceCandidateAnswerDTO singleChoiceResults = getSingleChoiceTasksResults(token, candidate);
+        MultiChoiceCandidateAnswerDTO multiChoiceResults = getMultiChoiceTasksResults(token, candidate);
         SqlCandidateResultDTO sqlResults = getSqlResults(token, candidate);
 
         candidateResults.setSingleChoiceTasksResults(singleChoiceResults);
+        candidateResults.setMultiChoiceCandidateAnswerDTO(multiChoiceResults);
         candidateResults.setSqlResults(sqlResults);
         return candidateResults;
     }
 
+    //region MULTI_CHOICE_TASKS processing
+    private MultiChoiceCandidateAnswerDTO getMultiChoiceTasksResults(String token, Candidate candidate) {
+        MultiChoiceCandidateAnswerDTO multiChoiceResult = new MultiChoiceCandidateAnswerDTO();
+        ArrayList<MultiChoiceTaskAnswerDTO> listAnswerResults = new ArrayList<>();
+        List<CandidateMultiTask> questionsAsked = testTokenService.getCandidateByToken(token).getCandidateMultiTasks();
+        if (questionsAsked.size() > 0) {
+            for (CandidateMultiTask taskAsked : questionsAsked) {
+                MultiChoiceTaskAnswerDTO answer = new MultiChoiceTaskAnswerDTO();
+                answer.setMultiChoiceTaskId(taskAsked.getId());
+                Map<Long, String> correctAnswers = new HashMap<>();
+                for (AnswersOption ao : taskAsked.getTask().getAnswersOptions()) {
+                    correctAnswers.put(ao.getId(), ao.getAnswerOptionValue());
+                }
+                Map<Long, String> selectedAnswers = getCandidateMultiTasksAnswers(candidate, taskAsked.getId());
+                answer.setAoCorrectAnswers(correctAnswers);
+                answer.setAoSelectedAnswers(selectedAnswers);
+                answer.setCorrect(areMapsEqual(correctAnswers, selectedAnswers));
+                listAnswerResults.add(answer);
+            }
+        }
+        multiChoiceResult.setMultiChoiceAnswers(listAnswerResults);
+        return multiChoiceResult;
+    }
+
+    private Map<Long, String> getCandidateMultiTasksAnswers(Candidate candidate, Long taskId) {
+        Map<Long, String> answers = new HashMap<>();
+        if (candidate != null) {
+            Optional<CandidateMultiTask> mcTaskOptional = candidate.getCandidateMultiTasks()
+                    .stream()
+                    .filter(t -> t.getId() == taskId)
+                    .findFirst();
+
+            if (mcTaskOptional.isPresent()){
+                List<AnswersOption> taskAnswerOptions = mcTaskOptional.get().getAnswersOptions();
+                for (AnswersOption ao : taskAnswerOptions) {
+                    answers.put(ao.getId(), ao.getAnswerOptionValue());
+                }
+            }
+        }
+        return answers;
+    }
+
+    private boolean areMapsEqual(Map map1, Map map2){
+        if (map1.equals(map2)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //endregion
+
+    private SingleChoiceCandidateAnswerDTO getSingleChoiceTasksResults(String token, Candidate candidate) {
     private SingleChoiceCandidateAnswerDTO getSingleChoiceTasksResults(String token, Candidate candidate) {
         SingleChoiceCandidateAnswerDTO singleChoiceCandidateAnswerDTO = new SingleChoiceCandidateAnswerDTO();
         ArrayList<SingleChoiceTaskAnswerDTO> singleChoiceAnswers = new ArrayList<>();
@@ -56,9 +108,11 @@ public class TestReviewService {
             for (CandidateSingleTask candidateSingleTask : candidate.getCandidateSingleTasks()) {
                 SingleChoiceTaskAnswerDTO answerDTO = new SingleChoiceTaskAnswerDTO();
                 answerDTO.setSingleChoiceTaskId(candidateSingleTask.getId());
-                answerDTO.setSelectedAnswerOptionId(candidateSingleTask.getAnswersOption().getId());
-                answerDTO.setSelectedAnswerOptionText(candidateSingleTask.getAnswersOption().getAnswerOptionValue());
-                answerDTO.setIsCorrect(candidateSingleTask.getAnswersOption().isCorrect());
+                if (candidateSingleTask.getAnswersOption() != null) {
+                    answerDTO.setSelectedAnswerOptionId(candidateSingleTask.getAnswersOption().getId());
+                    answerDTO.setSelectedAnswerOptionText(candidateSingleTask.getAnswersOption().getAnswerOptionValue());
+                    answerDTO.setIsCorrect(candidateSingleTask.getAnswersOption().isCorrect());
+                }
                 singleChoiceAnswers.add(answerDTO);
             }
         }
