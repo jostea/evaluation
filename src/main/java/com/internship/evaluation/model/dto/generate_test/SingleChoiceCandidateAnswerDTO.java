@@ -6,6 +6,5 @@ import java.util.ArrayList;
 
 @Data
 public class SingleChoiceCandidateAnswerDTO {
-    private String token;
     private ArrayList<SingleChoiceTaskAnswerDTO> answers;
 }

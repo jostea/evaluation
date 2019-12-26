@@ -10,6 +10,9 @@ public class SqlAnswersDTO {
     private Long sqlTaskId;
     private String sqlAnswer;
     private String correctStatement;
+    private String message;
+    private Boolean areRowsOrdered;
+    private Boolean areColumnsNamed;
     private Boolean isCorrect;
 
     public SqlAnswersDTO(){

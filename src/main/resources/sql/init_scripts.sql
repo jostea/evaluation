@@ -108,6 +108,8 @@ CREATE TABLE sql_task_table
     description       text         NOT NULL,
     complexity        varchar(255) NOT NULL,
     is_enabled        boolean      NOT NULL DEFAULT true,
+    rows_ordered      boolean      NOT NULL DEFAULT false,
+    columns_named     boolean      NOT NULL DEFAULT false,
     correct_statement text         NOT NULL,
     sql_group_id      int          NOT NULL REFERENCES sql_group_table (id)
 );
