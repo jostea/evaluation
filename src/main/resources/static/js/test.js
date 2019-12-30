@@ -10,6 +10,7 @@ $(document).ready(function () {
             console.log(response);
             loadSimpleTasks(response.tasks);
             displaySqlTasks(response);
+            displayCodeTasks(response.codeTasks);
             getSqlAnswers();
             getTestTime();
             viewCurrentTask();
@@ -36,6 +37,9 @@ function saveCurrentTask(currentDiv) {
             break;
         case "sqlTask":
             saveOneSqlAnswer();
+            break;
+        case "codeTask":
+            saveCodeAnswer();
             break;
     }
 }
@@ -152,6 +156,23 @@ function loadSimpleTasks(data) {
     $(".theTest").append(body);
 }
 
+function displayCodeTasks(tasks) {
+    let body = "";
+    for (let i=0; i<tasks.length; i++) {
+        body += "<div class='codeTask' value='codeTask'>";
+        body += "<div hidden>" + tasks[i].id + "</div>";
+        body += "<h4>" + tasks[i].title + "</h4>";
+        body +=  "<p>" + tasks[i].description + "</p>";
+        if (tasks[i].codeProvided) {
+            body += "<textarea class='form-control codeAnswer' type='text' rows='15'>" + tasks[i].codeProvided + "</textarea>";
+        } else {
+            body += "<textarea class='form-control codeAnswer' type='text' rows='15'>" + tasks[i].signature + "</textarea>";
+        }
+        body += "</div>";
+    }
+    $(".theTest").append(body);
+}
+
 $(".theTest").on('click', ".singleChecks", function () {
     let $box = $(this);
     if ($box.is(":checked")) {
@@ -164,80 +185,121 @@ $(".theTest").on('click', ".singleChecks", function () {
 });
 
 function saveMultiAnswers() {
-    $.ajax({
-        method: "POST",
-        data: JSON.stringify(prepareDataForSavingMultiTask()),
-        url: gOptions.aws_path + "/testsrest/saveMultiAnswers",
-        contentType: "application/json",
-        success: function () {
-            console.log("multitask saved");
-        },
-        error: function (response) {
-            console.log(response);
-        }
-    })
+    if (prepareDataForSavingMultiTask()) {
+        $.ajax({
+            method: "POST",
+            data: JSON.stringify(prepareDataForSavingMultiTask()),
+            url: gOptions.aws_path + "/testsrest/saveMultiAnswers",
+            contentType: "application/json",
+            success: function () {
+                console.log("multitask saved");
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        })
+    }
 }
 
 function saveSingleAnswers() {
-    $.ajax({
-        method: "POST",
-        data: JSON.stringify(prepareDataForSavingSingleTask()),
-        url: gOptions.aws_path + "/testsrest/saveSingleAnswer",
-        contentType: "application/json",
-        success: function () {
-            console.log("single answer saved");
-        },
-        error: function (response) {
-            console.log(response);
-        }
-    })
+    if (prepareDataForSavingSingleTask()) {
+        $.ajax({
+            method: "POST",
+            data: JSON.stringify(prepareDataForSavingSingleTask()),
+            url: gOptions.aws_path + "/testsrest/saveSingleAnswer",
+            contentType: "application/json",
+            success: function () {
+                console.log("single answer saved");
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        })
+    }
 }
 function saveCustomAnswer() {
-    $.ajax({
-        method: "POST",
-        data: JSON.stringify(prepareDataForSavingCustomTask()),
-        url: gOptions.aws_path + "/testsrest/saveCustomAnswer",
-        contentType: "application/json",
-        success: function () {
-            console.log("custom answer saved");
-        },
-        error: function (response) {
-            console.log(response);
-        }
-    })
+    if (prepareDataForSavingCustomTask()) {
+        $.ajax({
+            method: "POST",
+            data: JSON.stringify(prepareDataForSavingCustomTask()),
+            url: gOptions.aws_path + "/testsrest/saveCustomAnswer",
+            contentType: "application/json",
+            success: function () {
+                console.log("custom answer saved");
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        })
+    }
+}
+
+function saveCodeAnswer() {
+    if (prepareDataForSavingCodeTask()) {
+        $.ajax({
+            method: "POST",
+            data: JSON.stringify(prepareDataForSavingCodeTask()),
+            url: gOptions.aws_path + "/testsrest/saveCodeAnswer",
+            contentType: "application/json",
+            success: function () {
+                console.log("code answer saved");
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        })
+    }
 }
 
 
 function prepareDataForSavingMultiTask() {
     let multiSingleAnswers = $('.current input:checked');
-    let multiAnswers = [];
-    let candidateTaskId = multiSingleAnswers[0].parentNode.parentNode.parentNode.children[0].innerText;
-    multiSingleAnswers.each(function () {
-        multiAnswers.push(this.parentNode.children[0].innerHTML);
-    });
-    return {
-        candidateTaskId: candidateTaskId,
-        multiTaskAnswers: multiAnswers
+    if (multiSingleAnswers.length > 0) {
+        let multiAnswers = [];
+        let candidateTaskId = multiSingleAnswers[0].parentNode.parentNode.parentNode.children[0].innerText;
+        multiSingleAnswers.each(function () {
+            multiAnswers.push(this.parentNode.children[0].innerHTML);
+        });
+        return {
+            candidateTaskId: candidateTaskId,
+            multiTaskAnswers: multiAnswers
+        }
     }
 }
 
 function prepareDataForSavingSingleTask() {
     let singleAnswerList = $('.current input:checked');
-    let singleAnswer = singleAnswerList[0].parentNode.children[0].innerHTML;
-    let candidateTaskId = singleAnswerList[0].parentNode.parentNode.parentNode.children[0].innerText;
-    return {
-        candidateTaskId: candidateTaskId,
-        singleAnswer: singleAnswer
+    if (singleAnswerList.length > 0) {
+        let singleAnswer = singleAnswerList[0].parentNode.children[0].innerHTML;
+        let candidateTaskId = singleAnswerList[0].parentNode.parentNode.parentNode.children[0].innerText;
+        return {
+            candidateTaskId: candidateTaskId,
+            singleAnswer: singleAnswer
+        }
     }
 }
 
 function prepareDataForSavingCustomTask() {
     let singleAnswerList = $('.current');
-    let taskId = singleAnswerList[0].children[0].innerText;
-    let answerContent = singleAnswerList[0].children[4].value;
-    return {
-        taskId: taskId,
-        answerContent: answerContent
+    if (singleAnswerList.length > 0) {
+        let taskId = singleAnswerList[0].children[0].innerText;
+        let answerContent = singleAnswerList[0].children[4].value;
+        return {
+            taskId: taskId,
+            answerContent: answerContent
+        }
+    }
+}
+
+function prepareDataForSavingCodeTask() {
+    let codeAnswer = $('.current');
+    if (codeAnswer.length > 0) {
+        let taskId = codeAnswer[0].children[0].innerText;
+        let answerContent = codeAnswer[0].children[3].value;
+        return {
+            id: taskId,
+            code: answerContent
+        }
     }
 }
 

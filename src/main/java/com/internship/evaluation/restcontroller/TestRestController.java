@@ -3,6 +3,7 @@ package com.internship.evaluation.restcontroller;
 import com.internship.evaluation.model.dto.generate_test.GenerateTestDTO;
 import com.internship.evaluation.model.dto.generate_test.SqlAnswersDTO;
 import com.internship.evaluation.model.dto.generate_test.SqlCandidateAnswerDTO;
+import com.internship.evaluation.model.dto.save_code.SaveCodeAnswerDTOFromUI;
 import com.internship.evaluation.model.dto.save_simple_tasks.SaveCustomAnswerDTO;
 import com.internship.evaluation.model.dto.save_simple_tasks.SaveMultiTaskDTO;
 import com.internship.evaluation.model.dto.save_simple_tasks.SaveSingleTaskDTO;
@@ -159,6 +160,16 @@ public class TestRestController {
         } catch (Exception e){
             log.error("Error while trying to get test results for the candidate with token {}", token);
             return new ResponseEntity("Error while reviewing candidate's answers", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/saveCodeAnswer")
+    public ResponseEntity<?> saveCodeAnswer(@RequestBody SaveCodeAnswerDTOFromUI saveCodeAnswerDTO) {
+        try {
+            candidateService.saveCandidateCodeAnswer(saveCodeAnswerDTO);
+            return new ResponseEntity<>("Code task saved successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Code task could not be saved", HttpStatus.BAD_REQUEST);
         }
     }
 }

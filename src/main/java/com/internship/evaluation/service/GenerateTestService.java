@@ -139,6 +139,7 @@ public class GenerateTestService {
         }
         for (CandidateCodeTask candidateCodeTask : candidate.getCandidateCodeTasks()) {
             GenerateCodeTaskDTO generateCodeTaskDTO = new GenerateCodeTaskDTO(candidateCodeTask.getCodeTask());
+            generateCodeTaskDTO.setCodeProvided(candidateCodeTask.getCodeProvided());
             codeTasks.add(generateCodeTaskDTO);
         }
         existingTest.setTasks(simpleTasks);
