@@ -41,3 +41,13 @@
     display: block;
     font-size: 1em;
 }
+
+#skillsDivFragment {
+    background: rgb(239, 250, 253);
+    margin: 3px;
+    border-radius: 5px;
+}
+
+tr{
+    text-align: center;
+}

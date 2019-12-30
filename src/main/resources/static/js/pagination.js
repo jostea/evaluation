@@ -13,6 +13,17 @@ function nextTask() {
         }
     });
     viewCurrentTask();
+
+}
+
+function setMarker() {
+    $(".theTest").children().each(function (index, el) {
+        if ($(this).hasClass("current")) {
+            $('#button' + index).addClass('btn-primary');
+        } else {
+            $('#button' + index).removeClass('btn-primary');
+        }
+    });
 }
 
 function previousTask() {
@@ -37,6 +48,7 @@ function addNumberOfPage() {
     test.each(function (index, el) {
         $(this).addClass('page' + index);
     });
+
     let previousButton = `<button class="btn" id="previousTaskPage" onclick="previousTask()">Previous</button>`;
 
     let nextButton = `
@@ -46,7 +58,7 @@ function addNumberOfPage() {
     let buttonsOfPagination = ``;
     test.each(function (index, el) {
         buttonsOfPagination += `<li class="paginationButtons">
-                <button class="btn" id="button${index}" onclick="rebaseOnSpecifiedPage('page'+${index})">${index + 1}</button>
+                <button class="btn" id="button${index}" onclick="rebaseOnSpecifiedPage('page'+${index},${index})">${index + 1}</button>
             </li>`;
     });
 
@@ -55,7 +67,13 @@ function addNumberOfPage() {
     $('#divForPreviousButton').html(previousButton);
 }
 
-function rebaseOnSpecifiedPage(numberOfPage) {
+function rebaseOnSpecifiedPage(numberOfPage, i) {
+    $(".theTest").children().each(function () {
+        if ($(this).hasClass('current')) {
+            saveCurrentTask($(this));
+        }
+    });
+
     var test = $(".theTest").children();
     test.each(function (index, el) {
         if ($(this).hasClass(numberOfPage)) {
@@ -67,6 +85,8 @@ function rebaseOnSpecifiedPage(numberOfPage) {
     });
 
     viewCurrentTask();
+
+    $('#button' + i).addClass('btn-primary');
 }
 
 function viewCurrentTask() {
@@ -79,6 +99,13 @@ function viewCurrentTask() {
         }
     });
     addNumberOfPage();
+
+    $(".theTest").children();
+    test.each(function (index, el) {
+        if ($(this).hasClass("current")) {
+            $('#button' + index).addClass('btn-primary');
+        }
+    });
 
     if (test.children().first().hasClass("current")) {
         $("#previousTaskPage").hide();
@@ -93,6 +120,5 @@ function viewCurrentTask() {
         $("#nextTaskPage").show();
         $("#saveActiveTasks").hide();
     }
-
-
+    setMarker();
 }
