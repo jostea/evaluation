@@ -1,0 +1,43 @@
+.paginationButtons{
+    display: inline-block;
+    list-style-type: none;
+    padding-right:.5em;
+    padding-left:.5em;
+    text-transform: uppercase;
+}
+
+#timerTimeId {
+    text-align: center;
+}
+.paginationButtons span{
+    display: block;
+    font-size: 4.5rem;
+
+}
+.class-div-buttons{
+    text-align:center;
+}
+
+.time-class {
+    color: #333;
+    text-align: center;
+    border: 2px solid;
+}
+
+
+.title-with-time {
+    font-weight: normal;
+}
+
+.line-with-time {
+    display: inline-block;
+    font-size: 1em;
+    list-style-type: none;
+    padding-right:1em;
+    text-transform: uppercase;
+}
+
+.line-with-time span {
+    display: block;
+    font-size: 1em;
+}
