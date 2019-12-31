@@ -31,4 +31,12 @@ public class SqlGroup {
     @OneToMany(mappedBy = "sqlGroup")
     private List<SqlTask> sqlTasks;
 
+    @Override
+    public String toString() {
+        return "SqlGroup{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", imagePath='" + imagePath + '\'' +
+                '}';
+    }
 }

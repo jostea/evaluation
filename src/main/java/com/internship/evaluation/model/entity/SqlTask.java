@@ -37,6 +37,14 @@ public class SqlTask {
     @Column(name = "is_enabled")
     private boolean isEnabled;
 
+    @Value("false")
+    @Column(name="rows_ordered")
+    private boolean rowsAreOrdered;
+
+    @Value("false")
+    @Column(name="columns_named")
+    private boolean columnsAreNamed;
+
     @NotNull(message = "Correct SQL statement is required")
     @Column(name = "correct_statement")
     private String correctStatement;
@@ -47,6 +55,7 @@ public class SqlTask {
     private List<Stream> streams;
 
     @ManyToOne
+    @JoinColumn(name="sql_group_id")
     private SqlGroup sqlGroup;
 
     @OneToMany(mappedBy = "sqlTask")
