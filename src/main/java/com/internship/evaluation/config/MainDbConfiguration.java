@@ -3,10 +3,7 @@ package com.internship.evaluation.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -20,6 +17,8 @@ import java.util.HashMap;
 
 @Configuration
 @PropertySource(value = "classpath:application.properties")
+@PropertySource(value = "classpath:application-dev.properties")
+@PropertySource(value = "classpath:application-prod.properties")
 @EnableJpaRepositories(basePackages = {
         "com.internship.evaluation.repository",
         "com.internship.evaluation.model.entity"
