@@ -180,6 +180,7 @@ public class TestReviewService {
                         .findFirst();
                 if (answerOpt.isPresent()) {
                     sqlTask.setMessage(answerOpt.get().getMessage());
+                    sqlTask.setCorrect(answerOpt.get().getIsCorrect());
                 }
                 sqlTasksWithMessages.add(sqlTask);
             }
