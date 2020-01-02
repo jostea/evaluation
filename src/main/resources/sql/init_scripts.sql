@@ -203,8 +203,8 @@ CREATE TABLE internship_stream_table
 CREATE TABLE candidate_skill_table
 (
     id           SERIAL PRIMARY KEY,
-    candidate_id int  NOT NULL REFERENCES candidate_table (id),
-    skill_id     int  NOT NULL REFERENCES skills_table (id),
+    candidate_id int NOT NULL REFERENCES candidate_table (id),
+    skill_id     int NOT NULL REFERENCES skills_table (id),
     level        text,
     UNIQUE (candidate_id, skill_id)
 );
@@ -260,6 +260,7 @@ CREATE TABLE candidate_sql_task
     candidate_id           int     NOT NULL REFERENCES candidate_table (id),
     sql_task_id            int     NOT NULL REFERENCES sql_task_table (id),
     sql_statement_provided text    NULL,
+    message                text    NULL,
     is_correct             boolean NULL,
     UNIQUE (candidate_id, sql_task_id)
 );
@@ -271,24 +272,25 @@ CREATE TABLE candidate_code_task
     code_task_id     int  NOT NULL REFERENCES code_task_table (id),
     code_provided    text NULL,
     rate_correctness int  NULL,
+    message          text NULL,
     UNIQUE (candidate_id, code_task_id)
 );
 
 CREATE TABLE test_token_table
 (
-    id              SERIAL PRIMARY KEY,
-    candidate_id    int     NOT NULL REFERENCES candidate_table (id),
-    token           text     NOT NULL,
-    date_created 	timestamp NOT NULL,
-    is_active	boolean	NULL,
+    id           SERIAL PRIMARY KEY,
+    candidate_id int       NOT NULL REFERENCES candidate_table (id),
+    token        text      NOT NULL,
+    date_created timestamp NOT NULL,
+    is_active    boolean   NULL,
     UNIQUE (token)
 );
 
 CREATE TABLE stream_time_table
 (
-    id           SERIAL PRIMARY KEY,
-    stream_id    int  NOT NULL REFERENCES stream_table (id),
-    time_min	int NOT NULL
+    id        SERIAL PRIMARY KEY,
+    stream_id int NOT NULL REFERENCES stream_table (id),
+    time_min  int NOT NULL
 );
 
 /*-----------------------------------*/
@@ -324,10 +326,14 @@ INSERT INTO stream_table(name, discipline_id)
 VALUES ('MANUAL_TESTING', (SELECT d.id FROM discipline_table d WHERE d.name = 'TESTING'));
 
 /* Populate sql_group_table with some test data */
-INSERT INTO sql_group_table(name, image_path) VALUES ('Schema A', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_1.png');
-INSERT INTO sql_group_table(name, image_path) VALUES ('Schema B', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_2.png');
-INSERT INTO sql_group_table(name, image_path) VALUES ('Schema C', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_3.png');
-INSERT INTO sql_group_table(name, image_path) VALUES ('Not_Found', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/no_image_found.png');
+INSERT INTO sql_group_table(name, image_path)
+VALUES ('Schema A', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_1.png');
+INSERT INTO sql_group_table(name, image_path)
+VALUES ('Schema B', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_2.png');
+INSERT INTO sql_group_table(name, image_path)
+VALUES ('Schema C', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/Scheme_3.png');
+INSERT INTO sql_group_table(name, image_path)
+VALUES ('Not_Found', 'https://am-interns-project-s3.s3.us-east-2.amazonaws.com/no_image_found.png');
 
 
 /* Insert the super admin */
@@ -336,18 +342,31 @@ values ('endavamainadmin', 'mainadmin@mail.com', '$2a$10$0WJ4XuVBhhXk6QvUujVsP.6
         'SUPER_ADMIN');
 
 /* Populate Internship Table */
-INSERT INTO internship_table(name, is_current) VALUES('Spring 2020', true);
+INSERT INTO internship_table(name, is_current)
+VALUES ('Spring 2020', true);
 
-INSERT INTO stream_time_table (stream_id, time_min) values(1,30);
-INSERT INTO stream_time_table (stream_id, time_min) values(2,40);
-INSERT INTO stream_time_table (stream_id, time_min) values(3,50);
+INSERT INTO stream_time_table (stream_id, time_min)
+values (1, 30);
+INSERT INTO stream_time_table (stream_id, time_min)
+values (2, 40);
+INSERT INTO stream_time_table (stream_id, time_min)
+values (3, 50);
 
-INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 1);
-INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 2);
-INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 3);
-INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 4);
-INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 5);
-INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 6);
-INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 7);
-INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 8);
-INSERT INTO internship_stream_table VALUES((SELECT i.id FROM internship_table i WHERE i.is_current='true'), 9);
+INSERT INTO internship_stream_table
+VALUES ((SELECT i.id FROM internship_table i WHERE i.is_current = 'true'), 1);
+INSERT INTO internship_stream_table
+VALUES ((SELECT i.id FROM internship_table i WHERE i.is_current = 'true'), 2);
+INSERT INTO internship_stream_table
+VALUES ((SELECT i.id FROM internship_table i WHERE i.is_current = 'true'), 3);
+INSERT INTO internship_stream_table
+VALUES ((SELECT i.id FROM internship_table i WHERE i.is_current = 'true'), 4);
+INSERT INTO internship_stream_table
+VALUES ((SELECT i.id FROM internship_table i WHERE i.is_current = 'true'), 5);
+INSERT INTO internship_stream_table
+VALUES ((SELECT i.id FROM internship_table i WHERE i.is_current = 'true'), 6);
+INSERT INTO internship_stream_table
+VALUES ((SELECT i.id FROM internship_table i WHERE i.is_current = 'true'), 7);
+INSERT INTO internship_stream_table
+VALUES ((SELECT i.id FROM internship_table i WHERE i.is_current = 'true'), 8);
+INSERT INTO internship_stream_table
+VALUES ((SELECT i.id FROM internship_table i WHERE i.is_current = 'true'), 9);
