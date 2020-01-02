@@ -30,21 +30,21 @@ public class TestReviewService {
     private final TestTokenService testTokenService;
 
     public CandidateTestResultsDTO reviewCandidateTest(String token) {
-        Candidate candidate = new Candidate();
+        Candidate candidate;
         candidate = testTokenService.getCandidateByToken(token);
-
 
         CandidateTestResultsDTO candidateResults = new CandidateTestResultsDTO();
         candidateResults.setToken(token);
         candidateResults.setCandidateId(testTokenService.getCandidateByToken(token).getId());
 
-        SingleChoiceCandidateAnswerDTO singleChoiceResults = getSingleChoiceTasksResults(token, candidate);
+        SingleChoiceCandidateAnswerDTO singleChoiceResults = getSingleChoiceTasksResults(candidate);
         MultiChoiceCandidateAnswerDTO multiChoiceResults = getMultiChoiceTasksResults(token, candidate);
         SqlCandidateResultDTO sqlResults = getSqlResults(token, candidate);
 
         candidateResults.setSingleChoiceTasksResults(singleChoiceResults);
         candidateResults.setMultiChoiceCandidateAnswerDTO(multiChoiceResults);
         candidateResults.setSqlResults(sqlResults);
+
         return candidateResults;
     }
 
@@ -77,7 +77,7 @@ public class TestReviewService {
         if (candidate != null) {
             Optional<CandidateMultiTask> mcTaskOptional = candidate.getCandidateMultiTasks()
                     .stream()
-                    .filter(t -> t.getId() == taskId)
+                    .filter(t -> t.getId().equals(taskId))
                     .findFirst();
 
             if (mcTaskOptional.isPresent()){
@@ -100,8 +100,7 @@ public class TestReviewService {
 
     //endregion
 
-    private SingleChoiceCandidateAnswerDTO getSingleChoiceTasksResults(String token, Candidate candidate) {
-    private SingleChoiceCandidateAnswerDTO getSingleChoiceTasksResults(String token, Candidate candidate) {
+    private SingleChoiceCandidateAnswerDTO getSingleChoiceTasksResults(Candidate candidate) {
         SingleChoiceCandidateAnswerDTO singleChoiceCandidateAnswerDTO = new SingleChoiceCandidateAnswerDTO();
         ArrayList<SingleChoiceTaskAnswerDTO> singleChoiceAnswers = new ArrayList<>();
         if (candidate != null) {
@@ -208,7 +207,6 @@ public class TestReviewService {
             if (nrColumnsCandidateStatement != nrColumnsCorrectStatement) {
                 answer.setMessage("Nr. of columns is different. The statement is wrong.");
                 sqlAnswersAfterReview.add(getAnswerAfterReview(answer, false));
-                //                    continue;
             } else if (nrRowsCandidateSet != nrRowsCorrectSet) {
                 answer.setMessage("Nr. of rows is different. The statement is wrong.");
                 sqlAnswersAfterReview.add(getAnswerAfterReview(answer, false));
@@ -251,7 +249,7 @@ public class TestReviewService {
                     statementCandidate.close();
                 }
             } catch (SQLException e) {
-                log.error("Errow while closing result sets");
+                log.error("Error while closing result sets");
             }
         }
         return sqlAnswersAfterReview;
@@ -329,7 +327,6 @@ public class TestReviewService {
                 }
             }
         }
-//        }
         return result;
     }
 
