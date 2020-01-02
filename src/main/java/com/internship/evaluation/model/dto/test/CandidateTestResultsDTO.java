@@ -1,5 +1,6 @@
 package com.internship.evaluation.model.dto.test;
 
+import com.internship.evaluation.model.dto.generate_test.MultiChoiceCandidateAnswerDTO;
 import com.internship.evaluation.model.dto.generate_test.SingleChoiceCandidateAnswerDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +16,7 @@ public class CandidateTestResultsDTO {
     private Long candidateId;
     private String token;
     private SingleChoiceCandidateAnswerDTO singleChoiceTasksResults;
+    private MultiChoiceCandidateAnswerDTO multiChoiceCandidateAnswerDTO;
     private SqlCandidateResultDTO sqlResults;
 
     @Override

@@ -146,7 +146,7 @@ public class TestRestController {
             return new ResponseEntity<>(sqlAnswersFromDB,HttpStatus.OK);
         } catch (Exception e){
             log.error("Error while getting sql answers for the candidate with token " + tok);
-            return new ResponseEntity("Error while getting sql answers", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Error while reviewing candidate's answers", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -158,7 +158,7 @@ public class TestRestController {
             return new ResponseEntity<>(results, HttpStatus.OK);
         } catch (Exception e){
             log.error("Error while trying to get test results for the candidate with token {}", token);
-            return new ResponseEntity("Error while getting sql answers", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Error while reviewing candidate's answers", HttpStatus.BAD_REQUEST);
         }
     }
 }
