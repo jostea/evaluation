@@ -5,6 +5,7 @@ import com.internship.evaluation.model.dto.candidate.CandidateRegistrationDTO;
 import com.internship.evaluation.model.dto.candidate.CandidateStartTestDTO;
 import com.internship.evaluation.model.dto.generate_test.SqlAnswersDTO;
 import com.internship.evaluation.model.dto.generate_test.SqlCandidateAnswerDTO;
+import com.internship.evaluation.model.dto.save_code.SaveCodeAnswerDTOFromUI;
 import com.internship.evaluation.model.dto.save_simple_tasks.SaveCustomAnswerDTO;
 import com.internship.evaluation.model.dto.save_simple_tasks.SaveMultiTaskDTO;
 import com.internship.evaluation.model.dto.save_simple_tasks.SaveSingleTaskDTO;
@@ -38,6 +39,8 @@ public class CandidateService {
     private final AnswersOptionRepository answersOptionRepository;
     private final CandidateSingleTaskRepository candidateSingleTaskRepository;
     private final CandidateCustomTaskRepository candidateCustomTaskRepository;
+    private final CandidateCodeTaskRepository candidateCodeTaskRepository;
+    private final CodeTaskRepository codeTaskRepository;
 
     public CandidateNotificationDTO getCandidateByToken(String token) {
         CandidateNotificationDTO candidateNotificationDTO = null;
@@ -196,6 +199,21 @@ public class CandidateService {
             candidateCustomTaskRepository.save(candidateCustomTaskLocal);
         } catch (Exception e) {
             throw new Exception("Single answer could not be saved");
+        }
+    }
+
+    public void saveCandidateCodeAnswer(SaveCodeAnswerDTOFromUI saveCodeAnswerDTOFromUI) throws Exception {
+        try {
+            Optional<CodeTask> codeTaskToSearchBy = codeTaskRepository.findById(saveCodeAnswerDTOFromUI.getId());
+            if (codeTaskToSearchBy.isPresent()) {
+                Optional<CandidateCodeTask> fromRepo = Optional.of(candidateCodeTaskRepository.findByCodeTask(codeTaskToSearchBy.get()));
+                CandidateCodeTask toBeUpdated = fromRepo.get();
+                toBeUpdated.setCodeProvided(saveCodeAnswerDTOFromUI.getCode());
+                candidateCodeTaskRepository.save(toBeUpdated);
+            }
+        } catch (Exception e) {
+            log.warn("Code task could not be updated. Stack trace: " + e.getStackTrace());
+            throw new Exception("Task could not be updated");
         }
     }
 

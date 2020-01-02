@@ -9,6 +9,7 @@ public class GenerateCodeTaskDTO {
     private String title;
     private String description;
     private String signature;
+    private String codeProvided;
 
     public GenerateCodeTaskDTO(CodeTask codeTask) {
         this.id = codeTask.getId();

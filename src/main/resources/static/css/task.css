@@ -24,3 +24,16 @@ div[value="sqlTask"] {
     margin: 3px;
     border-radius: 5px;
 }
+
+.codeAnswer {
+    font-family: 'Source Code Pro', monospace;
+    color: #565654;
+    background: #e4f0fa;
+}
+
+.codeTask {
+    background: #dfe9f5;
+    padding: 10px 5%;
+    margin: 3px;
+    border-radius: 5px;
+}
