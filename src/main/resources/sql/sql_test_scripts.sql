@@ -1,17 +1,17 @@
-CREATE TABLE tests.department
+CREATE TABLE department
 (
     id   SERIAL PRIMARY KEY,
     name varchar(255) NOT NULL,
     UNIQUE (name)
 );
 
-CREATE TABLE tests.employee
+CREATE TABLE employee
 (
     id            SERIAL PRIMARY KEY,
     first_name    varchar(255) NOT NULL,
     last_name     varchar(255) NOT NULL,
     phone         varchar(255) NOT NULL,
-    department_id int          NOT NULL REFERENCES tests.department (id),
+    department_id int          NOT NULL REFERENCES department (id),
     salary        int          NOT NULL,
     date_hired    date         NOT NULL,
     date_fired    date         NULL,

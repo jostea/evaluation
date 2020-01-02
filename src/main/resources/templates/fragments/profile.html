@@ -1,10 +1,11 @@
 <div th:fragment="profile" class="theTest" xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="current" value="skills" id="skillsDivFragment">
         <div>
-            <div><h3>Please select your Technical skills</h3></div>
-            <br>
+            <div><h3>Please select your Technical skills</h3>
+                <hr>
+            </div>
             <div>
-                <table class="table table-hover" id="technicalSkillTable">
+                <table class="table" id="technicalSkillTable">
                     <thead>
                     <tr class="bg-primary">
                         <th class="text-center">Nr.</th>
@@ -19,13 +20,12 @@
                     <tbody id="tbodyForTechnicalSkills"></tbody>
                 </table>
             </div>
-            <br>
         </div>
         <div>
-            <div><h3>Please select your Soft skills</h3></div>
-            <br>
+            <div><h3>Please select your Soft skills</h3><hr>
+            </div>
             <div>
-                <table class="table table-hover" id="sofSkillTable">
+                <table class="table" id="sofSkillTable">
                     <thead>
                     <tr class="bg-primary">
                         <th class="text-center">Nr.</th>
@@ -40,13 +40,12 @@
                     <tbody id="tbodyForSoftSkills"></tbody>
                 </table>
             </div>
-            <br>
         </div>
         <div>
-            <div><h3>Please select your Tool skills</h3></div>
-            <br>
+            <div><h3>Please select your Tool skills</h3><hr>
+            </div>
             <div>
-                <table class="table table-hover" id="toolSkillTable">
+                <table class="table" id="toolSkillTable">
                     <thead>
                     <tr class="bg-primary">
                         <th class="text-center">Nr.</th>
@@ -63,10 +62,11 @@
             </div>
         </div>
         <div th:fragment="english" xmlns:th="http://www.w3.org/1999/xhtml">
-            <div><h3>Please select your English level</h3></div>
-            <br>
+            <div><h3>Please select your Language level</h3>
+                <hr>
+            </div>
             <div>
-                <table class="table table-hover" id="englishLevelTable">
+                <table class="table" id="englishLevelTable">
                     <thead>
                     <tr class="bg-primary">
                         <th>Nr.</th>
@@ -82,7 +82,6 @@
                     <tbody id="tbodyForLanguageSkill"></tbody>
                 </table>
             </div>
-            <br>
         </div>
     </div>
 </div>

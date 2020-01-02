@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -57,12 +58,15 @@ public class TimerService {
                 if (streamTimeOptional.isPresent()) {
                     StreamTime streamTime = streamTimeOptional.get();
                     Integer timeTest = streamTime.getTimeTest();
-                    LocalDateTime haveTime = candidate.getDateTestStarted().toLocalDateTime().plusMinutes(timeTest);
-                    if ((haveTime.compareTo(LocalDateTime.now()) < 0)) {
-                        candidate.setTestStatus(TestStatusEnum.TEST_FINISHED);
-                        token.setActive(false);
-                        token.setCandidate(candidate);
-                        testTokenRepository.save(token);
+                    if (candidate.getDateTestStarted() != null) {
+                        LocalDateTime haveTime = candidate.getDateTestStarted().toLocalDateTime().plusMinutes(timeTest);
+                        if ((haveTime.compareTo(LocalDateTime.now()) < 0)) {
+                            candidate.setTestStatus(TestStatusEnum.TEST_FINISHED);
+                            candidate.setDateTestFinished(Timestamp.valueOf(LocalDateTime.now()));
+                            token.setActive(false);
+                            token.setCandidate(candidate);
+                            testTokenRepository.save(token);
+                        }
                     }
                 }
             }

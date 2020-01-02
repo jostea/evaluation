@@ -9,43 +9,59 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:600&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="container-fluid">
     <div class="row">
+        <div class="col-sm-9">
+            <div>
+                <h1 id="mainTitle">Test for Endava internship</h1>
+            </div>
+            <div th:replace="fragments/profile :: profile"></div>
+            <div id="footer" class="panel panel-default">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <div id="divForPreviousButton">
+                                <button class="btn" id="previousTaskPage" onclick="previousTask()"
+                                        style="display: none;">Previous
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-sm-10"></div>
+                        <div class="col-sm-1">
+                            <div id="divForNextButton">
+                                <button class="btn" id="nextTaskPage" onclick="nextTask()">Next</button>
+                                <button id="saveActiveTasks" type="submit" class="btn btn-primary"
+                                        onclick="saveCurrentTask()" style="display: none;">Submit Test
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div id="timerTimeId"></div>
+        </div>
         <div class="col-sm-3">
             <div class="class-div-buttons">
                 <br>
                 <h3>Task Pages:</h3>
                 <br>
-                <ul id="numbersOfPage">
-                </ul>
+                <table id="numbersOfPage" align="center">
+                    <tbody>
+
+                    </tbody>
+                </table>
             </div>
-        </div>
-        <div class="col-sm-7">
-            <div th:replace="fragments/profile :: profile"></div>
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-sm-1">
-                        <div id="divForPreviousButton"></div>
-                    </div>
-                    <div class="col-sm-10"></div>
-                    <div class="col-sm-1">
-                        <div id="divForNextButton"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div id="timerTimeId"></div>
         </div>
     </div>
 
-    </div>
-    <script th:src="@{/js/test.js}"></script>
-    <script th:src="@{/js/config.js}"></script>
-    <script th:src="@{/js/profile.js}"></script>
-    <script th:src="@{/js/pagination.js}"></script>
+</div>
+<script th:src="@{/js/test.js}"></script>
+<script th:src="@{/js/config.js}"></script>
+<script th:src="@{/js/profile.js}"></script>
+<script th:src="@{/js/pagination.js}"></script>
 </body>
 </html>
