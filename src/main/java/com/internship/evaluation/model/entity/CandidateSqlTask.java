@@ -34,6 +34,9 @@ public class CandidateSqlTask {
     @Column(name = "is_correct")
     private boolean isCorrect;
 
+    @Column(name = "message")
+    private String message;
+
     public CandidateSqlTask(SqlTask sqlTask, Candidate candidate) {
         this.candidate = candidate;
         this.sqlTask = sqlTask;

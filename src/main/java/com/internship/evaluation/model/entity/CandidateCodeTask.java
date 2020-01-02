@@ -33,6 +33,9 @@ public class CandidateCodeTask {
     @Column(name = "rate_correctness")
     private Long rateCorrectness;
 
+    @Column(name = "message")
+    private String message;
+
     public CandidateCodeTask(CodeTask codeTask, Candidate candidate) {
         this.candidate = candidate;
         this.codeTask = codeTask;

@@ -1,20 +1,20 @@
-CREATE TABLE department
+CREATE TABLE tests.department
 (
     id   SERIAL PRIMARY KEY,
     name varchar(255) NOT NULL,
     UNIQUE (name)
 );
 
-CREATE TABLE employee
+CREATE TABLE tests.employee
 (
     id            SERIAL PRIMARY KEY,
     first_name    varchar(255) NOT NULL,
     last_name     varchar(255) NOT NULL,
     phone         varchar(255) NOT NULL,
-    department_id int          NOT NULL REFERENCES department (id),
+    department_id int          NOT NULL REFERENCES tests.department (id),
     salary        int          NOT NULL,
     date_hired    date         NOT NULL,
-    date_fired    date         NOT NULL,
+    date_fired    date         NULL,
     UNIQUE (first_name, last_name)
 );
 
@@ -34,6 +34,7 @@ INSERT INTO employee(first_name, last_name, phone, date_hired, salary, departmen
 VALUES ('Stefan', 'Obama', '1323232', '2019-07-07', 660, (SELECT d.id FROM department d WHERE d.name = 'Commercial'));
 INSERT INTO employee(first_name, last_name, phone, date_hired, salary, department_id)
 VALUES ('Petro', 'Porosenso', '777777', '2019-01-11', 1000, (SELECT d.id FROM department d WHERE d.name = 'Marketing'));
+INSERT INTO employee(first_name, last_name, phone, date_hired, salary, department_id)
 VALUES ('Igor', 'Dodon', '69696969', '2019-02-28', 550, (SELECT d.id FROM department d WHERE d.name = 'Accounting'));
 INSERT INTO employee(first_name, last_name, phone, date_hired, salary, department_id)
 VALUES ('Vladimir', 'Putin', '1323232', '2010-01-01', 1000, (SELECT d.id FROM department d WHERE d.name = 'Commercial'));

@@ -80,7 +80,7 @@ public class TestReviewService {
                     .filter(t -> t.getId().equals(taskId))
                     .findFirst();
 
-            if (mcTaskOptional.isPresent()){
+            if (mcTaskOptional.isPresent()) {
                 List<AnswersOption> taskAnswerOptions = mcTaskOptional.get().getAnswersOptions();
                 for (AnswersOption ao : taskAnswerOptions) {
                     answers.put(ao.getId(), ao.getAnswerOptionValue());
@@ -90,8 +90,8 @@ public class TestReviewService {
         return answers;
     }
 
-    private boolean areMapsEqual(Map map1, Map map2){
-        if (map1.equals(map2)){
+    private boolean areMapsEqual(Map map1, Map map2) {
+        if (map1.equals(map2)) {
             return true;
         } else {
             return false;
@@ -148,6 +148,7 @@ public class TestReviewService {
             for (SqlAnswersDTO answer : sqlAnswersBeforeReview) {
                 sqlAnswersAfterReview = processSqlAnswer(answer, sqlAnswersAfterReview, con);
             }
+            setSqlMessages(candidate, sqlAnswersAfterReview);
         } catch (SQLException e) {
             log.error("Error while connecting to DB: {}, token: {}", e.getMessage(), token);
         } catch (Exception e) {
@@ -168,6 +169,24 @@ public class TestReviewService {
 
 
     //region PRIVATE METHODS TO CHECK CANDIDATE SQL ANSWERS
+
+    private void setSqlMessages(Candidate candidate, ArrayList<SqlAnswersDTO> sqlAnswersAfterReview) {
+        if (candidate != null && sqlAnswersAfterReview.size() > 0) {
+            List<CandidateSqlTask> sqlTasksWithMessages = new ArrayList<>();
+            for (CandidateSqlTask sqlTask : candidate.getCandidateSqlTasks()) {
+                Optional<SqlAnswersDTO> answerOpt = sqlAnswersAfterReview
+                        .stream()
+                        .filter(t -> t.getSqlTaskId().equals(sqlTask.getSqlTask().getId()))
+                        .findFirst();
+                if (answerOpt.isPresent()) {
+                    sqlTask.setMessage(answerOpt.get().getMessage());
+                }
+                sqlTasksWithMessages.add(sqlTask);
+            }
+            candidate.setCandidateSqlTasks(sqlTasksWithMessages);
+            candidateService.updateCandidate(candidate);
+        }
+    }
 
     private ArrayList<SqlAnswersDTO> processSqlAnswer(SqlAnswersDTO answerToProcess, ArrayList<SqlAnswersDTO> sqlAnswersAfterReview, Connection con) {
 
@@ -239,13 +258,13 @@ public class TestReviewService {
                 if (correctResultSet != null) {
                     correctResultSet.close();
                 }
-                if (candidateResultSet != null){
+                if (candidateResultSet != null) {
                     candidateResultSet.close();
                 }
                 if (statement != null) {
                     statement.close();
                 }
-                if (statementCandidate != null){
+                if (statementCandidate != null) {
                     statementCandidate.close();
                 }
             } catch (SQLException e) {

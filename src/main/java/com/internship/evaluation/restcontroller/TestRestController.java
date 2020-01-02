@@ -154,7 +154,7 @@ public class TestRestController {
     public ResponseEntity<CandidateTestResultsDTO> getCandidateResults(@PathVariable("token") String token){
         try{
             CandidateTestResultsDTO results =  testReviewService.reviewCandidateTest(token);
-            log.info("Test resuls of candidate with token {} where provided");
+            log.info("Test results of candidate with token {} where provided");
             return new ResponseEntity<>(results, HttpStatus.OK);
         } catch (Exception e){
             log.error("Error while trying to get test results for the candidate with token {}", token);
