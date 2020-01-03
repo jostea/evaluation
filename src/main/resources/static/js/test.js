@@ -246,7 +246,6 @@ function saveCodeAnswer() {
             url: gOptions.aws_path + "/testsrest/saveCodeAnswer",
             contentType: "application/json",
             success: function () {
-                console.log("code answer saved");
             },
             error: function (response) {
                 console.log(response);
@@ -297,12 +296,15 @@ function prepareDataForSavingCustomTask() {
 
 function prepareDataForSavingCodeTask() {
     let codeAnswer = $('.current');
+    let url = new URL(window.location.href);
+    let token = url.searchParams.get("thd_i8");
     if (codeAnswer.length > 0) {
         let taskId = codeAnswer[0].children[0].innerText;
         let answerContent = codeAnswer[0].children[3].value;
         return {
             id: taskId,
-            code: answerContent
+            code: answerContent,
+            token: token
         }
     }
 }

@@ -31,10 +31,13 @@ public class CandidateCodeTask {
     private String codeProvided;
 
     @Column(name = "rate_correctness")
-    private Long rateCorrectness;
+    private Double rateCorrectness;
 
     @Column(name = "message")
     private String message;
+
+    @Column(name = "is_correct")
+    private Boolean isCorrect;
 
     public CandidateCodeTask(CodeTask codeTask, Candidate candidate) {
         this.candidate = candidate;

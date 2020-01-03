@@ -206,7 +206,7 @@ public class CandidateService {
         try {
             Optional<CodeTask> codeTaskToSearchBy = codeTaskRepository.findById(saveCodeAnswerDTOFromUI.getId());
             if (codeTaskToSearchBy.isPresent()) {
-                Optional<CandidateCodeTask> fromRepo = Optional.of(candidateCodeTaskRepository.findByCodeTask(codeTaskToSearchBy.get()));
+                Optional<CandidateCodeTask> fromRepo = Optional.of(candidateCodeTaskRepository.findByCodeTaskAndCandidate(codeTaskToSearchBy.get(), testTokenService.getCandidateByToken(saveCodeAnswerDTOFromUI.getToken())));
                 CandidateCodeTask toBeUpdated = fromRepo.get();
                 toBeUpdated.setCodeProvided(saveCodeAnswerDTOFromUI.getCode());
                 candidateCodeTaskRepository.save(toBeUpdated);

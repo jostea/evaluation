@@ -271,8 +271,9 @@ CREATE TABLE candidate_code_task
     candidate_id     int  NOT NULL REFERENCES candidate_table (id),
     code_task_id     int  NOT NULL REFERENCES code_task_table (id),
     code_provided    text NULL,
-    rate_correctness int  NULL,
+    rate_correctness real  NULL,
     message          text NULL,
+    is_correct       boolean NULL,
     UNIQUE (candidate_id, code_task_id)
 );
 

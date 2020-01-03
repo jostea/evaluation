@@ -26,6 +26,6 @@ class {class_name_for_test_case} {
 
     @Override
     public String toString() {
-        return "{\"questionId\": " + questionId + ", \"caseId\": " + caseId + ", \"result\": " + result + "}";
+        return "{\"questionId\": " + this.questionId + ", \"caseId\": " + this.caseId + ", \"result\": " {string_value} this.result {string_value} "}";
     }
 }

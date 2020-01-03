@@ -12,6 +12,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -101,5 +102,27 @@ public class Candidate {
                 ", dateRegistered=" + dateRegistered +
                 ", testStatus=" + testStatus +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Candidate candidate = (Candidate) o;
+        return Objects.equals(id, candidate.id) &&
+                Objects.equals(email, candidate.email) &&
+                Objects.equals(firstName, candidate.firstName) &&
+                Objects.equals(lastName, candidate.lastName) &&
+                Objects.equals(phone, candidate.phone) &&
+                Objects.equals(internship, candidate.internship) &&
+                Objects.equals(dateRegistered, candidate.dateRegistered) &&
+                Objects.equals(dateTestStarted, candidate.dateTestStarted) &&
+                Objects.equals(dateTestFinished, candidate.dateTestFinished) &&
+                testStatus == candidate.testStatus;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, firstName, lastName, phone, internship, dateRegistered, dateTestStarted, dateTestFinished, testStatus);
     }
 }
