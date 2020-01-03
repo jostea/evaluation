@@ -244,9 +244,11 @@ public class CandidateSkillServiceTest {
         Candidate candidate = Candidate.builder()
                 .id(1L)
                 .build();
+        List<TestToken> tokens = new ArrayList<>();
         TestToken testToken = TestToken.builder()
                 .candidate(candidate)
                 .build();
+        tokens.add(testToken);
 
         Skill skill1 = Skill.builder()
                 .id(1L)
@@ -284,7 +286,7 @@ public class CandidateSkillServiceTest {
         CandidateSkill candidateSkill4 = CandidateSkill.builder()
                 .candidate(Candidate.builder().id(1L).build())
                 .skill(skill4).build();
-
+        when(testTokenRepository.findAll()).thenReturn(tokens);
         when(testTokenRepository.findFirstByToken("token")).thenReturn(Optional.of(testToken));
         when(candidateSkillRepository.findCandidateSkillBySkillIdAndCandidateId(1L, 1L)).thenReturn(Optional.of(candidateSkill1));
         when(candidateSkillRepository.findCandidateSkillBySkillIdAndCandidateId(2L, 1L)).thenReturn(Optional.of(candidateSkill2));

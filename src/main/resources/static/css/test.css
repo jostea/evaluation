@@ -1,13 +1,9 @@
 .paginationButtons{
-    display: inline-block;
     list-style-type: none;
-    padding-right:.5em;
-    padding-left:.5em;
+    padding: .5em;
     text-transform: uppercase;
-}
-
-#timerTimeId {
-    text-align: center;
+    width: 5px;
+    height: 5px;
 }
 .paginationButtons span{
     display: block;
@@ -16,17 +12,29 @@
 }
 .class-div-buttons{
     text-align:center;
+    background-color: #f1efeff7;
+    border-radius: 10px;
+    padding-bottom: 20px;
 }
 
-.time-class {
-    color: #333;
+td {
     text-align: center;
-    border: 2px solid;
+}
+
+#timerTimeId {
+    margin-top: 20px;
+    text-align: center;
+    background-color: #eae5e5;
+    border-radius: 10px;
+    margin-bottom: 20px;
 }
 
 
 .title-with-time {
     font-weight: normal;
+    background-color: #f1efeff7;
+    padding-bottom: 10px;
+    padding-top: 10px;
 }
 
 .line-with-time {
@@ -43,11 +51,99 @@
 }
 
 #skillsDivFragment {
-    background: rgb(239, 250, 253);
     margin: 3px;
-    border-radius: 5px;
+    color: black;
+    border-radius: 15px;
 }
 
-tr{
+#numbersOfPage {
+    padding: 10px;
+}
+
+#timerTimeId {
+    padding: 10px;
+}
+
+#footer {
+    position: fixed;
+    background-color: #fbfbfb;
+    bottom: 0;
+    left: 17px;
+    right: 26%;
+    padding: 10px;
+}
+
+body {
+    margin-bottom: 50px;
+}
+
+#saveActiveTasks {
+    right: 10%;
+}
+
+h3 {
+    padding-top: 10px;
+    padding-left: 50px;
+}
+
+.theTest {
+    margin-bottom: 100px;
+    margin-top: 20px;
+}
+
+#mainTitle {
     text-align: center;
+    background-color: #de411b;
+    padding-top: 30px;
+    color: white;
+    padding-bottom: 30px;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+#technicalSkillTable,
+#sofSkillTable,
+#toolSkillTable,
+#englishLevelTable {
+    border: 1px solid #797272;
+    margin-top: 10px;
+}
+
+#technicalSkillTable > thead > tr > th,
+#sofSkillTable > thead > tr > th,
+#toolSkillTable > thead > tr > th,
+#englishLevelTable > thead > tr > th {
+    border: 1px solid #797272;
+    background-color: #de411b;
+}
+
+#technicalSkillTable > tbody > tr > td,
+#sofSkillTable > tbody > tr > td,
+#toolSkillTable > tbody > tr > td,
+#englishLevelTable > tbody > tr > td {
+    border: 1px solid #797272;
+    color: #383333;
+    font-weight: bold;
+}
+
+#nextTaskPage {
+    background-color: #de411b;
+    border: #de411b;
+    width: 100px;
+    height: 40px;
+}
+
+#previousTaskPage {
+    background-color: #de411b;
+    border: #de411b;
+    width: 100px;
+    height: 40px;
+}
+
+#saveActiveTasks {
+    background-color: #5CB85C;
+    border: #5CB85C;
+    width: 100px;
+    height: 40px;
 }

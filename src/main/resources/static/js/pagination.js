@@ -49,17 +49,24 @@ function addNumberOfPage() {
         $(this).addClass('page' + index);
     });
 
-    let previousButton = `<button class="btn" id="previousTaskPage" onclick="previousTask()">Previous</button>`;
+    let previousButton = `<button class="btn btn-primary" id="previousTaskPage" onclick="previousTask()">Previous</button>`;
 
-    let nextButton = `
-                <button class="btn" id="nextTaskPage" onclick="nextTask()">Next</button>`;
-    nextButton += `<button id="saveActiveTasks" type="submit" class="btn btn-primary" onclick="saveCurrentTask()">Submit Test</button> `;
+    let nextButton = `<button class="btn btn-primary" id="nextTaskPage" onclick="nextTask()">Next</button>`;
+    nextButton += `<button id="saveActiveTasks" type="submit" class="btn btn-success" onclick="saveCurrentTask()">Submit Test</button>`;
 
     let buttonsOfPagination = ``;
+    let open = true;
     test.each(function (index, el) {
-        buttonsOfPagination += `<li class="paginationButtons">
-                <button class="btn" id="button${index}" onclick="rebaseOnSpecifiedPage('page'+${index},${index})">${index + 1}</button>
-            </li>`;
+        if (index%5===0) {
+            if (open) {
+                buttonsOfPagination+="<tr>";
+                open = false;
+            } else {
+                buttonsOfPagination+="</tr>";
+                open = true;
+            }
+        }
+        buttonsOfPagination+="<td><button class='btn btn-default' id='button"+ index +"' onclick='rebaseOnSpecifiedPage(&apos;page&apos;+"+ index +","+ index +")'>"+ (index+1) +"</button></td>";
     });
 
     $('#numbersOfPage').html(buttonsOfPagination);
@@ -103,7 +110,7 @@ function viewCurrentTask() {
     $(".theTest").children();
     test.each(function (index, el) {
         if ($(this).hasClass("current")) {
-            $('#button' + index).addClass('btn-primary');
+            $('#button' + index).addClass('btn-endava');
         }
     });
 
