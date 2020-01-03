@@ -20,7 +20,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers("/templates/registration").permitAll()
                 .antMatchers("/templates/test/testStart").permitAll()
-                .antMatchers("/testsrest/**").permitAll();
+                .antMatchers("/testsrest/**").permitAll()
+                .antMatchers("/registrationrest/**").permitAll();
     }
 
 }

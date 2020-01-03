@@ -9,6 +9,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -22,6 +23,8 @@ import java.util.HashMap;
 
 @Configuration
 @PropertySource(value = "classpath:application.properties")
+@PropertySource(value = "classpath:application-dev.properties")
+@PropertySource(value = "classpath:application-prod.properties")
 @EnableJpaRepositories(basePackages = "com.internship.evaluation.model.test_db_entities",
         entityManagerFactoryRef = "testEntityManager",
         transactionManagerRef = "testTransactionManager")
@@ -43,9 +46,8 @@ public class TestDbConfiguration {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         HashMap<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto",               env.getProperty("spring.jpa.hibernate.ddl-auto"));
-        properties.put("hibernate.dialect",
-                env.getProperty("spring.jpa.properties.hibernate.dialect"));
+        properties.put("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.hibernate.ddl-auto"));
+        properties.put("hibernate.dialect", env.getProperty("spring.jpa.properties.hibernate.dialect"));
         em.setJpaPropertyMap(properties);
 
         return em;
