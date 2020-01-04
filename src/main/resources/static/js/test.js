@@ -310,7 +310,7 @@ function displaySqlTasks(response) {
         let content = `<div class="" value="sqlTask">
                         <form>
                                 <div class="form-row row">
-                                        <div class="col-md-6">
+                                        <div>
                                             <div class="row">
                                                 <h4 class="col-form-label">` + sqlTask.title + `</h4>
                                             </div>
@@ -319,9 +319,8 @@ function displaySqlTasks(response) {
                                                 <label class="col-form-label" style="text-align: justify">` + sqlTask.description + `</label>
                                             </div>
                                         </div>
-                                        
-                                        <div class="col-md-6">
-                                                <img id="sqlGroupImage" src=` + callToRestController + ` style="max-width: 400px; max-width: 100%; max-height: 100%">
+                                        <div>
+                                             <img id="sqlGroupImage" src=` + callToRestController + ` style="max-width: 400px; max-width: 100%; max-height: 100%">
                                         </div>
                                 </div>
                                 <div class="form-row row">
@@ -329,8 +328,6 @@ function displaySqlTasks(response) {
                                         <label class="col-form-label">Please specify your SQL statement</label>
                                     </div>
                                     <div id="` + sqlTask.id + `" class="col-md-10 result">
-<!--                                         <input id="sqlTask` + response.sqlTasks.indexOf(sqlTask) + `"type='hidden' value='\` + sqlTask.id + \`'>-->
-<!--                                         <textarea id="sqlResponse` + response.sqlTasks.indexOf(sqlTask) + `"class="form-control" type="text" placeholder="Specify here your answer..."></textarea>                                    -->
                                          <textarea id="` + sqlTask.id + `" class="form-control" type="text" placeholder="Specify here your answer..."></textarea>                                    
                                     </div>
                                 </div>
@@ -338,9 +335,6 @@ function displaySqlTasks(response) {
                         </div>`;
         $(".theTest").append(content);
     });
-    // document.getElementById("sqltasks").innerHTML += `<div class="form-row row" style="margin-bottom: 100px">
-    //     <button id="saveSqlAnswers" type="submit" class="btn btn-primary" onclick="saveSqlAnswers()">Save Sql Answers</button>
-    // </div>`;
 }
 
 function displaySqlAnswers(data){

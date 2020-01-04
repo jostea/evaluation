@@ -34,7 +34,7 @@ CREATE TABLE tests.employee_info
     f_name     varchar(30) NULL,
     department varchar(30) NULL,
     project    varchar(20) NULL,
-    adress     varchar(20) NULL,
+    address     varchar(20) NULL,
     birthday   varchar(20) NULL,
     gender     varchar(10) NULL
 );
