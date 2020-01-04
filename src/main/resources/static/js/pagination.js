@@ -52,7 +52,7 @@ function addNumberOfPage() {
     let previousButton = `<button class="btn btn-primary" id="previousTaskPage" onclick="previousTask()">Previous</button>`;
 
     let nextButton = `<button class="btn btn-primary" id="nextTaskPage" onclick="nextTask()">Next</button>`;
-    nextButton += `<button id="saveActiveTasks" type="submit" class="btn btn-success" onclick="saveCurrentTask()">Submit Test</button>`;
+    nextButton += `<button id="saveActiveTasks" type="submit" class="btn btn-success" onclick="finishTest()">Submit Test</button>`;
 
     let buttonsOfPagination = ``;
     let open = true;
