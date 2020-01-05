@@ -103,7 +103,7 @@ function loadSimpleTasks(data) {
                 body += "<div hidden>" + data[i].id + "</div>";
                 body += "<h4>" + data[i].title + "</h4>";
                 body += "<h6>" + data[i].taskType + "</h6>";
-                body += "<p>" + data[i].description + "</p>";
+                body += "<p> " + data[i].description + "</p>";
                 for (let j = 0; j < data[i].allAnswerOptions.length; j++) {
                     body += "<div class='checkbox'>";
                     body += "<label>";
@@ -123,15 +123,15 @@ function loadSimpleTasks(data) {
                 body += "<div hidden>" + data[i].id + "</div>";
                 body += "<h4>" + data[i].title + "</h4>";
                 body += "<h6>" + data[i].taskType + "</h6>";
-                body += "<p>" + data[i].description + "</p>";
+                body += "<p> " + data[i].description + "</p>";
                 for (let j = 0; j < data[i].allAnswerOptions.length; j++) {
                     body += "<div id='singleAO" + j + "' class='checkbox'>";
                     body += "<label>";
                     body += "<div hidden>" + data[i].allAnswerOptions[j].id + "</div>";
                     if (candidateChecked(data[i].allAnswerOptions[j], i)) {
-                        body += "<input type='radio' name='singleCheck" + data[i].id + "' class='singleChecks' checked='true'>" + data[i].allAnswerOptions[j].answerOptionValue + "";
+                        body += "<input type='radio' name='singleCheck" + data[i].id + "' class='singleChecks' checked='true'> " + data[i].allAnswerOptions[j].answerOptionValue + "";
                     } else {
-                        body += "<input type='radio' name='singleCheck" + data[i].id + "' class='singleChecks'>" + data[i].allAnswerOptions[j].answerOptionValue + "";
+                        body += "<input type='radio' name='singleCheck" + data[i].id + "' class='singleChecks'> " + data[i].allAnswerOptions[j].answerOptionValue + "";
                     }
                     body += "</label>";
                     body += "</div>";
@@ -143,7 +143,7 @@ function loadSimpleTasks(data) {
                 body += "<div hidden>" + data[i].id + "</div>";
                 body += "<h4>" + data[i].title + "</h4>";
                 body += "<h6>" + data[i].taskType + "</h6>";
-                body += "<p>" + data[i].description + "</p>";
+                body += "<p> " + data[i].description + "</p>";
                 if (data[i].candidateAnswers.length>0) {
                     body += "<textarea id='customAnswer" + data[i].id + "' class='form-control customAnswers' type='text' placeholder='Your answer'>" + data[i].candidateAnswers[0].answerOptionValue + "</textarea>";
                 } else {

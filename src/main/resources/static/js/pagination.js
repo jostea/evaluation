@@ -49,10 +49,10 @@ function addNumberOfPage() {
         $(this).addClass('page' + index);
     });
 
-    let previousButton = `<button class="btn btn-primary" id="previousTaskPage" onclick="previousTask()">Previous</button>`;
+    let previousButton = `<button class="btn btn-sm btn-primary" id="previousTaskPage" onclick="previousTask()">Previous</button>`;
 
-    let nextButton = `<button class="btn btn-primary" id="nextTaskPage" onclick="nextTask()">Next</button>`;
-    nextButton += `<button id="saveActiveTasks" type="submit" class="btn btn-success" onclick="finishTest()">Submit Test</button>`;
+    let nextButton = `<button class="btn btn-sm btn-primary" id="nextTaskPage" onclick="nextTask()">Next</button>`;
+    nextButton += `<button id="saveActiveTasks" type="submit" class="btn btn-sm btn-success" onclick="finishTest()">Submit</button>`;
 
     let buttonsOfPagination = ``;
     let open = true;
