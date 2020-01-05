@@ -106,6 +106,11 @@ public class TestController {
         return model;
     }
 
+    @GetMapping(value = "/finish")
+    public String tasks() {
+        return "/test/testFinish";
+    }
+
     private Timestamp getTimestampTokenValidTo(Timestamp dateTokenCreated){
         Integer tokenValidity = Integer.valueOf(env.getProperty("test_token.validity"));
         Calendar calendar = Calendar.getInstance();

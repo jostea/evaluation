@@ -173,6 +173,10 @@ function displayCodeTasks(tasks) {
     $(".theTest").append(body);
 }
 
+function finishTest() {
+    window.location.href = gOptions.aws_path + "/finish";
+};
+
 $(".theTest").on('click', ".singleChecks", function () {
     let $box = $(this);
     if ($box.is(":checked")) {
