@@ -174,7 +174,25 @@ function displayCodeTasks(tasks) {
 }
 
 function finishTest() {
-    window.location.href = gOptions.aws_path + "/finish";
+    $(".theTest").children().each(function () {
+        if ($(this).hasClass("current")) {
+            saveCurrentTask($(this));
+        }
+    });
+    let url_current = new URL(window.location.href);
+    let token = url_current.searchParams.get("thd_i8").valueOf();
+    $.ajax({
+        method: "POST",
+        data: JSON.stringify(prepareDataForSavingMultiTask()),
+        url: gOptions.aws_path + "/testsrest/testFinish",
+        data: {thd_i8: token},
+        success: function () {
+            window.location.href = gOptions.aws_path + "/finish";
+        },
+        error: function (response) {
+            window.location.href = gOptions.aws_path + "/finish";
+        }
+    })
 };
 
 $(".theTest").on('click', ".singleChecks", function () {

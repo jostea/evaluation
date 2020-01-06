@@ -46,11 +46,11 @@ public class TestRestController {
         ResponseEntity response = null;
         if (candidate != null) {
             //if test has already been started - provide the message
-            if (candidate.getTestStatus().equals(TestStatusEnum.TEST_STARTED)){
+            if (candidate.getTestStatus() == TestStatusEnum.TEST_STARTED) {
                 log.warn("Candidate with id " + candidate.getId() + " has tried to restart the test");
                 GenerateTestDTO existingTest = generateTestService.getExistingTest(candidate);
                 return new ResponseEntity<>(existingTest, HttpStatus.ACCEPTED);
-            } else if (candidate.getTestStatus().equals(TestStatusEnum.WAITING_ACTIVATION)){
+            } else if (candidate.getTestStatus() == TestStatusEnum.WAITING_ACTIVATION) {
                 try {
                     GenerateTestDTO currentTest = generateTestService.generateTest(thd_i8);
                     candidate.setDateTestStarted(Timestamp.valueOf(LocalDateTime.now()));
@@ -69,21 +69,40 @@ public class TestRestController {
         return response;
     }
 
+    @PostMapping(value = "/testFinish")
+    public ResponseEntity<?> finishTest(@RequestParam String thd_i8) {
+        Candidate candidateToFinish = tokenService.getCandidateByToken(thd_i8);
+        ResponseEntity response = null;
+        try {
+            if (candidateToFinish != null) {
+                candidateToFinish.setTestStatus(TestStatusEnum.TEST_FINISHED);
+                candidateToFinish.setDateTestFinished(Timestamp.valueOf(LocalDateTime.now()));
+                candidateService.updateCandidate(candidateToFinish);
+                log.info("Candidate with token {} finished the test", thd_i8);
+                response = new ResponseEntity("Test is finished", HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            log.error("Error while finishing the test of candidate with token {}", thd_i8);
+            response = new ResponseEntity("Error while finishing the test", HttpStatus.BAD_REQUEST);
+        }
+        return response;
+    }
+
     @GetMapping(value = "/getSqlImage/{idSqlGroup}")
-    public ResponseEntity getSqlImage(@PathVariable Long idSqlGroup){
+    public ResponseEntity getSqlImage(@PathVariable Long idSqlGroup) {
         ResponseEntity responseAdmin = restAdminService.getSqlImage(idSqlGroup);
         return responseAdmin;
     }
 
     @PostMapping(value = "/saveSqlAnswers")
-    public ResponseEntity saveSqlAnswers(@RequestBody SqlCandidateAnswerDTO dto){
+    public ResponseEntity saveSqlAnswers(@RequestBody SqlCandidateAnswerDTO dto) {
         ArrayList<SqlAnswersDTO> sqlAnswers = dto.getAnswers();
         Candidate candidate = tokenService.getCandidateByToken(dto.getToken());
         try {
             candidateService.saveCandidateSqlAnswers(candidate, dto);
             log.info("Sql answers of Candidate with the token [" + dto.getToken() + "] were saved.");
             return new ResponseEntity("SQL answers were successfully processed.", HttpStatus.OK);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("Error while saving SQL answers of candidate with the token [" + dto.getToken() + "].");
             return new ResponseEntity("Error while processing SQL answers.", HttpStatus.BAD_REQUEST);
         }
@@ -120,21 +139,21 @@ public class TestRestController {
     }
 
     @PostMapping(value = "/saveOneSqlAnswer")
-    public ResponseEntity saveOneSqlAnswers(@RequestBody SqlCandidateAnswerDTO dto){
+    public ResponseEntity saveOneSqlAnswers(@RequestBody SqlCandidateAnswerDTO dto) {
         Candidate candidate = tokenService.getCandidateByToken(dto.getToken());
         try {
             candidateService.saveCandidateOneSqlAnswer(candidate, dto);
             log.info("One Sql answer of Candidate with the token [" + dto.getToken() + "] was saved.");
             return new ResponseEntity("One SQL answer was successfully processed.", HttpStatus.OK);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("Error while saving one SQL answer of candidate with the token [" + dto.getToken() + "].");
             return new ResponseEntity("Error while processing one SQL answer.", HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/getSqlAnswers/{token}")
-    public ResponseEntity<List<SqlAnswersDTO>> getSqlAnswers(@PathVariable("token") String tok){
-        try{
+    public ResponseEntity<List<SqlAnswersDTO>> getSqlAnswers(@PathVariable("token") String tok) {
+        try {
             Candidate candidate = tokenService.getCandidateByToken(tok);
             ArrayList<SqlAnswersDTO> sqlAnswersFromDB = new ArrayList<>();
             if (candidate != null) {
@@ -144,20 +163,20 @@ public class TestRestController {
                 }
             }
             log.info("Sql answers have been extracted from DB for the candidate with token " + tok);
-            return new ResponseEntity<>(sqlAnswersFromDB,HttpStatus.OK);
-        } catch (Exception e){
+            return new ResponseEntity<>(sqlAnswersFromDB, HttpStatus.OK);
+        } catch (Exception e) {
             log.error("Error while getting sql answers for the candidate with token " + tok);
             return new ResponseEntity("Error while reviewing candidate's answers", HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/getCandidateResults/{token}")
-    public ResponseEntity<CandidateTestResultsDTO> getCandidateResults(@PathVariable("token") String token){
-        try{
-            CandidateTestResultsDTO results =  testReviewService.reviewCandidateTest(token);
+    public ResponseEntity<CandidateTestResultsDTO> getCandidateResults(@PathVariable("token") String token) {
+        try {
+            CandidateTestResultsDTO results = testReviewService.reviewCandidateTest(token);
             log.info("Test results of candidate with token {} where provided");
             return new ResponseEntity<>(results, HttpStatus.OK);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("Error while trying to get test results for the candidate with token {}", token);
             return new ResponseEntity("Error while reviewing candidate's answers", HttpStatus.BAD_REQUEST);
         }

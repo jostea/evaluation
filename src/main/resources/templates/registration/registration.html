@@ -14,12 +14,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link th:href="@{/css/spinner.css}" type="text/css" rel="stylesheet">
 
     <title>Internship Registration</title>
 </head>
 
 <body>
-
+<div class="spinner">Your request is being processed...</div>
 <!-- Modal -->
 <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog modal-md">
@@ -41,7 +42,7 @@
     </div>
 </div>
 
-<div class="container">
+<div class="container main-div">
     <div class="row main">
         <div class="panel-heading">
             <div class="panel-title text-center">
@@ -148,6 +149,12 @@
 <script type="text/javascript" src="assets/js/bootstrap.js"></script>
 <script th:src="@{/js/config.js}"></script>
 <script>
+
+    $(document).ready(function () {
+        $(".spinner").hide();
+        $(".main-div").show();
+    });
+
     function showPopUp(title, message) {
         $("#myModal").find('h3').text(title);
         $("#myModal").find('h4').text(message);
@@ -209,6 +216,10 @@
                     url: gOptions.aws_path + "/registrationrest/addCandidate",
                     data: JSON.stringify(prepareData()),
                     contentType: "application/json",
+                    beforeSend: function () {
+                        $(".spinner").show();
+                        $(".main-div").hide();
+                    },
                     success: function () {
                         showPopUp("Confirmation", "You was successfully registered. \nPlease verify your email to start the test.");
                         async function sl() {
@@ -220,6 +231,10 @@
                         async function sl() {
                             location.href = gOptions.aws_path + "/registration";
                         }
+                    },
+                    complete: function () {
+                        $(".spinner").hide();
+                        $(".main-div").show();
                     }
                 })
             } else {
