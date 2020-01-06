@@ -46,11 +46,11 @@ public class TestRestController {
         ResponseEntity response = null;
         if (candidate != null) {
             //if test has already been started - provide the message
-            if (candidate.getTestStatus().equals(TestStatusEnum.TEST_STARTED)) {
+            if (candidate.getTestStatus() == TestStatusEnum.TEST_STARTED) {
                 log.warn("Candidate with id " + candidate.getId() + " has tried to restart the test");
                 GenerateTestDTO existingTest = generateTestService.getExistingTest(candidate);
                 return new ResponseEntity<>(existingTest, HttpStatus.ACCEPTED);
-            } else if (candidate.getTestStatus().equals(TestStatusEnum.WAITING_ACTIVATION)) {
+            } else if (candidate.getTestStatus() == TestStatusEnum.WAITING_ACTIVATION) {
                 try {
                     GenerateTestDTO currentTest = generateTestService.generateTest(thd_i8);
                     candidate.setDateTestStarted(Timestamp.valueOf(LocalDateTime.now()));

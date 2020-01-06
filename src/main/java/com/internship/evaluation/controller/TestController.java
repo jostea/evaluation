@@ -1,7 +1,6 @@
 package com.internship.evaluation.controller;
 
 import com.internship.evaluation.model.dto.candidate.CandidateStartTestDTO;
-import com.internship.evaluation.model.entity.Candidate;
 import com.internship.evaluation.model.enums.TestStatusEnum;
 import com.internship.evaluation.service.CandidateService;
 import com.internship.evaluation.service.TestTokenService;
