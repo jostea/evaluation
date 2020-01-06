@@ -19,28 +19,7 @@
                 <h1 id="mainTitle">Test for Endava internship</h1>
             </div>
             <div th:replace="fragments/profile :: profile"></div>
-            <div id="footer" class="panel panel-default">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-1">
-                            <div id="divForPreviousButton">
-                                <button class="btn" id="previousTaskPage" onclick="previousTask()"
-                                        style="display: none;">Previous
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-sm-10"></div>
-                        <div class="col-sm-1">
-                            <div id="divForNextButton">
-                                <button class="btn" id="nextTaskPage" onclick="nextTask()">Next</button>
-                                <button id="saveActiveTasks" type="submit" class="btn btn-primary"
-                                        style="display: none;" onclick="finishTest()">Submit Test
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
         <div class="col-sm-3">
             <div id="timerTimeId"></div>
@@ -54,6 +33,29 @@
                     <tbody>
                     </tbody>
                 </table>
+            </div>
+            <div id="footer" class="panel panel-default">
+                <div class="container-fluid">
+
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <div id="divForPreviousButton" style="padding-right: 175px">
+                                <button class="btn btn-sm" id="previousTaskPage" onclick="previousTask()"
+                                        style="display: none;">Previous
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-1">
+                            <div id="divForNextButton" style="padding-left: 175px">
+                                <button class="btn btn-sm" id="nextTaskPage" onclick="nextTask()">Next</button>
+                                <button id="saveActiveTasks" type="submit" class="btn btn-sm-primary"
+                                        style="display: none;" onclick="finishTest()">Submit Test
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
