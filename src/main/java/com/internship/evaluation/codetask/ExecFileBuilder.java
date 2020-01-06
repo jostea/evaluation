@@ -57,6 +57,9 @@ public class ExecFileBuilder {
     @Value("${code.task.template.objectcreation.tag}")
     private String objectCreationTag;
 
+    @Value("${code.task.template.stringvalue.tag}")
+    private String stringValueTag;
+
     @Value("${code.task.temp.folder}")
     private String tempFolder;
 
@@ -72,7 +75,7 @@ public class ExecFileBuilder {
         String returnType = getReturnType(methodSignature);
         String methodName = getMethodName(methodSignature);
 
-        StringBuilder sb = readFromFile(obtainFilePath(templateFileName));
+        StringBuilder sb = readFromFile(obtainFile(templateFileName));
         replaceString(sb, classNameTag, buildEvaluationClassName(userCodeTaskDTO.getQuestionId(), userCodeTaskDTO.getCandidateId()));
         replaceString(sb, methodTemplateTag, userCodeTaskDTO.getUserAnswer());
         replaceString(sb, classNameForTestCaseTag, finalClassNameForTestCase);
@@ -81,6 +84,7 @@ public class ExecFileBuilder {
         replaceString(sb, parametersTag, buildParameters(listOfParameters));
         replaceString(sb, returnTypeTag, returnType);
         replaceString(sb, constructorTag, buildConstructor(listOfParameters));
+        replaceString(sb, stringValueTag, checkStringValue(returnType));
 
         File file = new File(tempFolder + buildEvaluationFileName(userCodeTaskDTO.getQuestionId(), userCodeTaskDTO.getCandidateId()));
 
@@ -88,6 +92,17 @@ public class ExecFileBuilder {
         // need to figure out, do we create this file in temp folder, or send it directly somewhere???
         writeToFile(file, sb.toString());
         return file;
+    }
+
+    private String checkStringValue(String type) {
+        switch(type) {
+            case "String":
+            case "char":
+            case "Character":
+                return "+\"\\\"\"+";
+            default:
+                return "+\"\"+";
+        }
     }
 
     private String buildTestCaseClassName(final String questionId, final String candidateId) {

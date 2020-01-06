@@ -1,10 +1,17 @@
 package com.internship.evaluation.service;
 
+import com.amazonaws.services.lambda.invoke.LambdaFunctionException;
+import com.internship.evaluation.codetask.CompilationException;
+import com.internship.evaluation.codetask.aws.sdk.lambda.model.EvaluationResult;
+import com.internship.evaluation.codetask.aws.sdk.lambda.model.LambdaResponse;
+import com.internship.evaluation.codetask.resolver.CodeTaskEvaluationService;
 import com.internship.evaluation.config.TestDbConfiguration;
 import com.internship.evaluation.model.dto.generate_test.*;
-import com.internship.evaluation.model.dto.test.CandidateTestResultsDTO;
-import com.internship.evaluation.model.dto.test.SqlCandidateResultDTO;
+import com.internship.evaluation.model.dto.test.*;
 import com.internship.evaluation.model.entity.*;
+import com.internship.evaluation.repository.CandidateCodeTaskRepository;
+import com.internship.evaluation.repository.CodeTaskRepository;
+import com.internship.evaluation.repository.CorrectCodeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +19,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
@@ -28,6 +36,10 @@ public class TestReviewService {
 
     private final CandidateService candidateService;
     private final TestTokenService testTokenService;
+    private final CodeTaskEvaluationService codeTaskEvaluationService;
+    private final CodeTaskRepository codeTaskRepository;
+    private final CorrectCodeRepository correctCodeRepository;
+    private final CandidateCodeTaskRepository candidateCodeTaskRepository;
 
     public CandidateTestResultsDTO reviewCandidateTest(String token) {
         Candidate candidate;
@@ -40,12 +52,72 @@ public class TestReviewService {
         SingleChoiceCandidateAnswerDTO singleChoiceResults = getSingleChoiceTasksResults(candidate);
         MultiChoiceCandidateAnswerDTO multiChoiceResults = getMultiChoiceTasksResults(token, candidate);
         SqlCandidateResultDTO sqlResults = getSqlResults(token, candidate);
+        CandidateCheckedCodeTasksDTO candidateCheckedCodeTasksDTO = getCodeResults(token);
 
         candidateResults.setSingleChoiceTasksResults(singleChoiceResults);
         candidateResults.setMultiChoiceCandidateAnswerDTO(multiChoiceResults);
         candidateResults.setSqlResults(sqlResults);
+        candidateResults.setCandidateCheckedCodeTasksDTO(candidateCheckedCodeTasksDTO);
 
         return candidateResults;
+    }
+
+    private CandidateCheckedCodeTasksDTO getCodeResults(String token) {
+        List<CandidateCodeTask> candidateCodeTasks = testTokenService.getCandidateByToken(token).getCandidateCodeTasks();
+        checkCodeTasks(candidateCodeTasks, token);
+        List<CandidateCodeResultDTO> candidateCodeResultDTOS = new ArrayList<>();
+        for (CandidateCodeTask candidateCodeTask:candidateCodeTasks) {
+            candidateCodeResultDTOS.add(new CandidateCodeResultDTO(candidateCodeTask));
+        }
+        return new CandidateCheckedCodeTasksDTO(candidateCodeResultDTOS);
+    }
+
+    private void checkCodeTasks(List<CandidateCodeTask> candidateCodeTasks, String token) {
+            List<LambdaResponse> lambdaResponses = new ArrayList<>();
+            for (CandidateCodeTask candidateCodeTask:candidateCodeTasks) {
+                try {
+                    UserCodeTaskDTO toBeEvaluated = new UserCodeTaskDTO(candidateCodeTask);
+                    LambdaResponse evaluationResponse = codeTaskEvaluationService.evaluate(toBeEvaluated);
+                    lambdaResponses.add(evaluationResponse);
+                } catch (IOException io) {
+                    candidateCodeTask.setMessage(io.getMessage());
+                    candidateCodeTask.setIsCorrect(false);
+                    candidateCodeTaskRepository.save(candidateCodeTask);
+                } catch (CompilationException compilation) {
+                    candidateCodeTask.setMessage("Test failed during compilation. Message:" + compilation.getMessage());
+                    candidateCodeTask.setIsCorrect(false);
+                    candidateCodeTaskRepository.save(candidateCodeTask);
+                } catch (LambdaFunctionException lambda) {
+                    candidateCodeTask.setMessage("The task could not be evaluated: " + lambda.getMessage());
+                    candidateCodeTask.setIsCorrect(false);
+                    candidateCodeTaskRepository.save(candidateCodeTask);
+                }
+            }
+            for (LambdaResponse eachLambda:lambdaResponses) {
+                CodeTask verifyCode = codeTaskRepository.findById((long) eachLambda.getBody().get(0).getQuestionId()).get();
+                int correctCounter = 0;
+                Double correctRate;
+                StringBuilder failedCodes = new StringBuilder();
+                for (int i=0; i<eachLambda.getBody().size(); i++) {
+                    if(correctCodeRepository.findById((long) eachLambda.getBody().get(i).getCaseId()).get().getOutput().equals(eachLambda.getBody().get(i).getResult())) {
+                        correctCounter++;
+                    } else {
+                        failedCodes.append("The test failed for: INPUT: " + correctCodeRepository.findById((long) eachLambda.getBody().get(i).getCaseId()).get().getInput() +
+                                " OUTPUT: " + correctCodeRepository.findById((long) eachLambda.getBody().get(i).getCaseId()).get().getOutput() + ";\n");
+                    }
+                }
+                correctRate = (correctCounter * 1.0/verifyCode.getCorrectCodes().size());
+                CandidateCodeTask evaluatedTask = candidateCodeTaskRepository.findByCodeTaskAndCandidate(verifyCode, testTokenService.getCandidateByToken(token));
+                evaluatedTask.setRateCorrectness(correctRate);
+                if (Math.floor(correctRate) == 1) {
+                    evaluatedTask.setIsCorrect(true);
+                    evaluatedTask.setMessage("All tests successfully passed");
+                } else {
+                    evaluatedTask.setMessage(failedCodes.toString());
+                    evaluatedTask.setIsCorrect(false);
+                }
+                candidateCodeTaskRepository.save(evaluatedTask);
+            }
     }
 
     //region MULTI_CHOICE_TASKS processing

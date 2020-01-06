@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -36,4 +37,29 @@ public class TestToken {
     @Column(name = "is_active")
     private boolean isActive;
 
+    @Override
+    public String toString() {
+        return "TestToken{" +
+                "id=" + id +
+                ", token='" + token + '\'' +
+                ", dateCreated=" + dateCreated +
+                ", isActive=" + isActive +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TestToken testToken = (TestToken) o;
+        return isActive == testToken.isActive &&
+                id.equals(testToken.id) &&
+                token.equals(testToken.token) &&
+                dateCreated.equals(testToken.dateCreated);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, token, dateCreated, isActive);
+    }
 }

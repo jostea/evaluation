@@ -6,4 +6,5 @@ import lombok.Data;
 public class SaveCodeAnswerDTOFromUI {
     Long id;
     String code;
+    String token;
 }

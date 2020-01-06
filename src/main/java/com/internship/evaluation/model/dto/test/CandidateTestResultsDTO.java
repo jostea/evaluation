@@ -18,6 +18,7 @@ public class CandidateTestResultsDTO {
     private SingleChoiceCandidateAnswerDTO singleChoiceTasksResults;
     private MultiChoiceCandidateAnswerDTO multiChoiceCandidateAnswerDTO;
     private SqlCandidateResultDTO sqlResults;
+    private CandidateCheckedCodeTasksDTO candidateCheckedCodeTasksDTO;
 
     @Override
     public String toString() {
