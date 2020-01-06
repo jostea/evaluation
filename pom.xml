@@ -143,6 +143,18 @@
             <artifactId>aws-java-sdk-lambda</artifactId>
             <version>1.11.682</version>
         </dependency>
+
+        <!--        Logger-->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
     </dependencies>
 
     <build>
