@@ -78,6 +78,7 @@ public class TestRestController {
                 candidateToFinish.setTestStatus(TestStatusEnum.TEST_FINISHED);
                 candidateToFinish.setDateTestFinished(Timestamp.valueOf(LocalDateTime.now()));
                 candidateService.updateCandidate(candidateToFinish);
+                testReviewService.reviewCandidateTest(thd_i8);
                 log.info("Candidate with token {} finished the test", thd_i8);
                 response = new ResponseEntity("Test is finished", HttpStatus.OK);
             }
@@ -171,11 +172,11 @@ public class TestRestController {
     }
 
     @GetMapping("/getCandidateResults/{token}")
-    public ResponseEntity<CandidateTestResultsDTO> getCandidateResults(@PathVariable("token") String token) {
+    public ResponseEntity<?> getCandidateResults(@PathVariable("token") String token) {
         try {
-            CandidateTestResultsDTO results = testReviewService.reviewCandidateTest(token);
+            testReviewService.reviewCandidateTest(token);
             log.info("Test results of candidate with token {} where provided");
-            return new ResponseEntity<>(results, HttpStatus.OK);
+            return new ResponseEntity<>("Results are reviewed", HttpStatus.OK);
         } catch (Exception e) {
             log.error("Error while trying to get test results for the candidate with token {}", token);
             return new ResponseEntity("Error while reviewing candidate's answers", HttpStatus.BAD_REQUEST);
