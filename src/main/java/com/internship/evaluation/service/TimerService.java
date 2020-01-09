@@ -3,6 +3,7 @@ package com.internship.evaluation.service;
 import com.internship.evaluation.exception.TimeOut;
 import com.internship.evaluation.model.entity.*;
 import com.internship.evaluation.model.enums.TestStatusEnum;
+import com.internship.evaluation.repository.CandidateRepository;
 import com.internship.evaluation.repository.StreamTimeRepository;
 import com.internship.evaluation.repository.TestTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,8 @@ public class TimerService {
 
     private final TestTokenService testTokenService;
 
+    private final CandidateRepository candidateRepository;
+
     public Integer getLeftTime(String token) throws TimeOut {
         Candidate candidate = testTokenService.getCandidateByToken(token);
         Stream stream = candidate.getStream();
@@ -49,26 +52,21 @@ public class TimerService {
 
     @Scheduled(cron = "*/30 * * * * *")
     public void findTimeOutTasks() {
-        List<TestToken> testTokens = testTokenRepository.findAll();
-        if (testTokens.size() != 0)
-            for (TestToken token : testTokens) {
-                Candidate candidate = testTokenService.getCandidateByToken(token.getToken());
-                Stream stream = candidate.getStream();
-                Optional<StreamTime> streamTimeOptional = streamTimeRepository.findFirstByStream_Id(stream.getId());
-                if (streamTimeOptional.isPresent()) {
-                    StreamTime streamTime = streamTimeOptional.get();
-                    Integer timeTest = streamTime.getTimeTest();
-                    if (candidate.getDateTestStarted() != null) {
-                        LocalDateTime haveTime = candidate.getDateTestStarted().toLocalDateTime().plusMinutes(timeTest);
-                        if ((haveTime.compareTo(LocalDateTime.now()) < 0)) {
-                            candidate.setTestStatus(TestStatusEnum.TEST_FINISHED);
-                            candidate.setDateTestFinished(Timestamp.valueOf(LocalDateTime.now()));
-                            token.setActive(false);
-                            token.setCandidate(candidate);
-                            testTokenRepository.save(token);
+        for (Candidate candidate : candidateRepository.findCandidatesByTestStatus(TestStatusEnum.TEST_STARTED)) {
+            Stream stream = candidate.getStream();
+            Optional<StreamTime> streamTimeOptional = streamTimeRepository.findFirstByStream_Id(stream.getId());
+            if (streamTimeOptional.isPresent()) {
+                        StreamTime streamTime = streamTimeOptional.get();
+                        Integer timeTest = streamTime.getTimeTest();
+                        if (candidate.getDateTestStarted() != null) {
+                            LocalDateTime haveTime = candidate.getDateTestStarted().toLocalDateTime().plusMinutes(timeTest);
+                            if ((haveTime.compareTo(LocalDateTime.now()) < 0)) {
+                                candidate.setTestStatus(TestStatusEnum.TEST_FINISHED);
+                                candidate.setDateTestFinished(Timestamp.valueOf(LocalDateTime.now()));
+                                candidateRepository.save(candidate);
+                            }
                         }
                     }
-                }
-            }
+        }
     }
 }
