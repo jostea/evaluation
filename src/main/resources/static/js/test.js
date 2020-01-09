@@ -187,10 +187,10 @@ function finishTest() {
         url: gOptions.aws_path + "/testsrest/testFinish",
         data: {thd_i8: token},
         success: function () {
-            window.location.href = gOptions.aws_path + "/finish";
+            window.location.href = gOptions.aws_path + "/finish/" + token;
         },
         error: function (response) {
-            window.location.href = gOptions.aws_path + "/finish";
+            window.location.href = gOptions.aws_path + "/finish/" + token;
         }
     })
 };

@@ -79,7 +79,7 @@ public class TestRestController {
                 candidateToFinish.setTestStatus(TestStatusEnum.TEST_FINISHED);
                 candidateToFinish.setDateTestFinished(Timestamp.valueOf(LocalDateTime.now()));
                 candidateService.updateCandidate(candidateToFinish);
-                testReviewService.reviewCandidateTest(thd_i8);
+//                testReviewService.reviewCandidateTest(thd_i8);
                 log.info("Candidate with token {} finished the test", thd_i8);
                 response = new ResponseEntity("Test is finished", HttpStatus.OK);
             }
