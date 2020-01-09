@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
@@ -49,16 +51,18 @@ public class SqlTask {
     @Column(name = "correct_statement")
     private String correctStatement;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "sql_stream_table", joinColumns = @JoinColumn(name = "sql_task_id"),
             inverseJoinColumns = @JoinColumn(name = "stream_id"))
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Stream> streams;
 
     @ManyToOne
     @JoinColumn(name="sql_group_id")
     private SqlGroup sqlGroup;
 
-    @OneToMany(mappedBy = "sqlTask")
+    @OneToMany(mappedBy = "sqlTask", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<CandidateSqlTask> candidateSqlTasks;
 
     @Override

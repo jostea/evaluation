@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
@@ -45,15 +47,18 @@ public class CodeTask {
     @NotNull(message = "Signature of method is required")
     private String signature;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "code_stream_table", joinColumns = @JoinColumn(name = "code_task_id"),
             inverseJoinColumns = @JoinColumn(name = "stream_id"))
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Stream> streams;
 
-    @OneToMany(mappedBy = "codeTask")
+    @OneToMany(mappedBy = "codeTask", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<CorrectCode> correctCodes;
 
-    @OneToMany(mappedBy = "codeTask")
+    @OneToMany(mappedBy = "codeTask", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<CandidateCodeTask> candidateCodeTasks;
 
     @Override

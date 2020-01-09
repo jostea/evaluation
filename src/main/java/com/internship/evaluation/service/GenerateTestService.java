@@ -122,28 +122,28 @@ public class GenerateTestService {
         List<GenerateSqlTaskDTO> sqlTasks = new ArrayList<>();
         List<GenerateCodeTaskDTO> codeTasks = new ArrayList<>();
 
-        if (existingMulti.size() > 0) {
+        if (!existingMulti.isEmpty()) {
             for (CandidateMultiTask candidateMultiTask : existingMulti) {
                 GenerateTaskDTO generateTaskDTO = new GenerateTaskDTO(candidateMultiTask);
                 simpleTasks.add(generateTaskDTO);
             }
         }
 
-        if (candidate.getCandidateSingleTasks().size() > 0) {
+        if (!candidate.getCandidateSingleTasks().isEmpty()) {
             for (CandidateSingleTask candidateSingleTask : candidate.getCandidateSingleTasks()) {
                 GenerateTaskDTO generateTaskDTO = new GenerateTaskDTO(candidateSingleTask);
                 simpleTasks.add(generateTaskDTO);
             }
         }
 
-        if (candidate.getCandidateCustomTasks().size() > 0) {
+        if (!candidate.getCandidateCustomTasks().isEmpty()) {
             for (CandidateCustomTask candidateCustomTask : candidate.getCandidateCustomTasks()) {
                 GenerateTaskDTO generateTaskDTO = new GenerateTaskDTO(candidateCustomTask);
                 simpleTasks.add(generateTaskDTO);
             }
         }
 
-        if (candidate.getCandidateSqlTasks().size() > 0) {
+        if (!candidate.getCandidateSqlTasks().isEmpty()) {
             for (CandidateSqlTask candidateSqlTask : candidate.getCandidateSqlTasks()) {
                 GenerateSqlTaskDTO generateSqlTaskDTO = new GenerateSqlTaskDTO(candidateSqlTask.getSqlTask());
                 sqlTasks.add(generateSqlTaskDTO);
@@ -151,7 +151,7 @@ public class GenerateTestService {
             existingTest.setSqlTasks(sqlTasks);
         }
 
-        if (candidate.getCandidateCodeTasks().size() > 0) {
+        if (!candidate.getCandidateCodeTasks().isEmpty()) {
             for (CandidateCodeTask candidateCodeTask : candidate.getCandidateCodeTasks()) {
                 GenerateCodeTaskDTO generateCodeTaskDTO = new GenerateCodeTaskDTO(candidateCodeTask.getCodeTask());
                 generateCodeTaskDTO.setCodeProvided(candidateCodeTask.getCodeProvided());

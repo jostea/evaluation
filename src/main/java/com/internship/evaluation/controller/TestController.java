@@ -3,6 +3,7 @@ package com.internship.evaluation.controller;
 import com.internship.evaluation.model.dto.candidate.CandidateStartTestDTO;
 import com.internship.evaluation.model.enums.TestStatusEnum;
 import com.internship.evaluation.service.CandidateService;
+import com.internship.evaluation.service.TestReviewExecutorService;
 import com.internship.evaluation.service.TestReviewService;
 import com.internship.evaluation.service.TestTokenService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class TestController {
     private final TestTokenService tokenService;
     private final CandidateService candidateService;
     private final TestReviewService testReviewService;
+    private final TestReviewExecutorService executorService;
 
     @GetMapping(value = "/testStart")
     public ModelAndView startTest(@RequestParam String thd_i8) {
@@ -111,7 +113,7 @@ public class TestController {
 
     @GetMapping(value = "/finish/{token}")
     public String tasks(@PathVariable String token) {
-        testReviewService.reviewCandidateTest(token);
+        executorService.executeReview(token);
         return "/test/testFinish";
     }
 
