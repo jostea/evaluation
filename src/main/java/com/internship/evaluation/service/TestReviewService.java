@@ -2,7 +2,6 @@ package com.internship.evaluation.service;
 
 import com.amazonaws.services.lambda.invoke.LambdaFunctionException;
 import com.internship.evaluation.codetask.CompilationException;
-import com.internship.evaluation.codetask.aws.sdk.lambda.model.EvaluationResult;
 import com.internship.evaluation.codetask.aws.sdk.lambda.model.LambdaResponse;
 import com.internship.evaluation.codetask.resolver.CodeTaskEvaluationService;
 import com.internship.evaluation.config.TestDbConfiguration;

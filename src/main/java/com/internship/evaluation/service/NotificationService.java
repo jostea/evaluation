@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -35,6 +37,24 @@ public class NotificationService {
     private final TestTokenRepository testTokenRepository;
     private final StreamRepository streamRepository;
     private final StreamTimeRepository streamTimeRepository;
+
+    public void sendTestReviewNotification(Long candidateId) {
+        String emailList = env.getProperty("test.mail.notification.list");
+        if (emailList != null) {
+            JavaMailSenderImpl javaMailSender = prepareJavaMailSender();
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            StringBuilder body = new StringBuilder();
+            body.append("Hi,")
+                    .append("\nA new candidate has submitted a test for the next internship.")
+                    .append("\nBelow you can find the link to the report for current candidate's results.")
+                    .append("\n" + env.getProperty("adminconnect.property") + "candidatesReport/" + candidateId)
+                    .append("\n\nBest regards,\nDava gate");
+            mailMessage.setTo(emailList.split(","));
+            mailMessage.setSubject("A new internship test has been submitted");
+            mailMessage.setText(body.toString());
+            javaMailSender.send(mailMessage);
+        }
+    }
 
     public void sendTestInvite(Long candId) {
         //Get Candidate
