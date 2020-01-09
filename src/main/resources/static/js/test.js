@@ -85,6 +85,7 @@ let saveInterval = setInterval(function () {
 
 function loadSimpleTasks(data) {
     let body = "";
+
     function candidateChecked(answerOption, idx) {
         if (data[idx].taskType === "Multi Choice Question" || data[idx].taskType === "Single Choice Question") {
             for (let j = 0; j < data[idx].candidateAnswers.length; j++) {
@@ -144,7 +145,7 @@ function loadSimpleTasks(data) {
                 body += "<h4>" + data[i].title + "</h4>";
                 body += "<h6>" + data[i].taskType + "</h6>";
                 body += "<p> " + data[i].description + "</p>";
-                if (data[i].candidateAnswers.length>0) {
+                if (data[i].candidateAnswers.length > 0) {
                     body += "<textarea id='customAnswer" + data[i].id + "' class='form-control customAnswers' type='text' placeholder='Your answer'>" + data[i].candidateAnswers[0].answerOptionValue + "</textarea>";
                 } else {
                     body += "<textarea id='customAnswer" + data[i].id + "' class='form-control customAnswers' type='text' placeholder='Your answer'></textarea>";
@@ -158,11 +159,11 @@ function loadSimpleTasks(data) {
 
 function displayCodeTasks(tasks) {
     let body = "";
-    for (let i=0; i<tasks.length; i++) {
+    for (let i = 0; i < tasks.length; i++) {
         body += "<div class='codeTask' value='codeTask'>";
         body += "<div hidden>" + tasks[i].id + "</div>";
         body += "<h4>" + tasks[i].title + "</h4>";
-        body +=  "<p>" + tasks[i].description + "</p>";
+        body += "<p>" + tasks[i].description + "</p>";
         if (tasks[i].codeProvided) {
             body += "<textarea class='form-control codeAnswer' type='text' rows='15'>" + tasks[i].codeProvided + "</textarea>";
         } else {
@@ -179,20 +180,7 @@ function finishTest() {
             saveCurrentTask($(this));
         }
     });
-    let url_current = new URL(window.location.href);
-    let token = url_current.searchParams.get("thd_i8").valueOf();
-    $.ajax({
-        method: "POST",
-        data: JSON.stringify(prepareDataForSavingMultiTask()),
-        url: gOptions.aws_path + "/testsrest/testFinish",
-        data: {thd_i8: token},
-        success: function () {
-            window.location.href = gOptions.aws_path + "/finish/" + token;
-        },
-        error: function (response) {
-            window.location.href = gOptions.aws_path + "/finish/" + token;
-        }
-    })
+    $('#confirmSubmit').modal('show');
 };
 
 $(".theTest").on('click', ".singleChecks", function () {
@@ -205,6 +193,25 @@ $(".theTest").on('click', ".singleChecks", function () {
         $box.prop("checked", false);
     }
 });
+
+$('#confirmSubmit').on('click', '#comfirmSubmitTest', function (e) {
+        // $form.trigger('submit');
+        let url_current = new URL(window.location.href);
+        let token = url_current.searchParams.get("thd_i8").valueOf();
+        $.ajax({
+            method: "POST",
+            // data: JSON.stringify(prepareDataForSavingMultiTask()),
+            url: gOptions.aws_path + "/testsrest/testFinish",
+            data: {thd_i8: token},
+            success: function () {
+                window.location.href = gOptions.aws_path + "/finish/" + token;
+            },
+            error: function (response) {
+                window.location.href = gOptions.aws_path + "/finish/" + token;
+            }
+        })
+    }
+)
 
 function saveMultiAnswers() {
     if (prepareDataForSavingMultiTask()) {
@@ -239,6 +246,7 @@ function saveSingleAnswers() {
         })
     }
 }
+
 function saveCustomAnswer() {
     if (prepareDataForSavingCustomTask()) {
         $.ajax({
@@ -361,18 +369,18 @@ function displaySqlTasks(response) {
     });
 }
 
-function displaySqlAnswers(data){
-    $("[value='sqlTask']").find('*').find('textarea').each(function(){
-        for (let i = 0; i < data.length; i++){
+function displaySqlAnswers(data) {
+    $("[value='sqlTask']").find('*').find('textarea').each(function () {
+        for (let i = 0; i < data.length; i++) {
             let id = parseInt($(this).attr("id"), 10);
-            if (id== data[i].sqlTaskId && data[i].sqlAnswer){
+            if (id == data[i].sqlTaskId && data[i].sqlAnswer) {
                 $(this).val(data[i].sqlAnswer);
             }
         }
     })
 }
 
-function getSqlAnswers(){
+function getSqlAnswers() {
     let url_current = new URL(window.location.href);
     let token = url_current.searchParams.get("thd_i8").valueOf();
     $.ajax({
