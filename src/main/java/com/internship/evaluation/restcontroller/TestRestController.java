@@ -39,6 +39,7 @@ public class TestRestController {
     private final CandidateService candidateService;
     private final RestAdminService restAdminService;
     private final TestReviewService testReviewService;
+    private final NotificationService notificationService;
 
     @PostMapping(value = "/testStart")
     public ResponseEntity<?> startTest(@RequestParam String thd_i8) {
@@ -171,11 +172,24 @@ public class TestRestController {
         }
     }
 
+    @GetMapping("/reEvaluateCandidate/{token}")
+    public ResponseEntity<?> reEvaluateCandidate(@PathVariable("token") String token) {
+        try {
+            testReviewService.reviewCandidateTest(token);
+            log.info("The candidate has been re-evaluated.");
+            return new ResponseEntity<>("Results are reviewed", HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error while trying to re-evaluate the candidate with token {}", token);
+            return new ResponseEntity("Error while re-evaluating candidate's answers", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/getCandidateResults/{token}")
     public ResponseEntity<?> getCandidateResults(@PathVariable("token") String token) {
         try {
             testReviewService.reviewCandidateTest(token);
             log.info("Test results of candidate with token {} where provided");
+            notificationService.sendTestReviewNotification(tokenService.getCandidateByToken(token).getId());
             return new ResponseEntity<>("Results are reviewed", HttpStatus.OK);
         } catch (Exception e) {
             log.error("Error while trying to get test results for the candidate with token {}", token);
