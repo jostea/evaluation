@@ -6,13 +6,28 @@
     <title>Test</title>
     <link type="text/css" rel="stylesheet" th:href="@{/css/task.css}">
     <link type="text/css" rel="stylesheet" th:href="@{/css/test.css}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
 
 <div class="container-fluid">
+
+    <div class="modal fade" id="confirmSubmit" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-body" style="text-align:center">
+                    <h3><strong>Do you want to send your test answers?</strong></h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-primary" id="comfirmSubmitTest">Yes, Submit</button>
+                    <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-sm-9">
             <div>

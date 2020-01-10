@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -28,7 +30,8 @@ public class SqlGroup {
     @Column(name = "image_path")
     private String imagePath;
 
-    @OneToMany(mappedBy = "sqlGroup")
+    @OneToMany(mappedBy = "sqlGroup", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<SqlTask> sqlTasks;
 
     @Override

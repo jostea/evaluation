@@ -49,6 +49,7 @@ public class TestReviewService {
         candidateResults.setCandidateId(testTokenService.getCandidateByToken(token).getId());
 
         SingleChoiceCandidateAnswerDTO singleChoiceResults = getSingleChoiceTasksResults(candidate);
+
         MultiChoiceCandidateAnswerDTO multiChoiceResults = getMultiChoiceTasksResults(token, candidate);
         SqlCandidateResultDTO sqlResults = getSqlResults(token, candidate);
         CandidateCheckedCodeTasksDTO candidateCheckedCodeTasksDTO = getCodeResults(token);
@@ -65,81 +66,87 @@ public class TestReviewService {
         List<CandidateCodeTask> candidateCodeTasks = testTokenService.getCandidateByToken(token).getCandidateCodeTasks();
         checkCodeTasks(candidateCodeTasks, token);
         List<CandidateCodeResultDTO> candidateCodeResultDTOS = new ArrayList<>();
-        for (CandidateCodeTask candidateCodeTask:candidateCodeTasks) {
+        for (CandidateCodeTask candidateCodeTask : candidateCodeTasks) {
             candidateCodeResultDTOS.add(new CandidateCodeResultDTO(candidateCodeTask));
         }
         return new CandidateCheckedCodeTasksDTO(candidateCodeResultDTOS);
     }
 
     private void checkCodeTasks(List<CandidateCodeTask> candidateCodeTasks, String token) {
-            List<LambdaResponse> lambdaResponses = new ArrayList<>();
-            for (CandidateCodeTask candidateCodeTask:candidateCodeTasks) {
-                try {
-                    UserCodeTaskDTO toBeEvaluated = new UserCodeTaskDTO(candidateCodeTask);
-                    LambdaResponse evaluationResponse = codeTaskEvaluationService.evaluate(toBeEvaluated);
-                    lambdaResponses.add(evaluationResponse);
-                } catch (IOException io) {
-                    candidateCodeTask.setMessage(io.getMessage());
-                    candidateCodeTask.setIsCorrect(false);
-                    candidateCodeTaskRepository.save(candidateCodeTask);
-                } catch (CompilationException compilation) {
-                    candidateCodeTask.setMessage("Test failed during compilation. Message:" + compilation.getMessage());
-                    candidateCodeTask.setIsCorrect(false);
-                    candidateCodeTaskRepository.save(candidateCodeTask);
-                } catch (LambdaFunctionException lambda) {
-                    candidateCodeTask.setMessage("The task could not be evaluated: " + lambda.getMessage());
-                    candidateCodeTask.setIsCorrect(false);
-                    candidateCodeTaskRepository.save(candidateCodeTask);
-                }
+        List<LambdaResponse> lambdaResponses = new ArrayList<>();
+        for (CandidateCodeTask candidateCodeTask : candidateCodeTasks) {
+            try {
+                UserCodeTaskDTO toBeEvaluated = new UserCodeTaskDTO(candidateCodeTask);
+                LambdaResponse evaluationResponse = codeTaskEvaluationService.evaluate(toBeEvaluated);
+                lambdaResponses.add(evaluationResponse);
+            } catch (IOException io) {
+                candidateCodeTask.setMessage(io.getMessage());
+                candidateCodeTask.setIsCorrect(false);
+                candidateCodeTaskRepository.save(candidateCodeTask);
+            } catch (CompilationException compilation) {
+                candidateCodeTask.setMessage("Test failed during compilation. Message:" + compilation.getMessage());
+                candidateCodeTask.setIsCorrect(false);
+                candidateCodeTaskRepository.save(candidateCodeTask);
+            } catch (LambdaFunctionException lambda) {
+                candidateCodeTask.setMessage("The task could not be evaluated: " + lambda.getMessage());
+                candidateCodeTask.setIsCorrect(false);
+                candidateCodeTaskRepository.save(candidateCodeTask);
             }
-            for (LambdaResponse eachLambda:lambdaResponses) {
-                CodeTask verifyCode = codeTaskRepository.findById((long) eachLambda.getBody().get(0).getQuestionId()).get();
-                int correctCounter = 0;
-                Double correctRate;
-                StringBuilder failedCodes = new StringBuilder();
-                for (int i=0; i<eachLambda.getBody().size(); i++) {
-                    if(correctCodeRepository.findById((long) eachLambda.getBody().get(i).getCaseId()).get().getOutput().equals(eachLambda.getBody().get(i).getResult())) {
-                        correctCounter++;
-                    } else {
-                        failedCodes.append("The test failed for: INPUT: " + correctCodeRepository.findById((long) eachLambda.getBody().get(i).getCaseId()).get().getInput() +
-                                " OUTPUT: " + correctCodeRepository.findById((long) eachLambda.getBody().get(i).getCaseId()).get().getOutput() + ";\n");
-                    }
-                }
-                correctRate = (correctCounter * 1.0/verifyCode.getCorrectCodes().size());
-                CandidateCodeTask evaluatedTask = candidateCodeTaskRepository.findByCodeTaskAndCandidate(verifyCode, testTokenService.getCandidateByToken(token));
-                evaluatedTask.setRateCorrectness(correctRate);
-                if (Math.floor(correctRate) == 1) {
-                    evaluatedTask.setIsCorrect(true);
-                    evaluatedTask.setMessage("All tests successfully passed");
+        }
+        for (LambdaResponse eachLambda : lambdaResponses) {
+            CodeTask verifyCode = codeTaskRepository.findById((long) eachLambda.getBody().get(0).getQuestionId()).get();
+            int correctCounter = 0;
+            Double correctRate;
+            StringBuilder failedCodes = new StringBuilder();
+            for (int i = 0; i < eachLambda.getBody().size(); i++) {
+                if (correctCodeRepository.findById((long) eachLambda.getBody().get(i).getCaseId()).get().getOutput().equals(eachLambda.getBody().get(i).getResult())) {
+                    correctCounter++;
                 } else {
-                    evaluatedTask.setMessage(failedCodes.toString());
-                    evaluatedTask.setIsCorrect(false);
+                    failedCodes.append("The test failed for: INPUT: " + correctCodeRepository.findById((long) eachLambda.getBody().get(i).getCaseId()).get().getInput() +
+                            " OUTPUT: " + correctCodeRepository.findById((long) eachLambda.getBody().get(i).getCaseId()).get().getOutput() + ";\n");
                 }
-                candidateCodeTaskRepository.save(evaluatedTask);
             }
+            correctRate = (correctCounter * 1.0 / verifyCode.getCorrectCodes().size());
+            CandidateCodeTask evaluatedTask = candidateCodeTaskRepository.findByCodeTaskAndCandidate(verifyCode, testTokenService.getCandidateByToken(token));
+            evaluatedTask.setRateCorrectness(correctRate);
+            if (Math.floor(correctRate) == 1) {
+                evaluatedTask.setIsCorrect(true);
+                evaluatedTask.setMessage("All tests successfully passed");
+            } else {
+                evaluatedTask.setMessage(failedCodes.toString());
+                evaluatedTask.setIsCorrect(false);
+            }
+            candidateCodeTaskRepository.save(evaluatedTask);
+        }
     }
 
     //region MULTI_CHOICE_TASKS processing
     private MultiChoiceCandidateAnswerDTO getMultiChoiceTasksResults(String token, Candidate candidate) {
-        MultiChoiceCandidateAnswerDTO multiChoiceResult = new MultiChoiceCandidateAnswerDTO();
-        ArrayList<MultiChoiceTaskAnswerDTO> listAnswerResults = new ArrayList<>();
-        List<CandidateMultiTask> questionsAsked = testTokenService.getCandidateByToken(token).getCandidateMultiTasks();
-        if (questionsAsked.size() > 0) {
-            for (CandidateMultiTask taskAsked : questionsAsked) {
-                MultiChoiceTaskAnswerDTO answer = new MultiChoiceTaskAnswerDTO();
-                answer.setMultiChoiceTaskId(taskAsked.getId());
-                Map<Long, String> correctAnswers = new HashMap<>();
-                for (AnswersOption ao : taskAsked.getTask().getAnswersOptions()) {
-                    correctAnswers.put(ao.getId(), ao.getAnswerOptionValue());
+        MultiChoiceCandidateAnswerDTO multiChoiceResult = null;
+        try {
+            multiChoiceResult = new MultiChoiceCandidateAnswerDTO();
+            ArrayList<MultiChoiceTaskAnswerDTO> listAnswerResults = new ArrayList<>();
+            List<CandidateMultiTask> questionsAsked = testTokenService.getCandidateByToken(token).getCandidateMultiTasks();
+            if (!questionsAsked.isEmpty()) {
+                for (CandidateMultiTask taskAsked : questionsAsked) {
+                    MultiChoiceTaskAnswerDTO answer = new MultiChoiceTaskAnswerDTO();
+                    answer.setMultiChoiceTaskId(taskAsked.getId());
+                    Map<Long, String> correctAnswers = new HashMap<>();
+                    for (AnswersOption ao : taskAsked.getTask().getAnswersOptions()) {
+                        correctAnswers.put(ao.getId(), ao.getAnswerOptionValue());
+                    }
+                    Map<Long, String> selectedAnswers = getCandidateMultiTasksAnswers(candidate, taskAsked.getId());
+                    answer.setAoCorrectAnswers(correctAnswers);
+                    answer.setAoSelectedAnswers(selectedAnswers);
+                    answer.setCorrect(areMapsEqual(correctAnswers, selectedAnswers));
+                    listAnswerResults.add(answer);
                 }
-                Map<Long, String> selectedAnswers = getCandidateMultiTasksAnswers(candidate, taskAsked.getId());
-                answer.setAoCorrectAnswers(correctAnswers);
-                answer.setAoSelectedAnswers(selectedAnswers);
-                answer.setCorrect(areMapsEqual(correctAnswers, selectedAnswers));
-                listAnswerResults.add(answer);
             }
+            multiChoiceResult.setMultiChoiceAnswers(listAnswerResults);
+            log.info("Success in multi-choice");
+        } catch (Exception e) {
+            log.error("ERROR in multi-choice ", e);
         }
-        multiChoiceResult.setMultiChoiceAnswers(listAnswerResults);
         return multiChoiceResult;
     }
 
@@ -172,21 +179,27 @@ public class TestReviewService {
     //endregion
 
     private SingleChoiceCandidateAnswerDTO getSingleChoiceTasksResults(Candidate candidate) {
-        SingleChoiceCandidateAnswerDTO singleChoiceCandidateAnswerDTO = new SingleChoiceCandidateAnswerDTO();
-        ArrayList<SingleChoiceTaskAnswerDTO> singleChoiceAnswers = new ArrayList<>();
-        if (candidate != null) {
-            for (CandidateSingleTask candidateSingleTask : candidate.getCandidateSingleTasks()) {
-                SingleChoiceTaskAnswerDTO answerDTO = new SingleChoiceTaskAnswerDTO();
-                answerDTO.setSingleChoiceTaskId(candidateSingleTask.getId());
-                if (candidateSingleTask.getAnswersOption() != null) {
-                    answerDTO.setSelectedAnswerOptionId(candidateSingleTask.getAnswersOption().getId());
-                    answerDTO.setSelectedAnswerOptionText(candidateSingleTask.getAnswersOption().getAnswerOptionValue());
-                    answerDTO.setIsCorrect(candidateSingleTask.getAnswersOption().isCorrect());
+        SingleChoiceCandidateAnswerDTO singleChoiceCandidateAnswerDTO = null;
+        try {
+            singleChoiceCandidateAnswerDTO = new SingleChoiceCandidateAnswerDTO();
+            ArrayList<SingleChoiceTaskAnswerDTO> singleChoiceAnswers = new ArrayList<>();
+            if (candidate != null && !candidate.getCandidateSingleTasks().isEmpty()) {
+                for (CandidateSingleTask candidateSingleTask : candidate.getCandidateSingleTasks()) {
+                    SingleChoiceTaskAnswerDTO answerDTO = new SingleChoiceTaskAnswerDTO();
+                    answerDTO.setSingleChoiceTaskId(candidateSingleTask.getId());
+                    if (candidateSingleTask.getAnswersOption() != null) {
+                        answerDTO.setSelectedAnswerOptionId(candidateSingleTask.getAnswersOption().getId());
+                        answerDTO.setSelectedAnswerOptionText(candidateSingleTask.getAnswersOption().getAnswerOptionValue());
+                        answerDTO.setIsCorrect(candidateSingleTask.getAnswersOption().isCorrect());
+                    }
+                    singleChoiceAnswers.add(answerDTO);
                 }
-                singleChoiceAnswers.add(answerDTO);
             }
+            singleChoiceCandidateAnswerDTO.setAnswers(singleChoiceAnswers);
+            log.info("Success Single Choice");
+        } catch (Exception e) {
+            log.error("Error in Single Choice ", e);
         }
-        singleChoiceCandidateAnswerDTO.setAnswers(singleChoiceAnswers);
         return singleChoiceCandidateAnswerDTO;
     }
 
@@ -205,35 +218,27 @@ public class TestReviewService {
     }
 
     private SqlCandidateResultDTO getSqlResults(String token, Candidate candidate) {
-        ArrayList<SqlAnswersDTO> sqlAnswersBeforeReview = initializeCandidateSqlAnswers(candidate);
-        ArrayList<SqlAnswersDTO> sqlAnswersAfterReview = new ArrayList<>();
-        SqlCandidateResultDTO sqlResult = new SqlCandidateResultDTO();
-
-        DataSource db = testDbConfiguration.testDataSource();
-        Connection con = null;
+        log.info("Sql tasks check. Token: " + token);
+        ArrayList<SqlAnswersDTO> sqlAnswersBeforeReview = null;
+        ArrayList<SqlAnswersDTO> sqlAnswersAfterReview = null;
+        SqlCandidateResultDTO sqlResult = null;
+        try {
+            sqlAnswersBeforeReview = initializeCandidateSqlAnswers(candidate);
+            sqlAnswersAfterReview = new ArrayList<>();
+            sqlResult = new SqlCandidateResultDTO();
+        } catch (Exception e) {
+            log.error("Error in SQL get results" ,e);
+        }
 
         try {
-            con = db.getConnection();
-            con.setAutoCommit(false);
-
             for (SqlAnswersDTO answer : sqlAnswersBeforeReview) {
-                sqlAnswersAfterReview = processSqlAnswer(answer, sqlAnswersAfterReview, con);
+                sqlAnswersAfterReview = processSqlAnswer(answer, sqlAnswersAfterReview);
             }
             setSqlMessages(candidate, sqlAnswersAfterReview);
-        } catch (SQLException e) {
-            log.error("Error while connecting to DB: {}, token: {}", e.getMessage(), token);
         } catch (Exception e) {
-            log.error("Error while analysing candidate's SQL answers: {}, token: {}", e.getMessage(), token);
+            log.error("Error while connecting to DB: {}, token: {}", e.getMessage(), token);
         } finally {
             sqlResult.setCheckedCandidateSqlAnswers(sqlAnswersAfterReview);
-            try {
-                if (con != null) {
-                    con.rollback();
-                    con.close();
-                }
-            } catch (SQLException e) {
-                log.error("Error while closing connection to the TEST DB: " + e.getMessage());
-            }
         }
         return sqlResult;
     }
@@ -242,26 +247,31 @@ public class TestReviewService {
     //region PRIVATE METHODS TO CHECK CANDIDATE SQL ANSWERS
 
     private void setSqlMessages(Candidate candidate, ArrayList<SqlAnswersDTO> sqlAnswersAfterReview) {
-        if (candidate != null && sqlAnswersAfterReview.size() > 0) {
-            List<CandidateSqlTask> sqlTasksWithMessages = new ArrayList<>();
-            for (CandidateSqlTask sqlTask : candidate.getCandidateSqlTasks()) {
-                Optional<SqlAnswersDTO> answerOpt = sqlAnswersAfterReview
-                        .stream()
-                        .filter(t -> t.getSqlTaskId().equals(sqlTask.getSqlTask().getId()))
-                        .findFirst();
-                if (answerOpt.isPresent()) {
-                    sqlTask.setMessage(answerOpt.get().getMessage());
-                    sqlTask.setCorrect(answerOpt.get().getIsCorrect());
+        try {
+            if (candidate != null && sqlAnswersAfterReview.size() > 0) {
+                List<CandidateSqlTask> sqlTasksWithMessages = new ArrayList<>();
+                for (CandidateSqlTask sqlTask : candidate.getCandidateSqlTasks()) {
+                    Optional<SqlAnswersDTO> answerOpt = sqlAnswersAfterReview
+                            .stream()
+                            .filter(t -> t.getSqlTaskId().equals(sqlTask.getSqlTask().getId()))
+                            .findFirst();
+                    if (answerOpt.isPresent()) {
+                        sqlTask.setMessage(answerOpt.get().getMessage());
+                        sqlTask.setCorrect(answerOpt.get().getIsCorrect());
+                    }
+                    sqlTasksWithMessages.add(sqlTask);
                 }
-                sqlTasksWithMessages.add(sqlTask);
+                candidate.setCandidateSqlTasks(sqlTasksWithMessages);
+                candidateService.updateCandidate(candidate);
+                log.info("Success in setting SQL review message");
             }
-            candidate.setCandidateSqlTasks(sqlTasksWithMessages);
-            candidateService.updateCandidate(candidate);
+        } catch (Exception e) {
+            log.error("Error in setting SQL review message", e);
         }
     }
 
-    private ArrayList<SqlAnswersDTO> processSqlAnswer(SqlAnswersDTO answerToProcess, ArrayList<SqlAnswersDTO> sqlAnswersAfterReview, Connection con) {
-
+    private ArrayList<SqlAnswersDTO> processSqlAnswer(SqlAnswersDTO answerToProcess, ArrayList<SqlAnswersDTO> sqlAnswersAfterReview) {
+        log.info("START SQL answer to process: " + answerToProcess);
         SqlAnswersDTO answer = answerToProcess;
         ResultSet correctResultSet = null;
         ResultSet candidateResultSet = null;
@@ -274,8 +284,14 @@ public class TestReviewService {
 
         List<List<String>> listCorrectResults = new ArrayList<>();
         List<List<String>> listCandidateResults = new ArrayList<>();
+        DataSource db = null;
+        Connection con = null;
 
         try {
+            db = testDbConfiguration.testDataSource();
+            con = db.getConnection();
+            con.setAutoCommit(false);
+
             statement = con.createStatement(ResultSet.CONCUR_UPDATABLE, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.HOLD_CURSORS_OVER_COMMIT);
             statementCandidate = con.createStatement(ResultSet.CONCUR_UPDATABLE, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.HOLD_CURSORS_OVER_COMMIT);
 
@@ -339,9 +355,13 @@ public class TestReviewService {
                 if (statementCandidate != null) {
                     statementCandidate.close();
                 }
+                if (con != null) {
+                    con.close();
+                }
             } catch (SQLException e) {
                 log.error("Error while closing result sets");
             }
+            log.info("FINISH SQL answer to process: " + answerToProcess);
         }
         return sqlAnswersAfterReview;
     }

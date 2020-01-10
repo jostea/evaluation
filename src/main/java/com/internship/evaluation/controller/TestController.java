@@ -3,6 +3,8 @@ package com.internship.evaluation.controller;
 import com.internship.evaluation.model.dto.candidate.CandidateStartTestDTO;
 import com.internship.evaluation.model.enums.TestStatusEnum;
 import com.internship.evaluation.service.CandidateService;
+import com.internship.evaluation.service.TestReviewExecutorService;
+import com.internship.evaluation.service.TestReviewService;
 import com.internship.evaluation.service.TestTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -28,6 +31,8 @@ public class TestController {
 
     private final TestTokenService tokenService;
     private final CandidateService candidateService;
+    private final TestReviewService testReviewService;
+    private final TestReviewExecutorService executorService;
 
     @GetMapping(value = "/testStart")
     public ModelAndView startTest(@RequestParam String thd_i8) {
@@ -106,8 +111,9 @@ public class TestController {
         return model;
     }
 
-    @GetMapping(value = "/finish")
-    public String tasks() {
+    @GetMapping(value = "/finish/{token}")
+    public String tasks(@PathVariable String token) {
+        executorService.executeReview(token);
         return "/test/testFinish";
     }
 

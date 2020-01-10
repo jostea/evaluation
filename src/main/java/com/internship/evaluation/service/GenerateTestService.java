@@ -43,7 +43,7 @@ public class GenerateTestService {
             List<SqlTask> candidateSqlTasks = new ArrayList<>();
             List<CodeTask> candidateCodeTasks = new ArrayList<>();
             Candidate candidate = candidateRepository.findById(testTokenRepository.findFirstByToken(token).get().getCandidate().getId()).get();
-            for (TestStructure ts: candidate.getStream().getTestStructures()) {
+            for (TestStructure ts : candidate.getStream().getTestStructures()) {
                 tasks = taskRepository.findAllByTaskTypeAndComplexityAndIsEnabledAndStreams(TypeEnum.fromString(ts.getTaskType().name()), ts.getComplexity(), true, candidate.getStream());
                 sqlTasks = sqlTaskRepository.findAllByComplexityAndIsEnabledIsTrueAndStreams(ts.getComplexity(), candidate.getStream());
                 codeTasks = codeTaskRepository.findAllByComplexityAndIsEnabledIsTrueAndTechnologyAndStreams(ts.getComplexity(), TechnologyEnum.JAVA, candidate.getStream());
@@ -121,41 +121,57 @@ public class GenerateTestService {
         List<GenerateTaskDTO> simpleTasks = new ArrayList<>();
         List<GenerateSqlTaskDTO> sqlTasks = new ArrayList<>();
         List<GenerateCodeTaskDTO> codeTasks = new ArrayList<>();
-        for (CandidateMultiTask candidateMultiTask : existingMulti) {
-            GenerateTaskDTO generateTaskDTO = new GenerateTaskDTO(candidateMultiTask);
-            simpleTasks.add(generateTaskDTO);
+
+        if (!existingMulti.isEmpty()) {
+            for (CandidateMultiTask candidateMultiTask : existingMulti) {
+                GenerateTaskDTO generateTaskDTO = new GenerateTaskDTO(candidateMultiTask);
+                simpleTasks.add(generateTaskDTO);
+            }
         }
-        for (CandidateSingleTask candidateSingleTask : candidate.getCandidateSingleTasks()) {
-            GenerateTaskDTO generateTaskDTO = new GenerateTaskDTO(candidateSingleTask);
-            simpleTasks.add(generateTaskDTO);
+
+        if (!candidate.getCandidateSingleTasks().isEmpty()) {
+            for (CandidateSingleTask candidateSingleTask : candidate.getCandidateSingleTasks()) {
+                GenerateTaskDTO generateTaskDTO = new GenerateTaskDTO(candidateSingleTask);
+                simpleTasks.add(generateTaskDTO);
+            }
         }
-        for (CandidateCustomTask candidateCustomTask : candidate.getCandidateCustomTasks()) {
-            GenerateTaskDTO generateTaskDTO = new GenerateTaskDTO(candidateCustomTask);
-            simpleTasks.add(generateTaskDTO);
+
+        if (!candidate.getCandidateCustomTasks().isEmpty()) {
+            for (CandidateCustomTask candidateCustomTask : candidate.getCandidateCustomTasks()) {
+                GenerateTaskDTO generateTaskDTO = new GenerateTaskDTO(candidateCustomTask);
+                simpleTasks.add(generateTaskDTO);
+            }
         }
-        for (CandidateSqlTask candidateSqlTask : candidate.getCandidateSqlTasks()) {
-            GenerateSqlTaskDTO generateSqlTaskDTO = new GenerateSqlTaskDTO(candidateSqlTask.getSqlTask());
-            sqlTasks.add(generateSqlTaskDTO);
+
+        if (!candidate.getCandidateSqlTasks().isEmpty()) {
+            for (CandidateSqlTask candidateSqlTask : candidate.getCandidateSqlTasks()) {
+                GenerateSqlTaskDTO generateSqlTaskDTO = new GenerateSqlTaskDTO(candidateSqlTask.getSqlTask());
+                sqlTasks.add(generateSqlTaskDTO);
+            }
+            existingTest.setSqlTasks(sqlTasks);
         }
-        for (CandidateCodeTask candidateCodeTask : candidate.getCandidateCodeTasks()) {
-            GenerateCodeTaskDTO generateCodeTaskDTO = new GenerateCodeTaskDTO(candidateCodeTask.getCodeTask());
-            generateCodeTaskDTO.setCodeProvided(candidateCodeTask.getCodeProvided());
-            codeTasks.add(generateCodeTaskDTO);
+
+        if (!candidate.getCandidateCodeTasks().isEmpty()) {
+            for (CandidateCodeTask candidateCodeTask : candidate.getCandidateCodeTasks()) {
+                GenerateCodeTaskDTO generateCodeTaskDTO = new GenerateCodeTaskDTO(candidateCodeTask.getCodeTask());
+                generateCodeTaskDTO.setCodeProvided(candidateCodeTask.getCodeProvided());
+                codeTasks.add(generateCodeTaskDTO);
+            }
+            existingTest.setCodeTasks(codeTasks);
         }
+
         existingTest.setTasks(simpleTasks);
-        existingTest.setSqlTasks(sqlTasks);
-        existingTest.setCodeTasks(codeTasks);
         return existingTest;
     }
 
     private static int getRandom(int max) {
-        return  (int) ((Math.random() * (max)));
+        return (int) ((Math.random() * (max)));
     }
 
     private static List<Integer> getListOfRandoms(int max, int len) {
         List<Integer> randoms = new ArrayList<>();
         int i = 0;
-        while (i<len) {
+        while (i < len) {
             int currentRandom = getRandom(max);
             if (!randoms.contains(currentRandom)) {
                 randoms.add(currentRandom);
