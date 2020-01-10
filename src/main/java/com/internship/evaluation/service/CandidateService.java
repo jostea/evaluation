@@ -70,7 +70,6 @@ public class CandidateService {
         return candidateStartTestDTO;
     }
 
-
     public Long addCandidate(CandidateRegistrationDTO candidateDto) {
         //result of operation (is saved or not)
         Long regCandId;
@@ -163,6 +162,7 @@ public class CandidateService {
             throw new Exception("Task answers could not be updated");
         }
     }
+
     public void saveCandidateOneSqlAnswer(Candidate candidate, SqlCandidateAnswerDTO dto) {
         if (dto.getAnswers().size() == 1){
             SqlAnswersDTO sqlAnswersDTO = dto.getAnswers().get(0);
