@@ -29,12 +29,10 @@ public class CandidateSkillRestController {
         try {
             return new ResponseEntity<>(candidateSkillService.getSkillForSpecifiedStream(token), HttpStatus.OK);
         } catch (StreamNotFound e) {
-            log.error("Error when user '" + authentication.getName() + "' get candidate's skills specified by stream; \nerror message: " + e.getMessage()
-                    + "\nstack trace: " + e.getStackTrace());
+            log.error("Error when user '" + authentication.getName() + "' get candidate's skills specified by stream;", e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }catch (Exception e) {
-            log.error("Error when user '" + authentication.getName() + "' get candidate's skills; \nerror message: " + e.getMessage()
-                    + "\nstack trace: " + e.getStackTrace());
+            log.error("Error when user '" + authentication.getName() + "' get candidate's skills;", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -45,12 +43,10 @@ public class CandidateSkillRestController {
             return new ResponseEntity<>(
                     candidateSkillService.getSkillSpecifiedBySkillType(token), HttpStatus.OK);
         } catch (StreamNotFound e) {
-            log.error("Error when user '" + authentication.getName() + "' get candidate's skills; \nerror message: " + e.getMessage()
-                    + "\nstack trace: " + e.getStackTrace());
+            log.error("Error when user '" + authentication.getName() + "' get candidate's skills;", e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            log.error("Error when user '" + authentication.getName() + "' get candidate's skills; \nerror message: " + e.getMessage()
-                    + "\nstack trace: " + e.getStackTrace());
+            log.error("Error when user '" + authentication.getName() + "' get candidate's skills;", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -68,8 +64,7 @@ public class CandidateSkillRestController {
             candidateSkillService.populateCandidatesSkills(token);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (StreamNotFound e) {
-            log.error("Error when user '" + authentication.getName() + "' get candidate's skills; \nerror message: " + e.getMessage()
-                    + "\nstack trace: " + e.getStackTrace());
+            log.error("Error when user '" + authentication.getName() + "' get candidate's skills;", e);
             return new ResponseEntity<>("This candidate didn't have stream",HttpStatus.NOT_FOUND);
         }
     }
@@ -79,8 +74,7 @@ public class CandidateSkillRestController {
         try {
             return new ResponseEntity<>(candidateSkillService.findAllCandidatesSkills(token), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Error when user '" + authentication.getName() + "' get all candidate's skills; \nerror message: " + e.getMessage()
-                    + "\nstack trace: " + e.getStackTrace());
+            log.error("Error when user '" + authentication.getName() + "' get all candidate's skills;", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

@@ -40,7 +40,7 @@ public class RegistrationRestController {
                 return new ResponseEntity<>("Candidate was registered.", HttpStatus.OK);
             }
         } catch (Exception e){
-            log.error("Error while trying to add new candidate: " + candidateDTO.toString() + "; \nStack Trace: " + e.getStackTrace());
+            log.error("Error while trying to add new candidate: " + candidateDTO.toString(), e);
             return new ResponseEntity<>("Error while additing new candidate", HttpStatus.BAD_REQUEST);
         }
     }
