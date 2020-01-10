@@ -59,7 +59,7 @@ public class TestRestController {
                     candidateService.updateCandidate(candidate);
                     return new ResponseEntity<>(currentTest, HttpStatus.OK);
                 } catch (Exception e) {
-                    log.error("Error while starting the test for candidate " + candidate.toString() + "\nStack trace: " + e.getStackTrace());
+                    log.error("Error while starting the test for candidate " + candidate.toString(), e);
                     return new ResponseEntity<>("Error while starting the test", HttpStatus.BAD_REQUEST);
                 }
             }
@@ -83,7 +83,7 @@ public class TestRestController {
                 response = new ResponseEntity("Test is finished", HttpStatus.OK);
             }
         } catch (Exception e) {
-            log.error("Error while finishing the test of candidate with token {}", thd_i8);
+            log.error("Error while finishing the test of candidate with token: " + thd_i8, e);
             response = new ResponseEntity("Error while finishing the test", HttpStatus.BAD_REQUEST);
         }
         return response;
@@ -104,7 +104,7 @@ public class TestRestController {
             log.info("Sql answers of Candidate with the token [" + dto.getToken() + "] were saved.");
             return new ResponseEntity("SQL answers were successfully processed.", HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Error while saving SQL answers of candidate with the token [" + dto.getToken() + "].");
+            log.error("Error while saving SQL answers of candidate with the token [" + dto.getToken() + "].", e);
             return new ResponseEntity("Error while processing SQL answers.", HttpStatus.BAD_REQUEST);
         }
     }
@@ -147,7 +147,7 @@ public class TestRestController {
             log.info("One Sql answer of Candidate with the token [" + dto.getToken() + "] was saved.");
             return new ResponseEntity("One SQL answer was successfully processed.", HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Error while saving one SQL answer of candidate with the token [" + dto.getToken() + "].");
+            log.error("Error while saving one SQL answer of candidate with the token [" + dto.getToken() + "].", e);
             return new ResponseEntity("Error while processing one SQL answer.", HttpStatus.BAD_REQUEST);
         }
     }
@@ -166,7 +166,7 @@ public class TestRestController {
             log.info("Sql answers have been extracted from DB for the candidate with token " + tok);
             return new ResponseEntity<>(sqlAnswersFromDB, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Error while getting sql answers for the candidate with token " + tok);
+            log.error("Error while getting sql answers for the candidate with token " + tok, e);
             return new ResponseEntity("Error while reviewing candidate's answers", HttpStatus.BAD_REQUEST);
         }
     }
@@ -178,7 +178,7 @@ public class TestRestController {
             log.info("The candidate has been re-evaluated.");
             return new ResponseEntity<>("Results are reviewed", HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Error while trying to re-evaluate the candidate with token {}", token);
+            log.error("Error while trying to re-evaluate the candidate with token " + token, e);
             return new ResponseEntity("Error while re-evaluating candidate's answers", HttpStatus.BAD_REQUEST);
         }
     }

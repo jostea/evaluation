@@ -227,18 +227,22 @@ public class TestReviewService {
             sqlAnswersAfterReview = new ArrayList<>();
             sqlResult = new SqlCandidateResultDTO();
         } catch (Exception e) {
-            log.error("Error in SQL get results" ,e);
+            log.error("Error in SQL get results", e);
         }
 
         try {
-            for (SqlAnswersDTO answer : sqlAnswersBeforeReview) {
-                sqlAnswersAfterReview = processSqlAnswer(answer, sqlAnswersAfterReview);
+            if (sqlAnswersBeforeReview != null) {
+                for (SqlAnswersDTO answer : sqlAnswersBeforeReview) {
+                    sqlAnswersAfterReview = processSqlAnswer(answer, sqlAnswersAfterReview);
+                }
             }
             setSqlMessages(candidate, sqlAnswersAfterReview);
         } catch (Exception e) {
             log.error("Error while connecting to DB: {}, token: {}", e.getMessage(), token);
         } finally {
-            sqlResult.setCheckedCandidateSqlAnswers(sqlAnswersAfterReview);
+            if (sqlResult != null) {
+                sqlResult.setCheckedCandidateSqlAnswers(sqlAnswersAfterReview);
+            }
         }
         return sqlResult;
     }

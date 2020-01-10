@@ -212,7 +212,7 @@ public class CandidateService {
                 candidateCodeTaskRepository.save(toBeUpdated);
             }
         } catch (Exception e) {
-            log.warn("Code task could not be updated. Stack trace: " + e.getStackTrace());
+            log.warn("Code task could not be updated. ", e);
             throw new Exception("Task could not be updated");
         }
     }
@@ -240,7 +240,7 @@ public class CandidateService {
 
         for (Candidate candidate : inDb) {
             //compare Stream and Internship
-            if (candidate.getStream().getId() == stream.getId() && candidate.getInternship().getId() == internship.getId()) {
+            if (candidate.getStream().getId().equals(stream.getId()) && candidate.getInternship().getId().equals(internship.getId())) {
                 result = true;
                 break;
             } else {
