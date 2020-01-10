@@ -81,7 +81,7 @@ let saveInterval = setInterval(function () {
             return false;
         }
     });
-}, 26500);
+}, 5000);
 
 function loadSimpleTasks(data) {
     let body = "";

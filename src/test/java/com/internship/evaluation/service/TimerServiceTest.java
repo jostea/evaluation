@@ -102,6 +102,8 @@ public class TimerServiceTest {
         when(testTokenService.getCandidateByToken("token")).thenReturn(mockedCandidate);
         when(streamTimeRepository.findFirstByStream_Id(stream.getId())).thenReturn(Optional.of(mockedStreamTime));
         timerService.getLeftTime("token");
-
     }
+
+
+
 }

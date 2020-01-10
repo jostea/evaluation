@@ -152,23 +152,32 @@ public class CandidateServiceTest {
                 .name("SomeName")
                 .build();
 
-        Candidate mockedCandidate = Candidate.builder()
-                .id(1L)
-                .firstName("Johny")
-                .lastName("Bravo")
-                .email("somemail@gmail.com")
-                .stream(mockedStream)
-                .internship(mockedInternship)
-                .build();
+        Candidate mockedCandidate = new Candidate();
+        mockedCandidate.setFirstName("Johny");
+        mockedCandidate.setLastName("Bravo");
+        mockedCandidate.setEmail("somemail@gmail.com");
+        mockedCandidate.setStream(mockedStream);
+        mockedCandidate.setInternship(mockedInternship);
+
+        Candidate mockedCandidate2 = new Candidate();
+        mockedCandidate2.setId(1L);
+        mockedCandidate2.setFirstName("Johny");
+        mockedCandidate2.setLastName("Bravo");
+        mockedCandidate2.setEmail("somemail@gmail.com");
+        mockedCandidate2.setStream(mockedStream);
+        mockedCandidate2.setInternship(mockedInternship);
 
         List<Candidate> candidates = new ArrayList<>();
         when(candidateRepository.findAll()).thenReturn(candidates);
         when(streamRepository.findById(candidateRegistrationDTO.getStreamId())).thenReturn(Optional.of(mockedStream));
         when(internshipRepository.findById(candidateRegistrationDTO.getInternshipId())).thenReturn(Optional.of(mockedInternship));
-        when(candidateRepository.saveAndFlush(mockedCandidate)).thenReturn(mockedCandidate);
+        when(candidateRepository.saveAndFlush(any(Candidate.class))).thenReturn(mockedCandidate);
 
         Long returnedResult = candidateService.addCandidate(candidateRegistrationDTO);
-
+        verify(candidateRepository).findAll();
+        verify(streamRepository).findById(candidateRegistrationDTO.getStreamId());
+        verify(internshipRepository).findById(candidateRegistrationDTO.getInternshipId());
+        verify(candidateRepository).saveAndFlush(any(Candidate.class));
         assertThat(returnedResult).isEqualTo(mockedCandidate.getId());
     }
 
