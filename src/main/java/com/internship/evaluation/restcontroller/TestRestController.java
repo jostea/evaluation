@@ -183,19 +183,6 @@ public class TestRestController {
         }
     }
 
-    @GetMapping("/getCandidateResults/{token}")
-    public ResponseEntity<?> getCandidateResults(@PathVariable("token") String token) {
-        try {
-            testReviewService.reviewCandidateTest(token);
-            log.info("Test results of candidate with token {} where provided");
-            notificationService.sendTestReviewNotification(tokenService.getCandidateByToken(token).getId());
-            return new ResponseEntity<>("Results are reviewed", HttpStatus.OK);
-        } catch (Exception e) {
-            log.error("Error while trying to get test results for the candidate with token {}", token);
-            return new ResponseEntity("Error while reviewing candidate's answers", HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @PostMapping("/saveCodeAnswer")
     public ResponseEntity<?> saveCodeAnswer(@RequestBody SaveCodeAnswerDTOFromUI saveCodeAnswerDTO) {
         try {

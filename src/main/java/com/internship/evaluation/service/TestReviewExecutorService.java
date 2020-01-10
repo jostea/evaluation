@@ -15,6 +15,8 @@ import java.util.concurrent.Executors;
 public class TestReviewExecutorService {
 
     private final TestReviewService testReviewService;
+    private final NotificationService notificationService;
+    private final TestTokenService testTokenService;
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -24,6 +26,7 @@ public class TestReviewExecutorService {
                     log.info("START executing test review for the token: " + token);
                     CandidateTestResultsDTO results = testReviewService.reviewCandidateTest(token);
                     log.info("FINISH executing test review for the token: " + token);
+                    notificationService.sendTestReviewNotification(testTokenService.getCandidateByToken(token).getId());
                 }
         );
     }
