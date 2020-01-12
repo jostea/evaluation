@@ -30,46 +30,41 @@
 
     <div class="row">
         <div class="col-sm-9">
-            <div>
-                <h1 id="mainTitle">Test for Endava internship</h1>
+            <div class="panel panel-default">
+                <div class="panel-heading" id="#mainTitle">
+                    <h2>Test for Endava Internship</h2>
+                </div>
+                <div class="panel-body">
+                    <div th:replace="fragments/profile :: profile"></div>
+                </div>
             </div>
-            <div th:replace="fragments/profile :: profile"></div>
 
         </div>
         <div class="col-sm-3">
             <div id="timerTimeId"></div>
-        </div>
-        <div class="col-sm-3">
-            <div class="class-div-buttons">
-                <br>
-                <h3>Task Pages:</h3>
-                <br>
-                <table id="numbersOfPage" align="center">
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-            <div id="footer" class="panel panel-default">
-                <div class="container-fluid">
-
-                    <div class="row">
-                        <div class="col-sm-1">
-                            <div id="divForPreviousButton" style="padding-right: 175px">
-                                <button class="btn btn-sm" id="previousTaskPage" onclick="previousTask()"
-                                        style="display: none;">Previous
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-sm-1"></div>
-                        <div class="col-sm-1">
-                            <div id="divForNextButton" style="padding-left: 175px">
-                                <button class="btn btn-sm" id="nextTaskPage" onclick="nextTask()">Next</button>
-                                <button id="saveActiveTasks" type="submit" class="btn btn-sm-primary"
-                                        style="display: none;" onclick="finishTest()">Submit Test
-                                </button>
-                            </div>
+            <div>
+                <div class="panel panel-default">
+                    <div class="panel-heading head">
+                        <h3 class="title-with-time panel-title">Task pages</h3>
+                        <h6>(Pick any task page)</h6>
+                    </div>
+                    <div class="panel-body">
+                        <div class="class-div-buttons">
+                            <table id="numbersOfPage" align="center">
+                                <tbody>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+                </div>
+                <div id="footer" class="panel panel-default">
+                    <nav aria-label="...">
+                        <ul class="pager">
+                            <li class="previous" id="previousTaskPage" onclick="previousTask()"><a style="cursor: pointer"><span aria-hidden="true">&larr;</span> Previous</a></li>
+                            <li class="next" id="nextTaskPage" onclick="nextTask()"><a style="cursor: pointer">Next <span aria-hidden="true">&rarr;</span></a></li>
+                            <li class="next" id="saveActiveTasks" onclick="finishTest()"><a style="cursor: pointer; background: #5CB85C; color: white;">Submit Test</a></li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>

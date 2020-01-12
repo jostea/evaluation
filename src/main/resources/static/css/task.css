@@ -1,19 +1,16 @@
 .multiTask {
-    background: #f9f7f1;
     padding: 10px 5%;
     margin: 3px;
     border-radius: 5px;
 }
 
 .singleTask {
-    background: #f0f9f9;
     padding: 10px 5%;
     margin: 3px;
     border-radius: 5px;
 }
 
 .customTask {
-    background: #edf9ea;
     padding: 10px 5%;
     margin: 3px;
     border-radius: 5px;
@@ -32,7 +29,6 @@ div[value="sqlTask"] {
 }
 
 .codeTask {
-    background: #dfe9f5;
     padding: 10px 5%;
     margin: 3px;
     border-radius: 5px;

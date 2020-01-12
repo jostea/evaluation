@@ -10,9 +10,16 @@
 }
 .class-div-buttons{
     text-align:center;
-    background-color: #f1efeff7;
     border-radius: 10px;
     padding-bottom: 20px;
+}
+
+.checkbox {
+    padding: 5px;
+}
+
+textarea {
+    resize: vertical;
 }
 
 td {
@@ -21,18 +28,13 @@ td {
 
 #timerTimeId {
     margin-top: 20px;
-    text-align: center;
     background-color: #eae5e5;
-    border-radius: 10px;
-    margin-bottom: 20px;
+    text-align: center;
 }
 
 
 .title-with-time {
     font-weight: normal;
-    background-color: #f1efeff7;
-    padding-bottom: 10px;
-    padding-top: 10px;
 }
 
 .line-with-time {
@@ -58,10 +60,6 @@ td {
     padding: 10px;
 }
 
-#timerTimeId {
-    padding: 10px;
-}
-
 #footer {
     background-color: #fbfbfb;
     bottom: 0;
@@ -75,25 +73,14 @@ body {
     margin-bottom: 50px;
 }
 
-h3 {
-    padding-top: 10px;
-    padding-left: 50px;
-}
-
 .theTest {
     margin-bottom: 100px;
     margin-top: 20px;
 }
 
-#mainTitle {
-    text-align: center;
-    background-color: #de411b;
-    padding-top: 30px;
-    color: white;
-    padding-bottom: 30px;
-    text-transform: uppercase;
-    font-weight: bold;
-    border-radius: 10px;
+.panel-heading {
+    background-color: #de411b !important;
+    color: white !important;
 }
 
 #technicalSkillTable,
@@ -140,4 +127,26 @@ h3 {
     border: #5CB85C;
     width: 70px;
     height: 30px;
+}
+
+.paginationButton {
+    width: 45px;
+}
+
+.btn-primary {
+    background-color: #de411b !important;
+    color: white !important;
+    border: #de411b !important;
+}
+
+body .pager {
+    margin: 0;
+}
+
+.head {
+    text-align: center;
+}
+
+html {
+    overflow-y:scroll;
 }
