@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+
+    <!-- Website Font style -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+
+    <!-- Google Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/teststart.css}">
+
+    <title>Test Start Page</title>
+
+</head>
+<body>
+<div class="container">
+    <div class="row main">
+        <div class="row">
+            <div class="panel-heading">
+                <div class="panel-title text-center">
+                    <h2 class="title">ENDAVA Internship Test</h2>
+                    <hr/>
+                    <h4>Internship: <span th:text="${internship_name}"/></h4>
+                    <br>
+                    <h5>Discipline: <span th:text="${discipline}"/></h5>
+                    <h5>Stream: <span th:text="${stream}"/></h5>
+                    <hr>
+                    <br>
+                </div>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-3"></div>
+            <div class="md-form amber-textarea active-amber-textarea-2 main-center col-md-6">
+                <label>
+                    <p>Hello <span th:text="${first_name}"/> <span th:text="${last_name}"/>, </p>
+                    <br>
+                    <p>You are about to start your test.
+                    <p>
+                    <p>You will have <span th:text="${test_time}"/> minutes to take the test after your start.</p>
+                    <p>Please press Start if you are ready.</p>
+                    <br>
+                    <p>Good luck!</p>
+                    <br>
+                </label>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <button id="startTest" type="submit" class="btn btn-success btn-sm">
+                    <span><i class="fa fa-caret-right" aria-hidden="true"></i></span>
+                    <span>Start Test</span>
+                </button>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+
+</div>
+
+<script th:src="@{/js/config.js}"></script>
+<script>
+
+    $("#startTest").on("click", function(event){
+        event.preventDefault();
+        let url = new URL(window.location.href);
+        let c = url.searchParams.get("thd_i8");
+        if (c != null){
+            $.ajax({
+                method: "POST",
+                data: {thd_i8: c},
+                url: gOptions.aws_path + "/testsrest/testStart",
+                success: function () {
+                    window.location.href = gOptions.aws_path + "/test/test?thd_i8=" + c;
+                },
+                error: function () {
+                    window.location.href = gOptions.aws_path + "/templates/error";
+                },
+            })
+        }
+    });
+
+    $("#startTest").on("click", function () {
+        let url = new URL(window.location.href);
+        let c = url.searchParams.get("thd_i8");
+        $.ajax({
+            method: "POST",
+            url: gOptions.aws_path + "/candidateskill/populateCandidatesSkills/" + c,
+            success() {
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

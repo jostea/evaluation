@@ -1,0 +1,35 @@
+.multiTask {
+    padding: 10px 5%;
+    margin: 3px;
+    border-radius: 5px;
+}
+
+.singleTask {
+    padding: 10px 5%;
+    margin: 3px;
+    border-radius: 5px;
+}
+
+.customTask {
+    padding: 10px 5%;
+    margin: 3px;
+    border-radius: 5px;
+}
+
+div[value="sqlTask"] {
+    padding: 10px 5%;
+    margin: 3px;
+    border-radius: 5px;
+}
+
+.codeAnswer {
+    font-family: 'Source Code Pro', monospace;
+    color: #565654;
+    background: #e4f0fa;
+}
+
+.codeTask {
+    padding: 10px 5%;
+    margin: 3px;
+    border-radius: 5px;
+}

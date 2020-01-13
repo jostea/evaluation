@@ -1,0 +1,31 @@
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+public class {class_name} {
+
+    public static void main(String[] args) throws IOException {
+
+        {object_creation}
+
+        {method_call_u}
+    }
+
+    {method_template_u}
+}
+
+class {class_name_for_test_case} {
+    int questionId;
+    int caseId;
+
+    {parameters}
+
+    {return_type} result;
+
+    {constructor}
+
+    @Override
+    public String toString() {
+        return "{\"questionId\": " + this.questionId + ", \"caseId\": " + this.caseId + ", \"result\": " {string_value} this.result {string_value} "}";
+    }
+}

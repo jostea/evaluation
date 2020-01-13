@@ -1,0 +1,89 @@
+<div th:fragment="profile" class="theTest" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="current" value="skills" id="skillsDivFragment">
+        <div>
+            <div><h3>Please select your Technical skills</h3>
+                <hr>
+            </div>
+            <div>
+                <table class="table" id="technicalSkillTable">
+                    <thead>
+                    <tr class="bg-primary">
+                        <th class="text-center">Nr.</th>
+                        <th class="text-center">Statements</th>
+                        <th class="text-center">Never Used</th>
+                        <th class="text-center">Elementary</th>
+                        <th class="text-center">Middle</th>
+                        <th class="text-center">Upper</th>
+                        <th class="text-center">Advanced</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbodyForTechnicalSkills"></tbody>
+                </table>
+            </div>
+        </div>
+        <div>
+            <div><h3>Please select your Soft skills</h3><hr>
+            </div>
+            <div>
+                <table class="table" id="sofSkillTable">
+                    <thead>
+                    <tr class="bg-primary">
+                        <th class="text-center">Nr.</th>
+                        <th class="text-center">Statements</th>
+                        <th class="text-center">Very rarely</th>
+                        <th class="text-center">Rarely</th>
+                        <th class="text-center">SomeTimes</th>
+                        <th class="text-center">Often</th>
+                        <th class="text-center">Very Often</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbodyForSoftSkills"></tbody>
+                </table>
+            </div>
+        </div>
+        <div>
+            <div><h3>Please select your Tool skills</h3><hr>
+            </div>
+            <div>
+                <table class="table" id="toolSkillTable">
+                    <thead>
+                    <tr class="bg-primary">
+                        <th class="text-center">Nr.</th>
+                        <th class="text-center">Statements</th>
+                        <th class="text-center">Never Used</th>
+                        <th class="text-center">Elementary</th>
+                        <th class="text-center">Middle</th>
+                        <th class="text-center">Upper</th>
+                        <th class="text-center">Advanced</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbodyForToolSkills"></tbody>
+                </table>
+            </div>
+        </div>
+        <div th:fragment="english" xmlns:th="http://www.w3.org/1999/xhtml">
+            <div><h3>Please select your Language level</h3>
+                <hr>
+            </div>
+            <div>
+                <table class="table" id="englishLevelTable">
+                    <thead>
+                    <tr class="bg-primary">
+                        <th>Nr.</th>
+                        <th class="text-center">Statements</th>
+                        <th class="text-center">A1</th>
+                        <th class="text-center">A2</th>
+                        <th class="text-center">B1</th>
+                        <th class="text-center">B2</th>
+                        <th class="text-center">C1</th>
+                        <th class="text-center">C2</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbodyForLanguageSkill"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+

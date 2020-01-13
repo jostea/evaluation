@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+
+    <!-- Website Font style -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+
+    <!-- Google Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link th:href="@{/css/spinner.css}" type="text/css" rel="stylesheet">
+
+    <title>Internship Registration</title>
+</head>
+
+<body>
+<div class="spinner" style="color: orangered">Your request is being processed...</div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-md">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="modal-title"></h3>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4><strong>Text</strong></h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container main-div">
+    <div class="row main">
+        <div class="panel-heading">
+            <div class="panel-title text-center">
+                <h2 class="title">ENDAVA Internship Registration Form</h2>
+                <hr style="border:1px solid #de411b;"/>
+                Internship: <span th:text="${internship_name}"/>
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="main-login main-center col-md-4">
+            <form id="formReg" class="form-horizontal" method="post" action="#">
+
+                <input id="internshipId" type='hidden' th:value="${internship_id}">
+
+                <div class="form-group">
+                    <label for="firstName" class="cols-sm-2 control-label">First Name</label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <input type="text" class="form-control" name="name" id="firstName"
+                                   placeholder="Your First Name" required/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName" class="cols-sm-2 control-label">Last Name</label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                            <input type="text" class="form-control" name="name" id="lastName"
+                                   placeholder="Your Last Name" required/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="cols-sm-2 control-label">Email</label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
+                            <input type="text" class="form-control" name="email" id="email" placeholder="Your Email"
+                                   required/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mobile" class="cols-sm-2 control-label required">Mobile</label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-phone" aria-hidden="true"></i></span>
+                            <input type="text" class="form-control" name="mobile" id="mobile"
+                                   placeholder="Your Contact Phone" required/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DROPDOWN DISCIPLINES -->
+                <div class="form-group">
+                    <label class="cols-sm-2 control-label" for="disciplines">Discipline</label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-university" aria-hidden="true"></i></span>
+                            <select id="disciplines" class="form-control" placeholder="Please select Discipline">
+                                <option value="0" selected disabled style="display: none">Select discipline...</option>
+                                <option th:each="DisciplineListDTO : ${disciplines}"
+                                        th:value="${DisciplineListDTO.getId()}"
+                                        th:text="${DisciplineListDTO.getName()}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DROPDOWN STREAMS -->
+                <div class="form-group">
+                    <label class="cols-sm-2 control-label" for="streams">Stream</label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-mortar-board"
+                                                               aria-hidden="true"></i></span>
+                            <select id="streams" class="form-control">
+                                <option value="0" selected disabled style="display: none">Select stream...</option>
+                                <option th:each="StreamDTO : ${streams}"
+                                        th:value="${StreamDTO.getId()}"
+                                        th:text="${StreamDTO.getName()}"
+                                        th:data="${StreamDTO.getDisciplineName()}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 30px">
+                    <button id="register" type="button" class="btn btn-primary btn-lg btn-block login-button"
+                            style="background-color: orangered; border-color: orangered">Register
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+
+<script type="text/javascript" src="assets/js/bootstrap.js"></script>
+<script th:src="@{/js/config.js}"></script>
+<script>
+
+    $(document).ready(function () {
+        $(".spinner").hide();
+        $(".main-div").show();
+    });
+
+    function showPopUp(title, message) {
+        $("#myModal").find('h3').text(title);
+        $("#myModal").find('h4').text(message);
+        $("#myModal").modal('show');
+    }
+
+    //returns a list of streams
+    //according to the discipline specified in the dropdown
+    $("#disciplines").change(function (event) {
+        event.preventDefault();
+
+        //get selected discipline text
+        let elDisc = document.getElementById("disciplines");
+        let selectedDiscipline = elDisc.options[elDisc.selectedIndex].text;
+        let result = new Array();
+
+        //get streams by discipline name and populate streams dropdown
+        populateStreamsDropdown(selectedDiscipline);
+    });
+
+    //populate stream dropdown based on the data provided (filtered by discipline)
+    function populateStreamsDropdown(discName) {
+        $('#streams').find('option').each(function (i, el) {
+            if ($(this).attr('data') != discName) {
+                $(this).hide();
+            } else {
+                $(this).show();
+            }
+        });
+        $('#streams').val(0);
+    }
+
+    function prepareData() {
+        let elStreamSelect = document.getElementById("streams");
+        let streamId = elStreamSelect.options[elStreamSelect.selectedIndex].value;
+        return {
+            email: $("#email").val(),
+            firstName: $("#firstName").val(),
+            lastName: $("#lastName").val(),
+            phone: $("#mobile").val(),
+            internshipId: $("#internshipId").val(),
+            streamId: streamId
+        }
+    }
+
+    $("#register").on("click", function (event) {
+        event.preventDefault();
+
+        //streamId if selected
+        let elStreamSelect = document.getElementById("streams");
+        let streamId = elStreamSelect.options[elStreamSelect.selectedIndex].value;
+
+        if (streamId == 0) {
+            showPopUp("No stream", "Please specify the stream");
+        } else {
+            if ($("#formReg")[0].checkValidity()) {
+                $.ajax({
+                    method: "POST",
+                    url: gOptions.aws_path + "/registrationrest/addCandidate",
+                    data: JSON.stringify(prepareData()),
+                    contentType: "application/json",
+                    beforeSend: function () {
+                        $(".spinner").show();
+                        $(".main-div").hide();
+                    },
+                    success: function () {
+                        showPopUp("Confirmation", "You was successfully registered. \nPlease verify your email to start the test.");
+                        async function sl() {
+                            location.href = gOptions.aws_path + "/registration";
+                        }
+                    },
+                    error: function (response) {
+                        showPopUp("Warning", response.responseText);
+                        async function sl() {
+                            location.href = gOptions.aws_path + "/registration";
+                        }
+                    },
+                    complete: function () {
+                        $(".spinner").hide();
+                        $(".main-div").show();
+                    }
+                })
+            } else {
+                showPopUp("Form is not complete", "Please verify the data you provide and the required fields");
+            }
+        }
+    });
+
+</script>
+</body>
+</html>

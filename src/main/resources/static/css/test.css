@@ -1,0 +1,152 @@
+.paginationButtons{
+    list-style-type: none;
+    padding: .5em;
+    text-transform: uppercase;
+}
+.paginationButtons span{
+    display: block;
+    font-size: 4.5rem;
+
+}
+.class-div-buttons{
+    text-align:center;
+    border-radius: 10px;
+    padding-bottom: 20px;
+}
+
+.checkbox {
+    padding: 5px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+td {
+    text-align: center;
+}
+
+#timerTimeId {
+    margin-top: 20px;
+    background-color: #eae5e5;
+    text-align: center;
+}
+
+
+.title-with-time {
+    font-weight: normal;
+}
+
+.line-with-time {
+    display: inline-block;
+    font-size: 1em;
+    list-style-type: none;
+    padding-right:1em;
+    text-transform: uppercase;
+}
+
+.line-with-time span {
+    display: block;
+    font-size: 1em;
+}
+
+#skillsDivFragment {
+    margin: 3px;
+    color: black;
+    border-radius: 15px;
+}
+
+#numbersOfPage {
+    padding: 10px;
+}
+
+#footer {
+    background-color: #fbfbfb;
+    bottom: 0;
+    left: 17px;
+    right: 26%;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+body {
+    margin-bottom: 50px;
+}
+
+.theTest {
+    margin-bottom: 100px;
+    margin-top: 20px;
+}
+
+.panel-heading {
+    background-color: #de411b !important;
+    color: white !important;
+}
+
+#technicalSkillTable,
+#sofSkillTable,
+#toolSkillTable,
+#englishLevelTable {
+    border: 1px solid #797272;
+    margin-top: 10px;
+}
+
+#technicalSkillTable > thead > tr > th,
+#sofSkillTable > thead > tr > th,
+#toolSkillTable > thead > tr > th,
+#englishLevelTable > thead > tr > th {
+    border: 1px solid #797272;
+    background-color: #de411b;
+}
+
+#technicalSkillTable > tbody > tr > td,
+#sofSkillTable > tbody > tr > td,
+#toolSkillTable > tbody > tr > td,
+#englishLevelTable > tbody > tr > td {
+    border: 1px solid #797272;
+    color: #383333;
+    font-weight: bold;
+}
+
+#nextTaskPage {
+    background-color: #de411b;
+    border: #de411b;
+    width: 70px;
+    height: 30px;
+}
+
+#previousTaskPage {
+    background-color: #de411b;
+    border: #de411b;
+    width: 70px;
+    height: 30px;
+}
+
+#saveActiveTasks {
+    background-color: #5CB85C;
+    border: #5CB85C;
+    width: 70px;
+    height: 30px;
+}
+
+.paginationButton {
+    width: 45px;
+}
+
+.btn-primary {
+    background-color: #de411b !important;
+    color: white !important;
+    border: #de411b !important;
+}
+
+body .pager {
+    margin: 0;
+}
+
+.head {
+    text-align: center;
+}
+
+html {
+    overflow-y:scroll;
+}

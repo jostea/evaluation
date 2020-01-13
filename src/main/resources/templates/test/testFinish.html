@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+
+    <!-- Website Font style -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+
+    <!-- Google Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link type="text/css" rel="stylesheet" th:href="@{/css/teststart.css}">
+
+    <title>Test Finished</title>
+
+</head>
+<body>
+<div class="container">
+    <div class="row main">
+        <div class="row">
+            <div class="panel-heading">
+                <div class="panel-title text-center">
+                    <h2 class="title">ENDAVA Internship Test is Finished</h2>
+                    <hr/>
+                    <br>
+                </div>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-3"></div>
+            <div class="md-form amber-textarea active-amber-textarea-2 main-center col-md-6">
+                <label>
+                    <p>Thank you for applying for the ENDAVA internship.</p>
+                    <br>
+                    <p>Your test results will be processed and HR department will contact you. </p>
+                    <br>
+                    <p>You can also apply for other disciplines and streams.</p>
+                    <p>In this case please proceed to the registration page.</p>
+                    <br><br>
+                    <p>ENDAVA team</p>
+                    <br><br>
+                </label>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <button id="registration" type="submit" class="btn warning btn-sm">
+                    <span>Registration</span>
+                </button>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+
+</div>
+
+<script th:src="@{/js/config.js}"></script>
+<script>
+
+    $("#registration").on("click", function(event){
+        event.preventDefault();
+        window.location.href = gOptions.aws_path + "/registration";
+    });
+
+</script>
+
+</body>
+</html>
