@@ -52,12 +52,19 @@ function getTestTime() {
         url: gOptions.aws_path + "/getLeftTime/" + param,
         success: function (response) {
             $("#timerTimeId").html(`
-                    <h3 class="title-with-time" id="head">Time Left</h3>
-                    <ul>
-                        <li class="line-with-time"><span id="hours"></span>Hours</li>
-                        <li class="line-with-time"><span id="minutes"></span>Minutes</li>
-                        <li class="line-with-time"><span id="seconds"></span>Seconds</li>
-                     </ul>`);
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h3 class="title-with-time panel-title" id="head">Time Left</h3>
+                        <h6>(The test is over when time expires)</h6>
+                      </div>
+                      <div class="panel-body">
+                        <ul>
+                            <li class="line-with-time"><span id="hours"></span>Hours</li>
+                            <li class="line-with-time"><span id="minutes"></span>Minutes</li>
+                            <li class="line-with-time"><span id="seconds"></span>Seconds</li>
+                         </ul>
+                      </div>
+                    </div>`);
             let interval = setInterval(function () {
                 if (response >= 0) {
                     document.getElementById('hours').innerText = Math.floor(response / 3600) + "";

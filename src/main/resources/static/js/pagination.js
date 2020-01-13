@@ -57,7 +57,7 @@ function addNumberOfPage() {
     let buttonsOfPagination = ``;
     let open = true;
     test.each(function (index, el) {
-        if (index%5===0) {
+        if (index%4===0) {
             if (open) {
                 buttonsOfPagination+="<tr>";
                 open = false;
@@ -66,7 +66,7 @@ function addNumberOfPage() {
                 open = true;
             }
         }
-        buttonsOfPagination+="<td><button class='btn btn-default' id='button"+ index +"' onclick='rebaseOnSpecifiedPage(&apos;page&apos;+"+ index +","+ index +")'>"+ (index+1) +"</button></td>";
+        buttonsOfPagination+="<td><button class='btn btn-default paginationButton' id='button"+ index +"' onclick='rebaseOnSpecifiedPage(&apos;page&apos;+"+ index +","+ index +")'>"+ (index+1) +"</button></td>";
     });
 
     $('#numbersOfPage').html(buttonsOfPagination);
